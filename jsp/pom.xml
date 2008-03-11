@@ -7,13 +7,13 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.mortbay.jetty</groupId>
-  <artifactId>modules-plus</artifactId>
-  <name>Jetty Plus Modules</name>
+  <artifactId>modules-jsp</artifactId>
+  <name>Jetty JSP Modules</name>
   <packaging>pom</packaging>
   <modules>
-    <module>jetty-plus</module>
-    <module>jetty-naming</module>
-    <module>jetty-annotations</module>
-    <module>jetty-management</module>
+    <module>jsp-api-2.0</module>
+    <module>jsp-2.0</module>
+    <module>jsp-api-2.1</module>
+    <module>jsp-2.1</module>
   </modules>
 </project>
