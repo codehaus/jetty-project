@@ -174,7 +174,7 @@ public class JettyWebAppContext extends WebAppContext
         }
 
         if (this.jettyEnvXml != null)
-            envConfig.setJettyEnvXml(new File(this.jettyEnvXml).toURL());
+            envConfig.setJettyEnvXml(Resource.toURL(new File(this.jettyEnvXml)));
         setShutdown(false);
         super.doStart();
     }

@@ -39,6 +39,7 @@ import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 import org.apache.maven.project.artifact.MavenMetadataSource;
+import org.eclipse.jetty.util.resource.Resource;
 
 /**
  * RuntimeDependencyResolver
@@ -139,7 +140,7 @@ public class RuntimeDependencyResolver
             while (itor.hasNext())
             {
                 Artifact a = (Artifact)itor.next();
-                PluginLog.getLog().debug(a.getFile().toURL().toString());
+                PluginLog.getLog().debug(Resource.toURL(a.getFile()).toString());
             }
         }
         return artifacts;

@@ -1,3 +1,6 @@
+jetty@codehaus 7.5.0-SNAPSHOT
+ + JETTY-1394 Do not use deprecated method File.toURL()
+
 jetty@codehaus 7.4.4.v20110707
  + JETTY-1380 Jetty Rewrite example does not work in Hightide
 

@@ -15,6 +15,19 @@
 
 package org.mortbay.jetty.jspc.plugin;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.jasper.JspC;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -24,20 +37,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.jetty.util.IO;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import org.eclipse.jetty.util.resource.Resource;
 
 /**
  * <p>
@@ -479,7 +479,7 @@ public class JspcMojo extends AbstractMojo
         String classesDir = classesDirectory.getCanonicalPath();
         classesDir = classesDir
         + (classesDir.endsWith(File.pathSeparator) ? "" : File.separator);
-        urls.add(new File(classesDir).toURL());
+        urls.add(Resource.toURL(new File(classesDir)));
 
         if (getLog().isDebugEnabled())
             getLog().debug("Adding to classpath classes dir: " + classesDir);
@@ -496,7 +496,7 @@ public class JspcMojo extends AbstractMojo
                     getLog().debug(
                             "Adding to classpath dependency file: " + filePath);
 
-                urls.add(artifact.getFile().toURL());
+                urls.add(Resource.toURL(artifact.getFile()));
             }
         }
     }

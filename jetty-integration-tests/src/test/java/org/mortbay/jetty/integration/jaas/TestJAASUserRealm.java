@@ -25,7 +25,6 @@ import java.security.Principal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
@@ -36,10 +35,12 @@ import javax.security.auth.Subject;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.eclipse.jetty.plus.jaas.JAASLoginService;
 import org.eclipse.jetty.security.authentication.LoginCallback;
 import org.eclipse.jetty.security.authentication.LoginCallbackImpl;
+import org.eclipse.jetty.util.resource.Resource;
 
 
 /* ---------------------------------------------------- */
@@ -129,7 +130,7 @@ public class TestJAASUserRealm extends TestCase
         }
         
         //create a login module config file
-        System.setProperty ("java.security.auth.login.config", configFile.toURL().toExternalForm());
+        System.setProperty ("java.security.auth.login.config", Resource.toURL(configFile).toExternalForm());
         setupDone = true;
     }
 
