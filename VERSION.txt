@@ -1,3 +1,5 @@
+jetty@codehaus 8.0.0.M3 30 May 2011
+
 jetty@codehaus 7.4.2.v20110526
  + JETTY-1372 jspc plugin support trimSpaces
  + JETTY-1376 Fixed init of jetty maven plugin
@@ -31,10 +33,24 @@ jetty@codehaus 7.2.1.v20101111 11 November 2010
 
 jetty@codehaus 7.2.0.v20101020 20 October 2010
 
-jetty@codehaus 7.2.0.RC0 1 October 2010
+jetty@codehaus 8.0.0.M2 16 November 2010
  + 320073 Reconcile jetty-8 and jetty-7 webapp configuration mechanisms
  + JETTY-1051 offer jetty.skip flag for maven plugin
  + JETTY-1096 exclude maven, plexus classes from maven plugin
+ + JETTY-1257 Duplicate dependency on conflicting versions of servlet-api
+ + 320073 Reconsile configuration mechanism
+ + Remove old jetty-plus.xml
+ + Merge with jetty-7 as of 20100927
+ + 327416 Change meaning of @HandlesTypes in line with latest interpretation by JSR315
+
+jetty@codehaus 7.2.0.v20101020 20 October 2010
+
+jetty@codehaus 7.2.0.RC0 1 October 2010
+
+jetty@codehaus 8.0.0.M1 12 July 2010
+ + Updated to jetty core 8.0.0.M1
+ + Add jetty-util.jar to test-annotation-webapp
+ + Add ContainerInitializerConfiguration to jetty.xml
  + JETTY-1107 provide virtual WEB-INF/lib for maven plugin
  + Update to derby 10.6.1.0
  + Simplify test-jndi-webapp
@@ -46,6 +62,7 @@ jetty@codehaus 7.1.6.v20100715
 
 jetty@codehaus 7.1.5.v20100705
  + JETTY-1236 connectors added with jettyConfig ignored by maven plugin
+ + 318561 Unable to resolve JSTL libraries when using jetty-maven-plugin
  + JETTY-1241 enhance jetty-ant port support
  + 318894 Spaces in jboss URLs
 
@@ -70,15 +87,20 @@ jetty@codehaus 7.1.0.RC0
  + Ensure test-jetty-webapp uses ${jetty-version}
  + Update transactions.properties to put atomikos logs in jetty logs dir
  + Remove redundant jetty-plus.xml from jetty-hightide
- + Update test-jndi-webapp/README
- + 308906 mvn jetty:run does not scan web override or default descriptors
- + 309765 moved JSP and test webapp to eclipse
  + Update to atomikos 3.6.4
+ + Update test-jndi-webapp to use atomikos 3.6.4 with mvn jetty:run
+ + Update test-jndi-webapp/README
+ + Update to atomikos 3.6.4
+
+jetty@codehaus 8.0.0.M0 28 February 2010
+ + Updated JSP to 2.1.v20091210
+ + JETTY-776 Make new session tests module to concentrate all reusable session clustering test code
+ + JETTY-1159 jetty-maven-plugin doesn't work if no WEB-INF
+ + JETTY-1160 jetty-maven-plugin needs target directory
 
 jetty@codehaus 7.0.2.v20100331
  + JETTY-1027 mvn jetty:run does not seem to support WAR overlays...
  + Move declaration of container JDNI resources into jetty.xml
-
 
 jetty@codehaus 7.0.2.RC0.17 March 2010
  + Updated JSP to 2.1.v20091210

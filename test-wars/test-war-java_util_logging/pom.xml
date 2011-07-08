@@ -21,7 +21,11 @@
   <parent>
     <groupId>org.mortbay.jetty.testwars</groupId>
     <artifactId>testwars-parent</artifactId>
+<<<<<<< HEAD
     <version>7.4.2.v20110526</version>
+=======
+    <version>8.0.0.RC0-SNAPSHOT</version>
+>>>>>>> jetty-8-historical
   </parent>
   <artifactId>test-war-java_util_logging</artifactId>
   <name>Jetty :: Logging Test War :: Java Util Logging</name>

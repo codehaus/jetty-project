@@ -27,6 +27,11 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+<<<<<<< HEAD
+=======
+import org.eclipse.jetty.annotations.AnnotationConfiguration;
+import org.eclipse.jetty.annotations.ContainerInitializerConfiguration;
+>>>>>>> jetty-8-historical
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.util.URIUtil;
 import org.eclipse.jetty.util.log.Log;
@@ -36,8 +41,8 @@ import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.FragmentConfiguration;
 import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
 import org.eclipse.jetty.webapp.MetaInfConfiguration;
-import org.eclipse.jetty.webapp.TagLibConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.WebInfConfiguration;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 
@@ -63,7 +68,12 @@ public class JettyWebAppContext extends WebAppContext
     private String jettyEnvXml;
     private List<Resource> overlays;
     private boolean unpackOverlays;
+<<<<<<< HEAD
 
+=======
+    private String containerIncludeJarPattern = ".*/servlet-api-[^/]*\\.jar$";
+    
+>>>>>>> jetty-8-historical
     public JettyWebAppContext ()
     throws Exception
     {
@@ -74,12 +84,30 @@ public class JettyWebAppContext extends WebAppContext
                 new MetaInfConfiguration(),
                 new FragmentConfiguration(),
                 envConfig = new EnvConfiguration(),
+<<<<<<< HEAD
                 new AnnotationConfiguration(),
                 new org.eclipse.jetty.plus.webapp.PlusConfiguration(),
                 new JettyWebXmlConfiguration(),
                 new TagLibConfiguration()
         });
     }
+=======
+                new org.eclipse.jetty.plus.webapp.PlusConfiguration(),
+                new MavenAnnotationConfiguration(),
+                new JettyWebXmlConfiguration(),
+                new ContainerInitializerConfiguration()
+        });
+    }
+    public void setContainerIncludeJarPattern(String pattern)
+    {
+    	containerIncludeJarPattern = pattern;
+    }
+    
+    public String getContainerIncludeJarPattern()
+    {
+    	return containerIncludeJarPattern;
+    }
+>>>>>>> jetty-8-historical
     
     public boolean getUnpackOverlays()
     {
@@ -163,6 +191,12 @@ public class JettyWebAppContext extends WebAppContext
 
     public void doStart () throws Exception
     {
+<<<<<<< HEAD
+=======
+        setAttribute(WebInfConfiguration.CONTAINER_JAR_PATTERN, containerIncludeJarPattern);
+        
+
+>>>>>>> jetty-8-historical
         // Initialize map containing all jars in /WEB-INF/lib
         webInfJarMap.clear();
         for (File file : webInfJars)

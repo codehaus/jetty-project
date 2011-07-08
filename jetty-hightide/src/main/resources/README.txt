@@ -18,8 +18,8 @@ JETTY HIGHTIDE
 
 This is the Jetty-hightide distribution which 
 contains the core jetty modules, plus the 3rd party 
-dependencies and integrations needed to create a full 
-featured application server.
+dependencies and integrations needed to create an
+application server.
 
 
 
@@ -53,6 +53,9 @@ under the org.eclipse.jetty and org.mortbay.hightide group IDs
 RUNNING JETTY
 =============
 
+Command Line
+============
+
 The run directory is either the top-level of a distribution
 or jetty-hightide/target/hightide directory when built from
 source.
@@ -71,6 +74,7 @@ provided by the start.ini file:
   java -jar start.jar --help
 
 To run with add configuration file(s), eg SSL
+<<<<<<< HEAD
 
   java -jar start.jar etc/jetty-ssl.xml
 
@@ -79,6 +83,10 @@ To run without the args from start.ini
   java -jar start.jar --ini OPTIONS=Server,websocket etc/jetty.xml etc/jetty-deploy.xml etc/jetty-ssl.xml
 
 To run with JNDI support
+=======
+
+  java -jar start.jar etc/jetty-ssl.xml
+>>>>>>> jetty-8-historical
 
   java -jar start.jar OPTIONS=Server,jsp
 

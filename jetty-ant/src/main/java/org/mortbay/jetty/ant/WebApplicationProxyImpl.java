@@ -27,12 +27,21 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.webapp.Configuration;
+<<<<<<< HEAD
 import org.eclipse.jetty.webapp.FragmentConfiguration;
 import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
 import org.eclipse.jetty.webapp.MetaInfConfiguration;
 import org.eclipse.jetty.webapp.TagLibConfiguration;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
+=======
+import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
+import org.eclipse.jetty.webapp.TagLibConfiguration;
+import org.eclipse.jetty.webapp.WebAppClassLoader;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.FragmentConfiguration;
+import org.eclipse.jetty.webapp.MetaInfConfiguration;
+>>>>>>> jetty-8-historical
 import org.eclipse.jetty.webapp.WebInfConfiguration;
 
 /**
@@ -91,6 +100,7 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
     {
         this.name = name;
         TaskLog.log("\nConfiguring Jetty for web application: " + name);
+<<<<<<< HEAD
 
         this.configurations = new Configuration[] 
                                                 { new WebInfConfiguration(),
@@ -101,6 +111,16 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
                                                   new EnvConfiguration(), 
                                                   new org.eclipse.jetty.plus.webapp.PlusConfiguration(),
                                                   new TagLibConfiguration() };
+=======
+         this.configurations = new Configuration[] 
+                                                 { new WebInfConfiguration(),
+                                                   new JettyWebAppConfiguration(), 
+                                                   new MetaInfConfiguration(),
+                                                   new FragmentConfiguration(),
+                                                   new JettyWebXmlConfiguration(), 
+                                                   new EnvConfiguration(), 
+                                                   new org.eclipse.jetty.plus.webapp.PlusConfiguration()};
+>>>>>>> jetty-8-historical
     }
 
     public List getClassPathFiles()

@@ -25,7 +25,10 @@ import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> jetty-8-historical
 /**
  * This configuration object provides additional way to inject application
  * properties into the configured web application. The list of classpath files,
