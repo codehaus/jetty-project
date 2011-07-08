@@ -1065,4 +1065,15 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
         // TODO Auto-generated method stub
         
     }
+
+    // TODO perhaps wrap the id management into a session id manager?
+	public SessionIdManager getSessionIdManager() 
+	{
+		throw new IllegalArgumentException("jboss-session-management doesn't use a jetty session id manager");
+	}
+
+	public void setSessionIdManager(SessionIdManager idManager) 
+	{
+		throw new IllegalArgumentException("jboss-session-management doesn't use a jetty session id manager");
+	}
 }
