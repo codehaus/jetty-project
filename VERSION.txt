@@ -1,4 +1,5 @@
 jetty@codehaus 7.5.0-SNAPSHOT
+ + JETTY-1393 add jetty-jboss session manager methods
  + JETTY-1394 Do not use deprecated method File.toURL()
 
 jetty@codehaus 7.4.4.v20110707
