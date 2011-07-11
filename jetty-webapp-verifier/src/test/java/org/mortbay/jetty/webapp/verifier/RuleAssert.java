@@ -74,7 +74,7 @@ public class RuleAssert
         File expectationFile = MavenTestingUtils.getTestResourceFile(prefix + ".expectations.txt");
 
         // Establish Webapp to use
-        String webappName = MavenTestingUtils.readToString(setupFile).trim();
+        String webappName = org.eclipse.jetty.toolchain.test.IO.readToString(setupFile).trim();
 
         File webappPath;
         
@@ -190,4 +190,5 @@ public class RuleAssert
         else
             return null;
     }
+    
 }

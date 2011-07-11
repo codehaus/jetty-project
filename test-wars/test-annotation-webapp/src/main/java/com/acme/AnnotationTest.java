@@ -36,11 +36,8 @@ import javax.annotation.Resource;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.security.RunAs;
-<<<<<<< HEAD
-=======
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.annotation.WebInitParam;
->>>>>>> jetty-8-historical
 import javax.annotation.security.DeclareRoles;
 
 /**
@@ -54,10 +51,7 @@ import javax.annotation.security.DeclareRoles;
  */
 
 @RunAs("special")
-<<<<<<< HEAD
-=======
 @WebServlet(urlPatterns = { "/test/*"}, name="AnnotationTest", initParams={@WebInitParam(name="fromAnnotation", value="xyz")})
->>>>>>> jetty-8-historical
 @DeclareRoles({"user","client"})
 public class AnnotationTest extends HttpServlet 
 {
@@ -299,11 +293,6 @@ public class AnnotationTest extends HttpServlet
             out.println("<br/><b>JNDI Lookup Result: "+envLookupResult2+"</b>");
             out.println("<br/><b>Result: "+envResult3+": "+(avgAmount.compareTo(new Double("1.25"))==0?" PASS":" FAIL")+"</b>");     
             out.println("<br/><b>JNDI Lookup Result: "+envLookupResult3+"</b>");          
-<<<<<<< HEAD
-
-         
-=======
->>>>>>> jetty-8-historical
             out.println("<h2>@Resource Injection for UserTransaction </h2>");
             out.println("<pre>");
             out.println("@Resource(mappedName=\"UserTransaction\")");
@@ -311,10 +300,6 @@ public class AnnotationTest extends HttpServlet
             out.println("</pre>");
             out.println("<br/><b>Result: "+txResult+"</b>");
             out.println("<br/><b>JNDI Lookup Result: "+txLookupResult+"</b>");
-<<<<<<< HEAD
-
-=======
->>>>>>> jetty-8-historical
             out.println("<h2>Roles</h2>");
             out.println("<p>Login as user \"admin\" with password \"admin\" when prompted after clicking the button below to test @DeclareRoles annotation</p>");
             String context = request.getContextPath();

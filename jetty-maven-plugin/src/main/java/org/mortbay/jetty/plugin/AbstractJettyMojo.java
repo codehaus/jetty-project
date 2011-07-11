@@ -36,6 +36,7 @@ import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.util.Scanner;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.xml.XmlConfiguration;
 
 
@@ -523,7 +524,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
         if (webAppXml != null)
         {
             File file = FileUtils.getFile(webAppXml);
-            XmlConfiguration xmlConfiguration = new XmlConfiguration(file.toURL());
+            XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(file));
             getLog().info("Applying context xml file "+webAppXml);
             xmlConfiguration.configure(webAppConfig);   
         }

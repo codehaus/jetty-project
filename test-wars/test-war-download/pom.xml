@@ -21,11 +21,7 @@
   <parent>
     <groupId>org.mortbay.jetty.testwars</groupId>
     <artifactId>testwars-parent</artifactId>
-<<<<<<< HEAD
-    <version>7.4.2-SNAPSHOT</version>
-=======
-    <version>8.0.0.M3-SNAPSHOT</version>
->>>>>>> jetty-8-historical
+    <version>8.0.0.RC0-SNAPSHOT</version>
   </parent>
   <artifactId>test-war-download</artifactId>
   <packaging>war</packaging>
@@ -52,6 +48,11 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>
       <version>${jetty-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty.testwars</groupId>
+      <artifactId>jetty-remote-testsuite-servlet</artifactId>
+      <version>${jetty-version}</version> 
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

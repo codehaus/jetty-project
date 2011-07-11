@@ -21,23 +21,16 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-integration-project</artifactId>
-<<<<<<< HEAD
-    <version>7.4.2.v20110526</version>
-=======
     <version>8.0.0.RC0-SNAPSHOT</version>
->>>>>>> jetty-8-historical
   </parent>
   <groupId>org.mortbay.jetty.testwars</groupId>
   <artifactId>testwars-parent</artifactId>
   <name>Jetty :: Test Wars Parent</name>
   <packaging>pom</packaging>
   <modules>
-<<<<<<< HEAD
-=======
     <!-- Original top level supporting jars -->
     <module>test-container-initializer</module>
     <module>test-fragment</module>
->>>>>>> jetty-8-historical
     <!-- Original top level test webapps -->
     <module>test-jndi-webapp</module>
     <module>test-jaas-webapp</module>
@@ -73,5 +66,8 @@
     <module>test-war-servlet25</module>
     <module>test-war-servletmixed1</module>
     <module>test-war-servletmixed2</module>
+    <!-- Used by test-jetty-distribution -->
+    <!--module>test-app-jmx</module-->
+    <!--module>test-war-download</module-->
   </modules>
 </project>

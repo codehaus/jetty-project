@@ -9,17 +9,6 @@
       <Arg>org.eclipse.jetty.webapp.configuration</Arg>
       <Arg>
           <Array type="java.lang.String">
-<<<<<<< HEAD
-              <Item>org.eclipse.jetty.webapp.WebInfConfiguration</Item>
-              <Item>org.eclipse.jetty.webapp.WebXmlConfiguration</Item>
-              <Item>org.eclipse.jetty.webapp.MetaInfConfiguration</Item>
-              <Item>org.eclipse.jetty.webapp.FragmentConfiguration</Item>
-              <Item>org.eclipse.jetty.plus.webapp.EnvConfiguration</Item>
-              <Item>org.eclipse.jetty.plus.webapp.PlusConfiguration</Item>
-              <Item>org.eclipse.jetty.annotations.AnnotationConfiguration</Item>
-              <Item>org.eclipse.jetty.webapp.JettyWebXmlConfiguration</Item>
-              <Item>org.eclipse.jetty.webapp.TagLibConfiguration</Item>
-=======
                <Item>org.eclipse.jetty.webapp.WebInfConfiguration</Item>
                <Item>org.eclipse.jetty.webapp.WebXmlConfiguration</Item>
                <Item>org.eclipse.jetty.webapp.MetaInfConfiguration</Item>
@@ -29,7 +18,6 @@
                <Item>org.eclipse.jetty.annotations.AnnotationConfiguration</Item>
                <Item>org.eclipse.jetty.webapp.JettyWebXmlConfiguration</Item>
                <Item>org.eclipse.jetty.annotations.ContainerInitializerConfiguration</Item>
->>>>>>> jetty-8-historical
           </Array>
       </Arg>
     </Call>

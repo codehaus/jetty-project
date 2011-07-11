@@ -39,8 +39,6 @@
     <url-pattern>/role/*</url-pattern>
   </servlet-mapping>
   
-<<<<<<< HEAD
-=======
   <servlet>
     <servlet-name>Multi</servlet-name>
     <servlet-class>com.acme.MultiPartTest</servlet-class>
@@ -52,7 +50,6 @@
     <url-pattern>/multi/*</url-pattern>
   </servlet-mapping>
 
->>>>>>> jetty-8-historical
   <env-entry>
     <env-entry-name>com.acme.AnnotationTest/avgAmount</env-entry-name>
     <env-entry-value>1.25</env-entry-value>

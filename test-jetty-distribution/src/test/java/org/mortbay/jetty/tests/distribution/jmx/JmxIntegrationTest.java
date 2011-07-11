@@ -1,6 +1,6 @@
 package org.mortbay.jetty.tests.distribution.jmx;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,25 +11,25 @@ import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 
 import org.eclipse.jetty.toolchain.jmx.JmxServiceConnection;
+import org.eclipse.jetty.toolchain.test.JettyDistro;
 import org.eclipse.jetty.toolchain.test.SimpleRequest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mortbay.jetty.tests.distribution.JettyProcess;
 
 /**
  * Test Jetty with one webapp.
  */
 public class JmxIntegrationTest
 {
-    private static JettyProcess jetty;
+    private static JettyDistro jetty;
     private static JmxServiceConnection jmxConnect; 
     private static MBeanServerConnection mbeanConnect; 
 
     @BeforeClass
     public static void initJetty() throws Exception
     {
-        jetty = new JettyProcess(JmxIntegrationTest.class);
+        jetty = new JettyDistro(JmxIntegrationTest.class);
 
         jetty.delete("contexts/javadoc.xml");
         
@@ -318,7 +318,7 @@ public class JmxIntegrationTest
     @SuppressWarnings("unused")
     public void testSessionManager() throws Exception
     {
-        ObjectName objName = new ObjectName("org.eclipse.jetty.server.session:type=hashsessionmanager,id=0");
+        ObjectName objName = new ObjectName("org.eclipse.jetty.server.session:type=hashsessionmanager,context=test,id=0");
         
         Object httpOnly = mbeanConnect.getAttribute(objName, "httpOnly");
         assertTrue(httpOnly != null && httpOnly instanceof Boolean);
@@ -376,7 +376,7 @@ public class JmxIntegrationTest
     @SuppressWarnings({ "unused", "unchecked" })
     public void testFilterHolder() throws Exception
     {
-        ObjectName objName = new ObjectName("org.eclipse.jetty.servlet:type=filterholder,name=GzipFilter,id=0");
+        ObjectName objName = new ObjectName("org.eclipse.jetty.servlet:type=filterholder,name=TestFilter,id=0");
         
         String className = (String)mbeanConnect.getAttribute(objName, "className");
         assertTrue(className !=  null && className.length() > 0);
@@ -394,7 +394,7 @@ public class JmxIntegrationTest
     @Test
     public void testFilterMapping() throws Exception
     {
-        ObjectName objName = new ObjectName("org.eclipse.jetty.servlet:type=filtermapping,id=0");
+        ObjectName objName = new ObjectName("org.eclipse.jetty.servlet:type=filtermapping,name=TestFilter,id=0");
         
         String filterName = (String)mbeanConnect.getAttribute(objName, "filterName");
         assertTrue(filterName !=  null && filterName.length() > 0);
@@ -411,7 +411,7 @@ public class JmxIntegrationTest
     public void testServletHandler() throws Exception
     {
         // Tests ServerHandler and Handler attributes
-        ObjectName objName = new ObjectName("org.eclipse.jetty.servlet:type=servlethandler,id=0");
+        ObjectName objName = new ObjectName("org.eclipse.jetty.servlet:type=servlethandler,context=test,id=0");
         
         ObjectName[] childHandlers = (ObjectName[])mbeanConnect.getAttribute(objName, "childHandlers");
         assertTrue(childHandlers !=  null);
@@ -469,7 +469,7 @@ public class JmxIntegrationTest
     @Test
     public void testServletMapping() throws Exception
     {
-        ObjectName objName = new ObjectName("org.eclipse.jetty.servlet:type=servletmapping,id=0");
+        ObjectName objName = new ObjectName("org.eclipse.jetty.servlet:type=servletmapping,name=default,id=0");
         
         String[] pathSpecs = (String[])mbeanConnect.getAttribute(objName, "pathSpecs");
         assertTrue(pathSpecs !=  null && pathSpecs.length > 0);

@@ -40,7 +40,7 @@
     <servlet.spec.version>3.0.20100224</servlet.spec.version>
     <junit-version>3.8.2</junit-version>
     <junit4-version>4.8.1</junit4-version>
-    <jetty-test-helper-version>1.4</jetty-test-helper-version>
+    <jetty-test-helper-version>1.6</jetty-test-helper-version>
   </properties>
 
   <scm>
@@ -134,6 +134,7 @@
     <module>jetty-logback</module>
     <module>jetty-webapp-verifier</module>
     <module>jetty-webapp-logging</module>
+    <module>jetty-monitor</module>
   </modules>
   <profiles>
     <profile>

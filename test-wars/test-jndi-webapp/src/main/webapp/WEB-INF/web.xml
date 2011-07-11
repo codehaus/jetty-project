@@ -8,7 +8,6 @@
 
   <display-name>Test JNDI WebApp</display-name>
   
-
   <servlet>
     <servlet-name>JNDITest</servlet-name>
     <servlet-class>com.acme.JNDITest</servlet-class>
@@ -31,22 +30,11 @@
   </env-entry>
 
   <resource-ref>
-    <res-ref-name>jdbc/mydatasource1</res-ref-name>
-    <res-type>javax.sql.DataSource</res-type>
-    <res-auth>Container</res-auth>
-    <injection-target>
-      <injection-target-class>com.acme.JNDITest</injection-target-class>
-      <injection-target-name>myDatasource</injection-target-name>
-    </injection-target>
-  </resource-ref>
-
-
-
-  <resource-ref>
     <res-ref-name>mail/Session</res-ref-name>
     <res-type>javax.mail.Session</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>
+
 
   <post-construct>
     <lifecycle-callback-class>com.acme.JNDITest</lifecycle-callback-class>

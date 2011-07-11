@@ -26,16 +26,15 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
-import org.mortbay.jetty.ant.utils.ServerProxy;
-import org.mortbay.jetty.ant.utils.TaskLog;
-import org.mortbay.jetty.ant.utils.WebApplicationProxy;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.RequestLogHandler;
-import org.eclipse.jetty.security.LoginService;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.xml.XmlConfiguration;
+import org.mortbay.jetty.ant.utils.ServerProxy;
+import org.mortbay.jetty.ant.utils.TaskLog;
+import org.mortbay.jetty.ant.utils.WebApplicationProxy;
 import org.xml.sax.SAXException;
 
 /**
@@ -179,7 +178,7 @@ public class ServerProxyImpl implements ServerProxy
             XmlConfiguration configuration;
             try
             {
-                configuration = new XmlConfiguration(jettyXml.toURL());
+                configuration = new XmlConfiguration(Resource.toURL(jettyXml));
                 configuration.configure(server);
             }
             catch (MalformedURLException e)

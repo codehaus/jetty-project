@@ -74,19 +74,10 @@ provided by the start.ini file:
   java -jar start.jar --help
 
 To run with add configuration file(s), eg SSL
-<<<<<<< HEAD
 
   java -jar start.jar etc/jetty-ssl.xml
 
 To run without the args from start.ini
 
   java -jar start.jar --ini OPTIONS=Server,websocket etc/jetty.xml etc/jetty-deploy.xml etc/jetty-ssl.xml
-
-To run with JNDI support
-=======
-
-  java -jar start.jar etc/jetty-ssl.xml
->>>>>>> jetty-8-historical
-
-  java -jar start.jar OPTIONS=Server,jsp
 

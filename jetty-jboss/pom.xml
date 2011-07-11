@@ -2,11 +2,7 @@
     <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-integration-project</artifactId>
-<<<<<<< HEAD
-    <version>7.4.2.v20110526</version>
-=======
     <version>8.0.0.RC0-SNAPSHOT</version>
->>>>>>> jetty-8-historical
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jboss-jetty</artifactId>
@@ -28,12 +24,11 @@
       </plugin>
     </plugins>
   </build>
-<!--
   <repositories>
     <repository>
       <id>jboss-repo</id>
       <name>jboss</name>
-      <url>http://repository.jboss.com/maven2</url>
+      <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
       <layout>default</layout>
     </repository>
     <repository>
@@ -46,9 +41,7 @@
         <enabled>false</enabled>
       </releases>
     </repository>
-
   </repositories>
--->
   <dependencies>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>

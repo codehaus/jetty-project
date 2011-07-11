@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-integration-project</artifactId>
-    <version>7.4.1-SNAPSHOT</version>
+    <version>7.4.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>test-jetty-distribution</artifactId>
@@ -12,6 +12,7 @@
   <properties>
     <test-wars-dir>${project.build.directory}/test-wars</test-wars-dir>
     <test-libs-dir>${project.build.directory}/test-libs</test-libs-dir>
+    <test-dist-dir>${project.build.directory}/test-dist</test-dist-dir>
   </properties>
   <build>
     <plugins>
@@ -44,31 +45,31 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.mortbay.jetty.testwars</groupId>
-                  <artifactId>test-war-dump</artifactId>
+                  <artifactId>test-war-download</artifactId>
                   <version>${project.version}</version>
                   <type>war</type>
                   <outputDirectory>${test-wars-dir}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
-                  <groupId>org.mortbay.jetty</groupId>
-                  <artifactId>jetty-aspect-servlet-api-2.5</artifactId>
+                  <groupId>org.mortbay.jetty.testwars</groupId>
+                  <artifactId>test-jndi-webapp</artifactId>
                   <version>${project.version}</version>
-                  <type>jar</type>
-                  <outputDirectory>${test-libs-dir}</outputDirectory>
+                  <type>war</type>
+                  <outputDirectory>${test-wars-dir}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
-                  <groupId>org.aspectj</groupId>
-                  <artifactId>aspectjrt</artifactId>
-                  <version>1.6.10</version>
-                  <type>jar</type>
-                  <outputDirectory>${test-libs-dir}</outputDirectory>
+                  <groupId>org.mortbay.jetty.testwars</groupId>
+                  <artifactId>test-app-jmx</artifactId>
+                  <version>${project.version}</version>
+                  <type>war</type>
+                  <outputDirectory>${test-wars-dir}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
-                  <groupId>org.aspectj</groupId>
-                  <artifactId>aspectjweaver</artifactId>
-                  <version>1.6.10</version> 
-                  <type>jar</type>
-                  <outputDirectory>${test-libs-dir}</outputDirectory>
+                  <groupId>org.mortbay.jetty.testwars</groupId>
+                  <artifactId>test-war-dump</artifactId>
+                  <version>${project.version}</version>
+                  <type>war</type>
+                  <outputDirectory>${test-wars-dir}</outputDirectory>
                 </artifactItem>
               </artifactItems>
               <overWriteIfNewer>true</overWriteIfNewer>
@@ -93,7 +94,7 @@
                 </artifactItem>
               </artifactItems>
               <outputAbsoluteArtifactFilename>true</outputAbsoluteArtifactFilename>
-              <outputDirectory>${project.build.directory}/jetty-distro</outputDirectory>
+              <outputDirectory>${test-dist-dir}</outputDirectory>
               <overWriteSnapshots>true</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
             </configuration>
@@ -120,6 +121,11 @@
       <version>20080701</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty.testwars</groupId>
+      <artifactId>jetty-remote-testsuite-client</artifactId>
+      <version>${jetty-version}</version>
+    </dependency>    
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
