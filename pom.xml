@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-parent</artifactId>
-    <version>11</version>
+    <version>12</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.mortbay.jetty</groupId>
@@ -44,9 +44,9 @@
   </properties>
 
   <scm>
-    <connection>scm:svn:https://svn.codehaus.org/jetty/jetty/branches/jetty-8</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/jetty/jetty/branches/jetty-8</developerConnection>
-    <url>scm:svn:https://svn.codehaus.org/jetty/jetty/branches/jetty-8</url>
+    <connection>scm:git:git://git.codehaus.org/jetty-project.git</connection>
+    <developerConnection>scm:git:ssh://git@git.codehaus.org/jetty-project.git</developerConnection>
+    <url>http://git.codehaus.org/gitweb.cgi?p=jetty-project.git</url>
   </scm>
   <build>
     <defaultGoal>install</defaultGoal>
@@ -62,7 +62,6 @@
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <configuration>
-         <tagBase>https://svn.codehaus.org/jetty/jetty/tags</tagBase>
          <autoVersionSubmodules>true</autoVersionSubmodules>
          <mavenExecutorId>forked-path</mavenExecutorId>
         </configuration>
