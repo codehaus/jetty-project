@@ -20,6 +20,9 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.StdErrLog;
+
 import junit.framework.TestCase;
 
 /**
@@ -27,6 +30,10 @@ import junit.framework.TestCase;
  */
 public class ResponseTest extends TestCase
 {
+    {
+        ((StdErrLog)Log.getLog()).setHideStacks(!Log.getLog().isDebugEnabled());
+    }
+    
     public void testResponseConversions() throws Exception
     {
         int id = 1;

@@ -29,6 +29,8 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.StdErrLog;
 
 
 /**
@@ -36,6 +38,10 @@ import org.apache.http.protocol.HttpContext;
  */
 public class ApacheClientTest extends ClientTest
 {
+    {
+        ((StdErrLog)Log.getLog()).setHideStacks(!Log.getLog().isDebugEnabled());
+    }
+    
     private ClientConnectionManager connectionManager;
 
     protected RHTTPClient createClient(int port, String targetId) throws Exception
