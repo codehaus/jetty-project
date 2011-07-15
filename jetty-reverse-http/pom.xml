@@ -16,7 +16,7 @@
     <modules>
         <module>reverse-http-client</module>
         <module>reverse-http-connector</module>
-        <module>reverse-http-server</module>
+        <module>reverse-http-gateway</module>
         <module>reverse-http-loadtest</module>
     </modules>
 
