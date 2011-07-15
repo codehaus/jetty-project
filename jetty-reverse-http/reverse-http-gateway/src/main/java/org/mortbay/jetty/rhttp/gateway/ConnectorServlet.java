@@ -58,7 +58,7 @@ public class ConnectorServlet extends HttpServlet
     public void init() throws ServletException 
     {
         String t = getInitParameter("clientTimeout");
-        if (t!=null && !t.isEmpty())
+        if (t!=null && !"".equals(t))
             clientTimeout=Long.parseLong(t);
     }
 
