@@ -19,19 +19,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.StringTokenizer;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +36,13 @@ import org.eclipse.jetty.util.ajax.JSON;
  */
 public class SerialRestServlet extends AbstractRestServlet
 {   
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3383484830842751584L;
+
+	@SuppressWarnings("unchecked")
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         long start = System.nanoTime();
         
@@ -60,12 +58,12 @@ public class SerialRestServlet extends AbstractRestServlet
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod("GET");
             
-            Map query = (Map)JSON.parse(new BufferedReader(new InputStreamReader(connection.getInputStream())));
+            Map<String, Object[]> query = (Map<String, Object[]>)JSON.parse(new BufferedReader(new InputStreamReader(connection.getInputStream())));
             Object[] auctions = (Object[]) query.get("Item");
             if (auctions != null)
             {
                 for (Object o : auctions)
-                    results.add((Map) o);
+                    results.add((Map<String, String>) o);
             }
         }
         
