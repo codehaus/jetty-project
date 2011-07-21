@@ -1,8 +1,10 @@
 jetty@codehaus 7.5.0-SNAPSHOT
+ + JETTY-1383 Provide Debian and RPM binary distribution of Core Jetty 
  + JETTY-1393 add jetty-jboss session manager methods
  + JETTY-1394 Do not use deprecated method File.toURL()
  + JETTY-1401 migrate jetty-jmx-ws module
  + 352512 setup archetypes into jetty codehaus build
+ 
 
 jetty@codehaus 7.4.4.v20110707
  + JETTY-1380 Jetty Rewrite example does not work in Hightide
