@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/jmxwsdemo.css" />
+        <link type="text/css" href="css/ui-darkness/jquery-ui-1.8.7.custom.css" rel="Stylesheet" />
+        <script type="text/javascript" src="js/jquery-1.4.4.min.js">
+        </script>
+        <script type="text/javascript" src="js/jquery-ui-1.8.7.custom.min.js">
+        </script>
+        <script type="text/javascript" src="js/jquery.sparkline.min.js">
+        </script>
+        <script type="text/javascript" src="js/TimerXAC-104-VN-FINAL.js">
+        </script>
+        <script type="text/javascript">
+            var MEMORY_REGEX = /[^\{]+\{committed=(\d+), init=(\d+), max=(\d+), used=(\d+)\}/;
+            var recreateAccordionCounter = 0;
+            
+            mpointObjects = [];
+            mpoints_max = 100;
+            function mpointsObject(){
+                this.mpoints = [];
+                this.addPoint = function(point){
+                    this.mpoints.push(point);
+                    if (this.mpoints.length > mpoints_max) 
+                        this.mpoints.splice(0, 1);
+                }
+            }
+            
+            function addMpointData(nodeName, used){
+                if (!mpointObjects[nodeName]) {
+                    mpointObjects[nodeName] = new mpointsObject();
+                }
+                mpointObjects[nodeName].addPoint(used);
+            }
+            
+            function drawHeapUsedSparkline(nodeName){
+                var spanId = "#" + nodeName + "heap";
+                $(spanId).sparkline.defaults.common.lineColor = 'white';
+                $(spanId).sparkline.defaults.common.fillColor = 'false';
+                $(spanId).sparkline.defaults.common.height = '75';
+                $(spanId).sparkline(mpointObjects[nodeName].mpoints);
+            }
+            
+            function updateMPointData(){
+                $.ajax({
+                    url: "ws/mbeans/java.lang:type=Memory/attributes/HeapMemoryUsage",
+                    dataType: "json",
+                    success: function(json){
+                        for (var i = 0; i < json.Attribute.length; i++) {
+                            var nodeName = json.Attribute[i].NodeName;
+                            var value = json.Attribute[i].Value;
+                            var match = MEMORY_REGEX.exec(value);
+                            var committed = match[1];
+                            var init = match[2];
+                            var max = match[3];
+                            var used = match[4];
+                            addMpointData(nodeName, used);
+                        }
+                    },
+                    error: function(){
+                        alert("Error getting HeapMemoryUsage MBean");
+                    }
+                });
+            }
+            
+            function scheduleUpdate(){
+                jQuery.timerCreate({
+                    interval: 1000,
+                    repeat: true,
+                    callback: function(){
+                        updateMPointData();
+                        createAccordion();
+                    }
+                }).start();
+            }
+            
+            
+            function createAccordion(){
+                $("#accordion").empty();
+                //save state
+                var state = $("#accordion").accordion("option", "active");
+                $("#accordion").accordion('destroy');
+                for (nodeName in mpointObjects) {
+                    var mpoints = mpointObjects[nodeName].mpoints;
+                    if (mpoints) {
+                        $("#accordion").append("<h3><a href=\"#\">" + nodeName + " - Heap Used: " + mpoints[mpoints.length - 1] + "</a></h3>"); //" Committed: " + committed + " Max: " + max + "</a></h3>");
+                        $("#accordion").append("<div id=\"memcontent\">Heap used: <span class=\"sparkline\" id=\"" + nodeName + "heap\">Loading...</span></div>");
+                        drawHeapUsedSparkline(nodeName);
+                    }
+                }
+                //set state
+                $("#accordion").accordion("option", "active", state);
+                $("#accordion").accordion({
+                    autoHeight: false,
+                    navigation: true,
+					active: state
+                });
+            }
+            
+            $(document).ready(function(){
+            
+                // Navigation DropDown starts here
+                $("ul.subnav").parent().append("<span></span>"); //Only shows drop down trigger when js is enabled (Adds empty span tag after ul.subnav*)
+                $("ul.topnav li span").click(function(){ //When trigger is clicked...
+                    //Following events are applied to the subnav itself (moving subnav up and down)
+                    $(this).parent().find("ul.subnav").slideDown('fast').show(); //Drop down the subnav on click
+                    $(this).parent().hover(function(){
+                    }, function(){
+                        $(this).parent().find("ul.subnav").slideUp('slow'); //When the mouse hovers out of the subnav, move it back up
+                    });
+                    //Following events are applied to the trigger (Hover events for the trigger)
+                }).hover(function(){
+                    $(this).addClass("subhover"); //On hover over, add class "subhover"
+                }, function(){ //On Hover Out
+                    $(this).removeClass("subhover"); //On hover out, remove class "subhover"
+                });
+                // Navigation DropDown ends here
+                
+                scheduleUpdate();
+                
+            });
+        </script>
+    </head>
+    <div id=header>
+        <ul class="topnav">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                <a href="/memory.html">Memory</a>
+                <ul class="subnav">
+                    <li>
+                        <a href="#">Heap</a>
+                    </li>
+                    <li>
+                        <a href="#">other</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Context</a>
+                <ul class="subnav">
+                    <li>
+                        <a href="#">Sub Nav Link</a>
+                    </li>
+                    <li>
+                        <a href="#">Sub Nav Link</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">About Cloudtide</a>
+            </li>
+        </ul>
+    </div>
+    <div id=content>
+        <div id="accordion">
+        </div>
+    </div>
+</html>

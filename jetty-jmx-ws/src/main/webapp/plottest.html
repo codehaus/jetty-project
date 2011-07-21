@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+    <head>
+        <script type="text/javascript" src="js/jquery-1.4.4.min.js">
+        </script>
+        <script type="text/javascript" src="js/jquery.sparkline.min.js">
+        </script>
+        <script>
+
+            window.setInterval(updateMemoryGraph, 1000);
+            var mpoints = [];
+            var mpoints_max = 30;
+            
+            function updateMemoryGraph(){
+                $.get("/ws/localhost:8888/memory", function(data){
+                    mpoints.push(data.used);
+                    if (mpoints.length > mpoints_max) 
+                        mpoints.splice(0, 1);
+                });
+                $('.dynamicsparkline').sparkline(mpoints);
+            }
+            
+            $(document).ready(function(){
+            });
+        </script>
+    </head>
+    <body>
+        Sparkline with dynamic data: <span class="dynamicsparkline">Loading..</span>
+    </body>
+</html>
