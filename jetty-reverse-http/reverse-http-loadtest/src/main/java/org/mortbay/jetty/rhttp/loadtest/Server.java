@@ -18,8 +18,8 @@ package org.mortbay.jetty.rhttp.loadtest;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.mortbay.jetty.rhttp.gateway.GatewayServer;
-import org.mortbay.jetty.rhttp.gateway.StandardTargetIdRetriever;
+import org.mortbay.jetty.rhttp.server.GatewayServer;
+import org.mortbay.jetty.rhttp.server.StandardTargetIdRetriever;
 
 /**
  * @version $Revision$ $Date$
@@ -39,7 +39,7 @@ public class Server
         server.addConnector(connector);
         server.setTargetIdRetriever(new StandardTargetIdRetriever());
         server.start();
-        server.getServer().dumpStdErr();
+
         Runtime.getRuntime().addShutdownHook(new Shutdown(server));
     }
 

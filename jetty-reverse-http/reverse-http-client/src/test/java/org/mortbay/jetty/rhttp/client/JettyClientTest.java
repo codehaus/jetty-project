@@ -27,10 +27,6 @@ import org.eclipse.jetty.util.log.StdErrLog;
  */
 public class JettyClientTest extends ClientTest
 {
-    {
-        ((StdErrLog)Log.getLog()).setHideStacks(!Log.getLog().isDebugEnabled());
-    }
-    
     private HttpClient httpClient;
 
     protected RHTTPClient createClient(int port, String targetId) throws Exception
