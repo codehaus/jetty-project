@@ -25,7 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.mortbay.jetty</groupId>
   <artifactId>jetty-integration-project</artifactId>
-  <version>7.4.5-SNAPSHOT</version>
+  <version>7.4.5.v20110725</version>
   <name>Jetty :: Codehaus Integration Project</name>
   <description>Jetty integrations and distributions</description>
   <packaging>pom</packaging>
@@ -132,7 +132,7 @@
     <module>jetty-webapp-logging</module>
     <module>jetty-monitor</module>
     <module>dist/jetty-deb</module>
-    <module>dist/jetty-rpm</module>
+    <!--module>dist/jetty-rpm</module-->
   </modules>
   <profiles>
     <profile>
