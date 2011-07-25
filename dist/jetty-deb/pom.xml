@@ -2,12 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.mortbay.jetty</groupId>
-    <artifactId>jetty-unix</artifactId>
+    <artifactId>jetty-integration-project</artifactId>
     <version>7.4.5-SNAPSHOT</version>
   </parent>
-  <artifactId>jetty-rpm</artifactId>
-  <name>Jetty :: Unix Distributions :: RPM</name>
-  <packaging>rpm</packaging>
+  <groupId>org.mortbay.jetty.dist</groupId>
+  <artifactId>jetty-deb</artifactId>
+  <name>Jetty :: Unix Distributions :: Debian</name>
+  <packaging>deb</packaging>
   <build>
     <plugins>
       <plugin>
@@ -20,9 +21,10 @@
           <contactEmail>jetty-dev@eclipse.org</contactEmail>
           <name>Core Jetty ${project.version} Distribution</name>
           <description>Jetty provides an Web server and javax.servlet container, plus support for Web Sockets, OSGi, JMX, JNDI, JASPI, AJP and many other integrations. These components are open source and available for commercial use and distribution.</description>
-          <rpm>
-            <group>Applications/Internet</group>
-          </rpm>
+          <deb>
+            <priority>optional</priority>
+            <section>java</section>
+          </deb>
           <assembly>
             <extractArtifact>
               <artifact>org.eclipse.jetty:jetty-distribution:zip</artifact>
