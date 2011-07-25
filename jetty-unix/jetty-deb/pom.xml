@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-unix</artifactId>
-    <version>7.5.0-SNAPSHOT</version>
+    <version>7.4.5-SNAPSHOT</version>
   </parent>
   <artifactId>jetty-deb</artifactId>
   <name>Jetty :: Unix Distributions :: Debian</name>
