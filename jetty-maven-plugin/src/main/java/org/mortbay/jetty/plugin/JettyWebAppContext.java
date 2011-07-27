@@ -63,6 +63,7 @@ public class JettyWebAppContext extends WebAppContext
     private String jettyEnvXml;
     private List<Resource> overlays;
     private boolean unpackOverlays;
+    private boolean baseResourceFirst = true;
 
     public JettyWebAppContext ()
     throws Exception
@@ -137,6 +138,18 @@ public class JettyWebAppContext extends WebAppContext
         webInfJars.addAll(jars);
     }
     
+    /* ------------------------------------------------------------ */
+    public void setBaseResourceFirst(boolean value)
+    {
+        baseResourceFirst = value;
+    }
+
+    /* ------------------------------------------------------------ */
+    public boolean getBaseResourceFirst()
+    {
+        return baseResourceFirst;
+    }
+
     /* ------------------------------------------------------------ */
     /**
      * This method is provided as a conveniance for jetty maven plugin configuration 

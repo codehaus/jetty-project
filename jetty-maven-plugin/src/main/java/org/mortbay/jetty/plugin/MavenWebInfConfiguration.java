@@ -78,76 +78,62 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
         //Add in any overlaid wars as base resources
         if (jwac.getOverlays() != null && !jwac.getOverlays().isEmpty())
         {
-            ResourceCollection rc;
+            Resource[] origResources = null;
+            int origSize = 0;
 
-            if(jwac.getBaseResource()==null)
+            if (jwac.getBaseResource() != null)
             {
-                // nothing configured, so we automagically enable the overlays                    
-                int size = jwac.getOverlays().size()+1;
-                Resource[] resources = new Resource[size];
-                _unpackedOverlays = new Resource[size];
-                for(int i=0; i<size; i++)
+                if (jwac.getBaseResource() instanceof ResourceCollection)
                 {
-                    if (jwac.getUnpackOverlays())
-                    {
-                        resources[i] = unpackOverlay(context,jwac.getOverlays().get(i));
-                        _unpackedOverlays[i] = resources[i];
-                    }
-                    else
-                        resources[i] =jwac.getOverlays().get(i);
-
-                    Log.info("Adding overlay: " + resources[i]);
-                }
-                
-                rc=new ResourceCollection(resources);
-            }                
-            else
-            {                    
-                if(jwac.getBaseResource() instanceof ResourceCollection)
-                {
-                    // there was a preconfigured ResourceCollection ... append the artifact wars
-                    Resource[] old = ((ResourceCollection)jwac.getBaseResource()).getResources();
-                    int size = old.length + jwac.getOverlays().size();
-                    Resource[] resources = new Resource[size];
-                    _unpackedOverlays = new Resource[size];
-                    System.arraycopy(old, 0, resources, 0, old.length);
-                    for(int i=old.length,j=0; i<size; i++,j++)
-                    {
-                        if (jwac.getUnpackOverlays())
-                        {
-                            resources[i] = unpackOverlay(context,jwac.getOverlays().get(j));
-                            _unpackedOverlays[i] = resources[i];
-                        }
-                        else
-                            resources[i] = jwac.getOverlays().get(j);
-
-                        Log.info("Adding overlay: " + resources[i]);
-                    }
-                    rc=new ResourceCollection(resources);
+                    origResources = ((ResourceCollection)jwac.getBaseResource()).getResources();
+                    origSize = origResources.length;
                 }
                 else
                 {
-                    int size = jwac.getOverlays().size()+1;
-                    Resource[] resources = new Resource[size];
-                    _unpackedOverlays = new Resource[size-1];
-                    resources[0] = jwac.getBaseResource();
-                    for(int i=1; i<size; i++)
-                    {
-                        if (jwac.getUnpackOverlays())
-                        {
-                            resources[i] = unpackOverlay(context,jwac.getOverlays().get(i-1));
-                            _unpackedOverlays[i-1] = resources[i];
-                        }
-                        else
-                            resources[i] = jwac.getOverlays().get(i-1);
-                        
-                        Log.info("Adding overlay: " + resources[i]);
-                    }
-                    rc=new ResourceCollection(resources);
+                    origResources = new Resource[1];
+                    origResources[0] = jwac.getBaseResource();
+                    origSize = 1;
                 }
             }
+            
+            int overlaySize = jwac.getOverlays().size();
+            Resource[] newResources = new Resource[origSize + overlaySize];
 
-            jwac.setBaseResource(rc);
+            int offset = 0;
+            if (origSize > 0)
+            {
+                if (jwac.getBaseResourceFirst())
+                {
+                    System.arraycopy(origResources,0,newResources,0,origSize);
+
+                    offset = origSize;
+                }
+                else
+                {
+                    System.arraycopy(origResources,0,newResources,overlaySize,origSize);
+                }
+            }
+            
+            _unpackedOverlays = new Resource[overlaySize];
+            List<Resource> overlays = jwac.getOverlays();
+            for (int idx=0, newIdx; idx<overlaySize; idx++)
+            {
+                newIdx = idx+offset;
+                
+                if (jwac.getUnpackOverlays())
+                {
+                    newResources[newIdx] = unpackOverlay(context, overlays.get(idx));
+                    _unpackedOverlays[idx] = newResources[newIdx];
+                }
+                else
+                {
+                    newResources[newIdx] = overlays.get(idx);
+                }
+
+                Log.info("Adding overlay: " + newResources[newIdx]);
+            }
+            
+            jwac.setBaseResource(new ResourceCollection(newResources));
         }
         super.preConfigure(context);
     }
