@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/jmxwsdemo.css" />
+        <link rel="stylesheet" type="text/css" href="css/table.css" />
+        <link type="text/css" href="css/ui-darkness/jquery-ui-1.8.7.custom.css" rel="Stylesheet" />
+        <script type="text/javascript" src="js/jquery-1.4.4.min.js">
+        </script>
+        <script type="text/javascript" src="js/jquery-ui-1.8.7.custom.min.js">
+        </script>
+        <script type="text/javascript" src="js/jquery-ui-1.8.7.custom.min.js">
+        </script>
+        <script type="text/javascript" src="js/jquery.dataTables.js">
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+            
+                // Navigation DropDown starts here
+                $("ul.subnav").parent().append("<span></span>"); //Only shows drop down trigger when js is enabled (Adds empty span tag after ul.subnav*)
+                $("ul.topnav li span").click(function(){ //When trigger is clicked...
+                    //Following events are applied to the subnav itself (moving subnav up and down)
+                    $(this).parent().find("ul.subnav").slideDown('fast').show(); //Drop down the subnav on click
+                    $(this).parent().hover(function(){
+                    }, function(){
+                        $(this).parent().find("ul.subnav").slideUp('slow'); //When the mouse hovers out of the subnav, move it back up
+                    });
+                    //Following events are applied to the trigger (Hover events for the trigger)
+                }).hover(function(){
+                    $(this).addClass("subhover"); //On hover over, add class "subhover"
+                }, function(){ //On Hover Out
+                    $(this).removeClass("subhover"); //On hover out, remove class "subhover"
+                });
+                // Navigation DropDown ends here
+                
+                $.ajax({
+                    url: "ws/nodes",
+                    dataType: "json",
+                    success: function(json){
+                        var aaData = [];
+                        if (json.nodes.name) {
+                            aaData = [[json.nodes.name, json.nodes.jettyVersion, json.nodes.threadCount + "/" + json.nodes.peakThreadCount, json.nodes.heapUsed, json.nodes.heapCommitted, json.nodes.heapMax]];
+                        }
+                        else {
+                            for (var i = 0; i < json.nodes.length; i++) {
+                                aaData[i] = [json.nodes[i].name, json.nodes[i].jettyVersion, json.nodes[i].threadCount + "/" + json.nodes[i].peakThreadCount, json.nodes[i].heapUsed, json.nodes[i].heapCommitted, json.nodes[i].heapMax];
+                            }
+                        }
+                        $.fn.writeNodeTable(aaData);
+                    },
+                    error: function(){
+                        alert("Error getting nodes!");
+                    }
+                });
+                
+                $.fn.writeNodeTable = function(aaData){
+                    $('#table_nodes').dataTable({
+                        "bJQueryUI": true,
+                        "aaData": aaData,
+                        "sPaginationType": "full_numbers"
+                    });
+                }
+                
+            });
+        </script>
+    </head>
+    <div id=header>
+        <ul class="topnav">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                <a href="memory.html">Memory</a>
+                <ul class="subnav">
+                    <li>
+                        <a href="#">Heap</a>
+                    </li>
+                    <li>
+                        <a href="#">other</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Context</a>
+                <ul class="subnav">
+                    <li>
+                        <a href="#">Sub Nav Link</a>
+                    </li>
+                    <li>
+                        <a href="#">Sub Nav Link</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">About</a>
+            </li>
+        </ul>
+    </div>
+    <div id=content>
+        <table cellpadding="0" cellspacing="0" border="0" class="display" id="table_nodes">
+            <thead>
+                <tr>
+                    <th>
+                        Node Name
+                    </th>
+                    <th>
+                        Jetty Version
+                    </th>
+                    <th>
+                        Thread Count (current/max)
+                    </th>
+                    <th>
+                        Heap Used
+                    </th>
+                    <th>
+                        Heap Committed
+                    </th>
+                    <th>
+                        Heap Max
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Row 1 Data 1
+                    </td>
+                    <td>
+                        Row 1 Data 2
+                    </td>
+                    <td>
+                        Row 1 Data 3
+                    </td>
+                    <td>
+                        Row 1 Data 4
+                    </td>
+                    <td>
+                        Row 1 Data 5
+                    </td>
+                    <td>
+                        Row 1 Data 6
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</html>

@@ -19,14 +19,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.util.URIUtil;
 import org.eclipse.jetty.util.log.Log;
@@ -39,7 +38,6 @@ import org.eclipse.jetty.webapp.MetaInfConfiguration;
 import org.eclipse.jetty.webapp.TagLibConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
-import org.eclipse.jetty.annotations.AnnotationConfiguration;
 
 /**
  * JettyWebAppContext
@@ -62,8 +60,18 @@ public class JettyWebAppContext extends WebAppContext
     private List<File> classpathFiles;
     private String jettyEnvXml;
     private List<Resource> overlays;
+    
+    /**
+     * @deprecated The value of this parameter will be ignored by the plugin. Overlays will always be unpacked.
+     */
     private boolean unpackOverlays;
-    private boolean baseResourceFirst = true;
+
+    /**
+     * @deprecated The value of this parameter will be ignored by the plugin. This option will be always disabled. 
+     */
+    private boolean copyWebInf;
+
+    private boolean baseAppFirst = true;
 
     public JettyWebAppContext ()
     throws Exception
@@ -80,6 +88,8 @@ public class JettyWebAppContext extends WebAppContext
                 new JettyWebXmlConfiguration(),
                 new TagLibConfiguration()
         });
+        // Turn off copyWebInf option as it is not applicable for plugin.
+        super.setCopyWebInf(false);
     }
     
     public boolean getUnpackOverlays()
@@ -139,15 +149,29 @@ public class JettyWebAppContext extends WebAppContext
     }
     
     /* ------------------------------------------------------------ */
-    public void setBaseResourceFirst(boolean value)
+    @Override
+    public void setCopyWebInf(boolean value)
     {
-        baseResourceFirst = value;
+        copyWebInf = value;
     }
 
     /* ------------------------------------------------------------ */
-    public boolean getBaseResourceFirst()
+    @Override
+    public boolean isCopyWebInf()
     {
-        return baseResourceFirst;
+        return copyWebInf;
+    }
+
+    /* ------------------------------------------------------------ */
+    public void setBaseAppFirst(boolean value)
+    {
+        baseAppFirst = value;
+    }
+
+    /* ------------------------------------------------------------ */
+    public boolean getBaseAppFirst()
+    {
+        return baseAppFirst;
     }
 
     /* ------------------------------------------------------------ */

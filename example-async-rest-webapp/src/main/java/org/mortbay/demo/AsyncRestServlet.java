@@ -16,22 +16,13 @@ package org.mortbay.demo;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,7 +44,12 @@ import org.eclipse.jetty.util.ajax.JSON;
  */
 public class AsyncRestServlet extends AbstractRestServlet
 {
-    final static String RESULTS_ATTR = "org.mortbay.demo.client";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -552089975952264828L;
+	
+	final static String RESULTS_ATTR = "org.mortbay.demo.client";
     final static String DURATION_ATTR = "org.mortbay.demo.duration";
     final static String START_ATTR = "org.mortbay.demo.start";
 
@@ -76,12 +72,13 @@ public class AsyncRestServlet extends AbstractRestServlet
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         Long start=System.nanoTime();
         
         // resumed request: either we got all the results, or we timed out
-        Queue<Map<String, String>> results = (Queue<Map<String, String>>) request.getAttribute(RESULTS_ATTR);
+        @SuppressWarnings("unchecked")
+		Queue<Map<String, String>> results = (Queue<Map<String, String>>) request.getAttribute(RESULTS_ATTR);
         
         if (results==null)
         {
@@ -158,15 +155,16 @@ public class AsyncRestServlet extends AbstractRestServlet
         // create an asynchronous HTTP exchange
         ContentExchange exchange = new ContentExchange()
         {
-            protected void onResponseComplete() throws IOException
+            @SuppressWarnings("unchecked")
+			protected void onResponseComplete() throws IOException
             {
                 // extract auctions from the results
-                Map query = (Map) JSON.parse(this.getResponseContent());
+                Map<String, Object[]> query = (Map<String, Object[]>) JSON.parse(this.getResponseContent());
                 Object[] auctions = (Object[]) query.get("Item");
                 if (auctions != null)
                 {
                     for (Object o : auctions)
-                        results.add((Map) o);
+                        results.add((Map<String, String>) o);
                 }
 
                 doCount();

@@ -72,6 +72,8 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
 
     public void preConfigure(WebAppContext context) throws Exception
     {
+        super.preConfigure(context);
+
         _originalResourceBase = context.getBaseResource();
         JettyWebAppContext jwac = (JettyWebAppContext)context;
 
@@ -102,7 +104,7 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
             int offset = 0;
             if (origSize > 0)
             {
-                if (jwac.getBaseResourceFirst())
+                if (jwac.getBaseAppFirst())
                 {
                     System.arraycopy(origResources,0,newResources,0,origSize);
 
@@ -114,28 +116,19 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
                 }
             }
             
+            // Overlays are always unpacked
             _unpackedOverlays = new Resource[overlaySize];
             List<Resource> overlays = jwac.getOverlays();
-            for (int idx=0, newIdx; idx<overlaySize; idx++)
+            for (int idx=0; idx<overlaySize; idx++)
             {
-                newIdx = idx+offset;
-                
-                if (jwac.getUnpackOverlays())
-                {
-                    newResources[newIdx] = unpackOverlay(context, overlays.get(idx));
-                    _unpackedOverlays[idx] = newResources[newIdx];
-                }
-                else
-                {
-                    newResources[newIdx] = overlays.get(idx);
-                }
+                _unpackedOverlays[idx] = unpackOverlay(context, overlays.get(idx));
+                 newResources[idx+offset] = _unpackedOverlays[idx];
 
-                Log.info("Adding overlay: " + newResources[newIdx]);
+                Log.info("Adding overlay: " + _unpackedOverlays[idx]);
             }
             
             jwac.setBaseResource(new ResourceCollection(newResources));
         }
-        super.preConfigure(context);
     }
     
     public void postConfigure(WebAppContext context) throws Exception
@@ -149,7 +142,7 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
         JettyWebAppContext jwac = (JettyWebAppContext)context;
         
         //remove the unpacked wars
-        if (jwac.getUnpackOverlays() && _unpackedOverlays != null && _unpackedOverlays.length>0)
+        if (_unpackedOverlays != null && _unpackedOverlays.length>0)
         {
             try
             {
