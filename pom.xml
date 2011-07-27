@@ -133,18 +133,6 @@
     <module>jetty-monitor</module>
   </modules>
   <profiles>
-    
-    <profile>
-      <!-- 
-        * This enabled deb and rpm distributions, you will need additional packages installed in order 
-        * for the unix-maven-plugin to work.  At the least you need fakeroot and rpm packages.
-      -->
-      <!--id>unix-distributions</id-->
-      <id>codehaus-release</id>
-      <modules>
-        <module>jetty-unix</module>
-      </modules>
-    </profile>
     <profile>
       <id>jetty-snapshot-repo</id>
       <repositories>
