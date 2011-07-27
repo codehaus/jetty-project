@@ -9,10 +9,20 @@
 	<artifactId>dist-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Jetty :: Distribution :: Parent</name>
-	<modules>
-	  <module>jetty-deb</module>
-	  <module>jetty-rpm</module>
-	</modules>
+	<profiles>
+	  <profile>
+	    <id>linux-packaging</id>
+	    <activation>
+	      <os>
+	        <name>Linux</name>
+	      </os>
+	    </activation>
+	    <modules>
+	      <module>jetty-deb</module>
+	      <module>jetty-rpm</module>
+	    </modules>
+	   </profile>
+	</profiles>
 	<repositories>
     <repository>
       <id>googlecode.lambdaj</id>
