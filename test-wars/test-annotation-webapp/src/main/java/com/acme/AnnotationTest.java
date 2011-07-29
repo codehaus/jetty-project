@@ -207,8 +207,8 @@ public class AnnotationTest extends HttpServlet
             response.setContentType("text/html");
             ServletOutputStream out = response.getOutputStream();
             out.println("<html>");
-            out.println("<h1>Results</h1>");
             out.println("<body>");
+            out.println("<h1>Results</h1>");
 
             out.println("<h2>Init Params from Annotation</h2>");
             out.println("<pre>");
@@ -231,6 +231,7 @@ public class AnnotationTest extends HttpServlet
                                              "com.acme.MultiPartTest", 
                                              "com.acme.FragmentServlet", 
                                              "com.acme.TestListener",
+                                             "com.acme.SecuredServlet",
                                              "com.acme.Bar");
              out.println("<h2>@ContainerInitializer</h2>");
              out.println("<pre>");
@@ -300,13 +301,23 @@ public class AnnotationTest extends HttpServlet
             out.println("</pre>");
             out.println("<br/><b>Result: "+txResult+"</b>");
             out.println("<br/><b>JNDI Lookup Result: "+txLookupResult+"</b>");
-            out.println("<h2>Roles</h2>");
+            out.println("<h2>DeclaresRoles</h2>");
             out.println("<p>Login as user \"admin\" with password \"admin\" when prompted after clicking the button below to test @DeclareRoles annotation</p>");
             String context = request.getContextPath();
             if (!context.endsWith("/"))
                 context += "/";
             context += "role/";
             out.println("<form action="+context+" method=\"post\"><button type=\"submit\">Test Role Annotations</button></form>");
+
+            out.println("<h2>ServletSecurity</h2>");
+            out.println("<p>Login as user \"admin\" with password \"admin\" when prompted after clicking the button below to test @ServletSecurity annotation</p>");
+            context = request.getContextPath();
+            if (!context.endsWith("/"))
+                context += "/";
+            context += "sec/foo";
+            out.println("<form action="+context+" method=\"post\"><button type=\"submit\">Test ServletSecurity Annotation</button></form>");
+
+
             out.println("</body>");            
             out.println("</html>");
             out.flush();

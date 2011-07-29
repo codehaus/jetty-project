@@ -1,4 +1,5 @@
 jetty@codehaus 8.0.0.RC0-SNAPSHOT
+ + 353285 ServletSecurity annotation ignored
 
 jetty@codehaus 7.5.0-SNAPSHOT
  + JETTY-1393 add jetty-jboss session manager methods
