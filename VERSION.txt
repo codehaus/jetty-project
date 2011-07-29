@@ -1,4 +1,5 @@
 jetty@codehaus 7.5.0-SNAPSHOT
+ + JETTY-991 Implement run-forked mojo for jetty-maven-plugin
  + JETTY-1383 Provide Debian and RPM binary distribution of Core Jetty 
  + JETTY-1393 add jetty-jboss session manager methods
  + JETTY-1394 Do not use deprecated method File.toURL()
