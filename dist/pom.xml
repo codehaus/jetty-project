@@ -24,9 +24,9 @@
 	   </profile>
 	</profiles>
 	<repositories>
-    <repository>
-      <id>googlecode.lambdaj</id>
-      <url>http://functionaljava.googlecode.com/svn/maven</url>
-    </repository>
-  </repositories>
+      <repository>
+        <id>googlecode.lambdaj</id>
+        <url>http://functionaljava.googlecode.com/svn/maven</url>
+      </repository>
+    </repositories>
 </project>
