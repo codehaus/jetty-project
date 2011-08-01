@@ -17,16 +17,16 @@
 	        <name>Linux</name>
 	      </os>
 	    </activation>
-	    <modules>
+	    <!-- modules>
 	      <module>jetty-deb</module>
 	      <module>jetty-rpm</module>
-	    </modules>
+	    </modules-->
 	   </profile>
 	</profiles>
-	<repositories>
-      <repository>
-        <id>googlecode.lambdaj</id>
-        <url>http://functionaljava.googlecode.com/svn/maven</url>
-      </repository>
-    </repositories>
+	<pluginRepositories>
+      <pluginRepository>
+        <id>codehaus-mojo-plugin-snapshots</id>
+        <url>http://nexus.codehaus.org/content/groups/public</url>
+      </pluginRepository>
+    </pluginRepositories>
 </project>

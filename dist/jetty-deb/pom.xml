@@ -13,7 +13,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>unix-maven-plugin</artifactId>
-        <version>1.0-alpha-5</version>
+        <version>1.0-alpha-6-SNAPSHOT</version>
         <extensions>true</extensions>
         <configuration>
           <contact>Webtide LLC</contact>
@@ -26,9 +26,9 @@
           </deb>
           <assembly>
             <extractArtifact>
-              <artifact>org.eclipse.jetty:jetty-distribution:zip</artifact>
+              <artifact>org.mortbay.jetty:jetty-hightide:zip</artifact>
               <to>/opt/jetty</to>
-              <pattern>/jetty-distribution-${project.version}(.*)</pattern>
+              <pattern>/jetty-hightide-${project.version}(.*)</pattern>
               <replacement>$1</replacement>
              </extractArtifact>
           </assembly>
@@ -39,8 +39,8 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-distribution</artifactId>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-hightide</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
     </dependency>    
