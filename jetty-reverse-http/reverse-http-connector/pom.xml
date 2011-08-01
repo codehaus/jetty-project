@@ -11,6 +11,19 @@
   <packaging>jar</packaging>
   <name>Jetty :: Reverse HTTP :: Connector</name>
 
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <configuration>          
+	        <classpathScope>test</classpathScope>
+                <mainClass>org.mortbay.jetty.rhttp.connector.TestReverseServer</mainClass>
+              </configuration>
+          </plugin>
+      </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.mortbay.jetty</groupId>

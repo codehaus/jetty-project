@@ -79,4 +79,19 @@ public class JettyStopMojo extends AbstractMojo
         }
     }
 
+    public int getStopPort() {
+        return stopPort;
+    }
+
+    public void setStopPort(int stopPort) {
+        this.stopPort = stopPort;
+    }
+
+    public String getStopKey() {
+        return stopKey;
+    }
+
+    public void setStopKey(String stopKey) {
+        this.stopKey = stopKey;
+    }
 }

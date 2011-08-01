@@ -147,47 +147,6 @@ public class JettyRunMojo extends AbstractJettyMojo
     private List<File> extraScanTargets;
     
 
-    public String getWebXml()
-    {
-        return this.webXml;
-    }
-    
-   
-
-    public File getClassesDirectory()
-    {
-        return this.classesDirectory;
-    }
-
-    public File getWebAppSourceDirectory()
-    {
-        return this.webAppSourceDirectory;
-    }
-
-   
-    
-    public void setClassPathFiles (List<File> list)
-    {
-        this.classPathFiles = new ArrayList<File>(list);
-    }
-
-    public List<File> getClassPathFiles ()
-    {
-        return this.classPathFiles;
-    }
-
-
-    public List<File> getExtraScanTargets ()
-    {
-        return this.extraScanTargets;
-    }
-    
-    public void setExtraScanTargets(List<File> list)
-    {
-        this.extraScanTargets = list;
-    }
-    
-    
     
     /**
      * Verify the configuration given in the pom.
@@ -587,5 +546,96 @@ public class JettyRunMojo extends AbstractJettyMojo
     public void execute() throws MojoExecutionException, MojoFailureException
     {
         super.execute();
+    }
+    
+
+    public String getWebXml()
+    {
+        return this.webXml;
+    }
+
+    public void setWebXml(String webXml) {
+        this.webXml = webXml;
+    }
+
+    public File getClassesDirectory()
+    {
+        return this.classesDirectory;
+    }
+
+    public void setClassesDirectory(File classesDirectory) {
+        this.classesDirectory = classesDirectory;
+    }
+
+    public File getWebAppSourceDirectory()
+    {
+        return this.webAppSourceDirectory;
+    }
+
+    public void setWebAppSourceDirectory(File webAppSourceDirectory) {
+        this.webAppSourceDirectory = webAppSourceDirectory;
+    }
+
+    public void setClassPathFiles (List<File> list)
+    {
+        this.classPathFiles = new ArrayList<File>(list);
+    }
+
+    public List<File> getClassPathFiles ()
+    {
+        return this.classPathFiles;
+    }
+
+
+    public List<File> getExtraScanTargets ()
+    {
+        return this.extraScanTargets;
+    }
+    
+    public void setExtraScanTargets(List<File> list)
+    {
+        this.extraScanTargets = list;
+    }
+    
+    
+
+    public boolean isUseTestClasspath() {
+        return useTestClasspath;
+    }
+
+    public void setUseTestClasspath(boolean useTestClasspath) {
+        this.useTestClasspath = useTestClasspath;
+    }
+
+    public File getTestClassesDirectory() {
+        return testClassesDirectory;
+    }
+
+    public void setTestClassesDirectory(File testClassesDirectory) {
+        this.testClassesDirectory = testClassesDirectory;
+    }
+
+    public List getPluginArtifacts() {
+        return pluginArtifacts;
+    }
+
+    public void setPluginArtifacts(List pluginArtifacts) {
+        this.pluginArtifacts = pluginArtifacts;
+    }
+
+    public File[] getScanTargets() {
+        return scanTargets;
+    }
+
+    public void setScanTargets(File[] scanTargets) {
+        this.scanTargets = scanTargets;
+    }
+
+    public ScanTargetPattern[] getScanTargetPatterns() {
+        return scanTargetPatterns;
+    }
+
+    public void setScanTargetPatterns(ScanTargetPattern[] scanTargetPatterns) {
+        this.scanTargetPatterns = scanTargetPatterns;
     }
 }

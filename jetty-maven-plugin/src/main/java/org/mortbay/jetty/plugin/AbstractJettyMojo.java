@@ -175,7 +175,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     
     /**
-     * Location of a jetty xml configuration file whose contents 
+     * Comma separated list of a jetty xml configuration files whose contents 
      * will be applied before any plugin configuration. Optional.
      * @parameter
      */
@@ -247,7 +247,8 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     public String PORT_SYSPROPERTY = "jetty.port";
     
-   
+
+    public abstract void restartWebApp(boolean reconfigureScanner) throws Exception;
 
     public abstract void checkPomConfiguration() throws MojoExecutionException;
     
@@ -257,144 +258,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     public abstract void finishConfigurationBeforeStart() throws Exception;
     
-    
-    public MavenProject getProject()
-    {
-        return this.project;
-    }
-    
-    public File getTmpDirectory()
-    {
-        return this.tmpDirectory;
-    }
 
-    /**
-     * @return Returns the contextPath.
-     */
-    public String getContextPath()
-    {
-        return this.contextPath;
-    }
-
-    /**
-     * @return Returns the scanIntervalSeconds.
-     */
-    public int getScanIntervalSeconds()
-    {
-        return this.scanIntervalSeconds;
-    }
-
-    /**
-     * @return returns the path to the systemPropertiesFile
-     */
-    public File getSystemPropertiesFile()
-    {
-        return this.systemPropertiesFile;
-    }
-    
-    public void setSystemPropertiesFile(File file) throws Exception
-    {
-        this.systemPropertiesFile = file;
-        FileInputStream propFile = new FileInputStream(systemPropertiesFile);
-        Properties properties = new Properties();
-        properties.load(propFile);
-        
-        if (this.systemProperties == null )
-            this.systemProperties = new SystemProperties();
-        
-        for (Enumeration keys = properties.keys(); keys.hasMoreElements();  )
-        {
-            String key = (String)keys.nextElement();
-            if ( ! systemProperties.containsSystemProperty(key) )
-            {
-                SystemProperty prop = new SystemProperty();
-                prop.setKey(key);
-                prop.setValue(properties.getProperty(key));
-                
-                this.systemProperties.setSystemProperty(prop);
-            }
-        }
-        
-    }
-    
-    public void setSystemProperties(SystemProperties systemProperties)
-    {
-        if (this.systemProperties == null)
-            this.systemProperties = systemProperties;
-        else
-        {
-            Iterator itor = systemProperties.getSystemProperties().iterator();
-            while (itor.hasNext())
-            {
-                SystemProperty prop = (SystemProperty)itor.next();
-                this.systemProperties.setSystemProperty(prop);
-            }   
-        }
-    }
-
-    public List<File> getJettyXmlFiles()
-    {
-        if ( this.jettyConfig == null )
-        {
-            return null;
-        }
-        
-        List<File> jettyXmlFiles = new ArrayList<File>();
-        
-        if ( this.jettyConfig.indexOf(',') == -1 )
-        {
-            jettyXmlFiles.add( new File( this.jettyConfig ) );
-        }
-        else
-        {
-            String[] files = this.jettyConfig.split(",");
-            
-            for ( String file : files )
-            {
-                jettyXmlFiles.add( new File(file) );
-            }
-        }
-        
-        return jettyXmlFiles;
-    }
-
-
-    public JettyServer getServer ()
-    {
-        return this.server;
-    }
-
-    public void setServer (JettyServer server)
-    {
-        this.server = server;
-    }
-
-
-    public void setScanList (ArrayList<File> list)
-    {
-        this.scanList = new ArrayList<File>(list);
-    }
-
-    public ArrayList<File> getScanList ()
-    {
-        return this.scanList;
-    }
-
-
-    public void setScannerListeners (ArrayList<Scanner.BulkListener> listeners)
-    {
-        this.scannerListeners = new ArrayList<Scanner.BulkListener>(listeners);
-    }
-
-    public ArrayList getScannerListeners ()
-    {
-        return this.scannerListeners;
-    }
-
-    public Scanner getScanner ()
-    {
-        return scanner;
-    }
 
     public void execute() throws MojoExecutionException, MojoFailureException
     {
@@ -504,7 +368,6 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     }
     
     
-    public abstract void restartWebApp(boolean reconfigureScanner) throws Exception;
 
     /**
      * Subclasses should invoke this to setup basic info
@@ -638,5 +501,261 @@ public abstract class AbstractJettyMojo extends AbstractMojo
             return f;
         
         return null;
+    }
+
+
+    public Scanner getScanner ()
+    {
+        return scanner;
+    }
+    
+    public MavenProject getProject()
+    {
+        return this.project;
+    }
+
+    public void setProject(MavenProject project) {
+        this.project = project;
+    }
+
+    public File getTmpDirectory()
+    {
+        return this.tmpDirectory;
+    }
+
+    public void setTmpDirectory(File tmpDirectory) {
+        this.tmpDirectory = tmpDirectory;
+    }
+
+    /**
+     * @return Returns the contextPath.
+     */
+    public String getContextPath()
+    {
+        return this.contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
+    /**
+     * @return Returns the scanIntervalSeconds.
+     */
+    public int getScanIntervalSeconds()
+    {
+        return this.scanIntervalSeconds;
+    }
+
+    public void setScanIntervalSeconds(int scanIntervalSeconds) {
+        this.scanIntervalSeconds = scanIntervalSeconds;
+    }
+
+    /**
+     * @return returns the path to the systemPropertiesFile
+     */
+    public File getSystemPropertiesFile()
+    {
+        return this.systemPropertiesFile;
+    }
+    
+    public void setSystemPropertiesFile(File file) throws Exception
+    {
+        this.systemPropertiesFile = file;
+        FileInputStream propFile = new FileInputStream(systemPropertiesFile);
+        Properties properties = new Properties();
+        properties.load(propFile);
+        
+        if (this.systemProperties == null )
+            this.systemProperties = new SystemProperties();
+        
+        for (Enumeration keys = properties.keys(); keys.hasMoreElements();  )
+        {
+            String key = (String)keys.nextElement();
+            if ( ! systemProperties.containsSystemProperty(key) )
+            {
+                SystemProperty prop = new SystemProperty();
+                prop.setKey(key);
+                prop.setValue(properties.getProperty(key));
+                
+                this.systemProperties.setSystemProperty(prop);
+            }
+        }
+        
+    }
+    
+    public void setSystemProperties(SystemProperties systemProperties)
+    {
+        if (this.systemProperties == null)
+            this.systemProperties = systemProperties;
+        else
+        {
+            Iterator itor = systemProperties.getSystemProperties().iterator();
+            while (itor.hasNext())
+            {
+                SystemProperty prop = (SystemProperty)itor.next();
+                this.systemProperties.setSystemProperty(prop);
+            }   
+        }
+    }
+
+    public SystemProperties getSystemProperties ()
+    {
+        return this.systemProperties;
+    }
+
+    public List<File> getJettyXmlFiles()
+    {
+        if ( this.jettyConfig == null )
+        {
+            return null;
+        }
+        
+        List<File> jettyXmlFiles = new ArrayList<File>();
+        
+        if ( this.jettyConfig.indexOf(',') == -1 )
+        {
+            jettyXmlFiles.add( new File( this.jettyConfig ) );
+        }
+        else
+        {
+            String[] files = this.jettyConfig.split(",");
+            
+            for ( String file : files )
+            {
+                jettyXmlFiles.add( new File(file) );
+            }
+        }
+        
+        return jettyXmlFiles;
+    }
+
+
+    public JettyServer getServer ()
+    {
+        return this.server;
+    }
+
+    public void setServer (JettyServer server)
+    {
+        this.server = server;
+    }
+
+
+    public void setScanList (ArrayList<File> list)
+    {
+        this.scanList = new ArrayList<File>(list);
+    }
+
+    public ArrayList<File> getScanList ()
+    {
+        return this.scanList;
+    }
+
+
+    public void setScannerListeners (ArrayList<Scanner.BulkListener> listeners)
+    {
+        this.scannerListeners = new ArrayList<Scanner.BulkListener>(listeners);
+    }
+
+    public ArrayList getScannerListeners ()
+    {
+        return this.scannerListeners;
+    }
+
+    public JettyWebAppContext getWebAppConfig() {
+        return webAppConfig;
+    }
+
+    public void setWebAppConfig(JettyWebAppContext webAppConfig) {
+        this.webAppConfig = webAppConfig;
+    }
+
+    public RequestLog getRequestLog() {
+        return requestLog;
+    }
+
+    public void setRequestLog(RequestLog requestLog) {
+        this.requestLog = requestLog;
+    }
+
+    public LoginService[] getLoginServices() {
+        return loginServices;
+    }
+
+    public void setLoginServices(LoginService[] loginServices) {
+        this.loginServices = loginServices;
+    }
+
+    public ContextHandler[] getContextHandlers() {
+        return contextHandlers;
+    }
+
+    public void setContextHandlers(ContextHandler[] contextHandlers) {
+        this.contextHandlers = contextHandlers;
+    }
+
+    public Connector[] getConnectors() {
+        return connectors;
+    }
+
+    public void setConnectors(Connector[] connectors) {
+        this.connectors = connectors;
+    }
+
+    public String getReload() {
+        return reload;
+    }
+
+    public void setReload(String reload) {
+        this.reload = reload;
+    }
+
+    public String getJettyConfig() {
+        return jettyConfig;
+    }
+
+    public void setJettyConfig(String jettyConfig) {
+        this.jettyConfig = jettyConfig;
+    }
+
+    public String getWebAppXml() {
+        return webAppXml;
+    }
+
+    public void setWebAppXml(String webAppXml) {
+        this.webAppXml = webAppXml;
+    }
+
+    public boolean isSkip() {
+        return skip;
+    }
+
+    public void setSkip(boolean skip) {
+        this.skip = skip;
+    }
+
+    public boolean isDaemon() {
+        return daemon;
+    }
+
+    public void setDaemon(boolean daemon) {
+        this.daemon = daemon;
+    }
+
+    public String getStopKey() {
+        return stopKey;
+    }
+
+    public void setStopKey(String stopKey) {
+        this.stopKey = stopKey;
+    }
+
+    public int getStopPort() {
+        return stopPort;
+    }
+
+    public void setStopPort(int stopPort) {
+        this.stopPort = stopPort;
     }
 }

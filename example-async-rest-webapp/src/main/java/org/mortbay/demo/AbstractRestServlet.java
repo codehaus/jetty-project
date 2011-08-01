@@ -15,32 +15,18 @@
 package org.mortbay.demo;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.jetty.client.ContentExchange;
-import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationSupport;
-import org.eclipse.jetty.util.ajax.JSON;
 
 /**
  * Servlet implementation class AsyncRESTServlet.
@@ -54,7 +40,12 @@ import org.eclipse.jetty.util.ajax.JSON;
  */
 public class AbstractRestServlet extends HttpServlet
 {
-    protected final static String __DEFAULT_APPID = "Webtide81-adf4-4f0a-ad58-d91e41bbe85";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -9143663884318083667L;
+	
+	protected final static String __DEFAULT_APPID = "Webtide81-adf4-4f0a-ad58-d91e41bbe85";
     protected final static String STYLE = 
         "<style type='text/css'>"+
         "  img.thumb:hover {height:50px}"+

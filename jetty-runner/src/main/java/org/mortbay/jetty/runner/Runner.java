@@ -73,6 +73,7 @@ public class Runner
             };
 
     protected Server _server;
+    protected Monitor _monitor;
     protected URLClassLoader _classLoader;
     protected List<URL> _classpath=new ArrayList<URL>();
     protected ContextHandlerCollection _contexts;
@@ -105,8 +106,10 @@ public class Runner
         System.err.println(" --log file                         - request log filename (with optional 'yyyy_mm_dd' wildcard");
         System.err.println(" --out file                         - info/warn/debug log filename (with optional 'yyyy_mm_dd' wildcard");
         System.err.println(" --port n                           - port to listen on (default 8080)");
+        System.err.println(" --stop-port n                      - port to listen for stop command");
+        System.err.println(" --stop-key n                       - security string for stop command (required if --stop-port is present)");
         System.err.println(" --jar file                         - a jar to be added to the classloader");
-        System.err.println("--jdbc classname properties jndiname - classname of XADataSource or driver; properties string; name to register in jndi");
+        System.err.println(" --jdbc classname properties jndiname - classname of XADataSource or driver; properties string; name to register in jndi");
         System.err.println(" --lib dir                          - a directory of jars to be added to the classloader");
         System.err.println(" --classes dir                      - a directory of classes to be added to the classloader");
         System.err.println(" --txFile                           - override properties file for Atomikos");
@@ -173,6 +176,8 @@ public class Runner
         String contextPath="/";
         boolean contextPathSet=false;
         int port=8080;
+        int stopPort=0;
+        String stopKey=null;
 
         boolean transactionManagerProcessed = false;
         boolean runnerServerInitialized = false;
@@ -181,6 +186,10 @@ public class Runner
         {
             if ("--port".equals(args[i]))
                 port=Integer.parseInt(args[++i]);
+            else if ("--stop-port".equals(args[i]))
+                stopPort=Integer.parseInt(args[++i]);
+            else if ("--stop-key".equals(args[i]))
+                stopKey=args[++i];
             else if ("--log".equals(args[i]))
                 _logFile=args[++i];
             else if ("--out".equals(args[i]))
@@ -365,7 +374,21 @@ public class Runner
             usage("No Contexts defined");
         _server.setStopAtShutdown(true);
         _server.setSendServerVersion(true);
-        
+
+        switch ((stopPort > 0 ? 1 : 0) + (stopKey != null ? 2 : 0))
+        {
+            case 1:
+                usage("Must specify --stop-key when --stop-port is specified");
+                break;
+                
+            case 2:
+                usage("Must specify --stop-port when --stop-key is specified");
+                break;
+                
+            case 3:
+                _monitor = new Monitor(stopPort, stopKey);
+                break;
+        }
 
         if (_logFile!=null)
         {
@@ -444,6 +467,11 @@ public class Runner
 
     public void run() throws Exception
     {
+        if (_monitor != null)
+        {
+            _monitor.start();
+        }
+        
         _server.start();
         _server.join();
     }
