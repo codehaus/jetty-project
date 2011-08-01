@@ -3,6 +3,7 @@ jetty@codehaus 7.5.0-SNAPSHOT
  + JETTY-1383 Provide Debian and RPM binary distribution of Core Jetty 
  + JETTY-1393 add jetty-jboss session manager methods
  + JETTY-1394 Do not use deprecated method File.toURL()
+ + JETTY-1399 Add more setters for jetty-maven-plugin configuration parameters
  + JETTY-1401 migrate jetty-jmx-ws module
  + JETTY-1404 Allow configuring resource path precedence in jetty-maven-plugin
  + 352512 setup archetypes into jetty codehaus build
