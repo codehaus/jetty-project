@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.mortbay.jetty.dist</groupId>
@@ -18,24 +19,19 @@
         <configuration>
           <contact>Webtide LLC</contact>
           <contactEmail>jetty-dev@eclipse.org</contactEmail>
-          <name>Core Jetty ${project.version} Distribution</name>
-          <description>Jetty provides an Web server and javax.servlet container, plus support for Web Sockets, OSGi, JMX, JNDI, JASPI, AJP and many other integrations. These components are open source and available for commercial use and distribution.</description>
           <rpm>
             <group>Applications/Internet</group>
-          </rpm>
-          <!-- 
-          <assembly>
-            <extractArtifact>
-              <artifact>org.mortbay.jetty:jetty-hightide:zip</artifact>
-              <to>/opt/jetty</to>
-              <pattern>/jetty-hightide-${project.version}(.*)</pattern>
-              <replacement>$1</replacement>
-             </extractArtifact>
-          </assembly>
-          -->
+          </rpm>      
           <packages>
             <package>
               <id>default</id>
+              <name>Jetty ${project.version} Hightide Distribution</name>
+              <description>Jetty provides an Web server and
+                javax.servlet container, plus support for Web Sockets,
+                OSGi, JMX, JNDI, JASPI, AJP and many other integrations.
+                These components are open source and available for
+                commercial use and distribution.</description>
+              <architecture>x86_64</architecture>  
               <assembly>
                 <extractArtifact>
                   <artifact>org.mortbay.jetty:jetty-hightide:zip</artifact>
@@ -46,12 +42,14 @@
                     <include>jetty-hightide-*/contexts/javadoc.xml</include>
                     <exclude>jetty-hightide-*/javadoc</exclude>
                     <exclude>jetty-hightide-*/javadoc/**</exclude>
-                 </excludes>
-                 </extractArtifact>
+                  </excludes>
+                </extractArtifact>
               </assembly>
             </package>
             <package>
               <classifier>javadoc</classifier>
+              <name>Core Jetty ${project.version} Hightide Javadocs</name>
+              <description>Javadocs for Jetty.</description>
               <assembly>
                 <extractArtifact>
                   <artifact>org.mortbay.jetty:jetty-hightide:zip</artifact>
