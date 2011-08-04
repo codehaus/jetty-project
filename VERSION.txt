@@ -7,6 +7,7 @@ jetty@codehaus 7.5.0-SNAPSHOT
  + JETTY-1401 migrate jetty-jmx-ws module
  + JETTY-1404 Allow configuring resource path precedence in jetty-maven-plugin
  + 352512 setup archetypes into jetty codehaus build
+ + 353932 add file server archetype
  
 
 jetty@codehaus 7.4.4.v20110707
