@@ -131,6 +131,7 @@
     <module>jetty-webapp-verifier</module>
     <module>jetty-webapp-logging</module>
     <module>jetty-monitor</module>
+    <module>jetty-jmx-ws</module>
     <module>archetype</module>
     <module>dist</module>
   </modules>
