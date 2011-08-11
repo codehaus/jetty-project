@@ -6,6 +6,7 @@ jetty@codehaus 7.5.0-SNAPSHOT
  + JETTY-1399 Add more setters for jetty-maven-plugin configuration parameters
  + JETTY-1401 migrate jetty-jmx-ws module
  + JETTY-1404 Allow configuring resource path precedence in jetty-maven-plugin
+ + JETTY-1412 runner ignores log config from config
  + 352512 setup archetypes into jetty codehaus build
  + 353932 add file server archetype
  
