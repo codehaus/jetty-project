@@ -74,11 +74,11 @@
   </build>
 
   <dependencies>
-    <dependency>
+    <!-- dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
       <version>${jetty-version}</version>
-    </dependency>
+    </dependency -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-plus</artifactId>
@@ -89,11 +89,11 @@
       <artifactId>jetty-jndi</artifactId>
       <version>${jetty-version}</version>
     </dependency>
-    <dependency>
+    <!--  dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
       <version>${jetty-version}</version>
-    </dependency>
+    </dependency -->
     <dependency>
       <groupId>org.glassfish.web</groupId>
       <artifactId>jsp-impl</artifactId>

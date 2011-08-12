@@ -8,9 +8,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
   <groupId>org.mortbay.jetty.archetype</groupId>
-  <artifactId>jetty-archetype-assembler</artifactId>
+  <artifactId>jetty-archetype-fileserver</artifactId>
   <packaging>maven-archetype</packaging>
-  <name>Jetty :: Archetype :: App Assembler</name>
+  <name>Jetty :: Archetype :: File Server</name>
 
 	<properties>
 	<jetty-version>7.5.0-SNAPSHOT</jetty-version>

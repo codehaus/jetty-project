@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<archetype-descriptor xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd" name="jetty-archetype-assembler"
+<archetype-descriptor xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd" name="springmvc-archetype"
     xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <requiredProperties>
-    <requiredProperty key="jetty-version">
-        <defaultValue>7.4.5.v20110725</defaultValue>
-    </requiredProperty>  
-  </requiredProperties>
   <fileSets>
     <fileSet filtered="true" encoding="UTF-8">
       <directory></directory>
@@ -20,13 +15,14 @@
         <include>**/*.java</include>
       </includes>
     </fileSet>
+
     <fileSet filtered="true" encoding="UTF-8">
       <directory>src/main/webapp</directory>
       <includes>
         <include>**/*.html</include>
         <include>**/*.jsp</include>
         <include>**/*.xml</include>
-	    <include>**/*.tag</include>
+	<include>**/*.tag</include>
       </includes>
     </fileSet>
     <fileSet filtered="true" encoding="UTF-8">
@@ -34,12 +30,6 @@
       <includes>
         <include>**/*.xml</include>
         <include>**/*.properties</include>
-      </includes>
-    </fileSet>
-    <fileSet filtered="true" encoding="UTF-8">
-      <directory>META-INF/maven</directory>
-      <includes>
-        <include>archetype-metadata.xml</include>
       </includes>
     </fileSet>
     <fileSet encoding="UTF-8">

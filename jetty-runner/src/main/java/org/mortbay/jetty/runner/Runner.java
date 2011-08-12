@@ -260,7 +260,6 @@ public class Runner
                     }
 
                     //check that everything got configured, and if not, make the handlers
-
                     HandlerCollection handlers = (HandlerCollection) _server.getChildHandlerByClass(HandlerCollection.class);
                     if (handlers == null)
                     {
@@ -268,52 +267,61 @@ public class Runner
                         _server.setHandler(handlers);
                     }
                     
+                    //check if contexts already configured
                     _contexts = (ContextHandlerCollection) handlers.getChildHandlerByClass(ContextHandlerCollection.class);
                     if (_contexts == null)
                     {
                         _contexts = new ContextHandlerCollection();
+                        prependHandler(_contexts, handlers);
                     }
-
+                    
+                  
 
                     if (_enableStatsGathering)
                     {
-                        StatisticsHandler statsHandler = new StatisticsHandler();
-                        handlers.setHandlers(new Handler[]{statsHandler, _contexts, new DefaultHandler()});
-                        ServletContextHandler statsContext = new ServletContextHandler(_contexts, "/stats");
-                        statsContext.addServlet(new ServletHolder(new StatisticsServlet()), "/");
-                        statsContext.setSessionHandler(new SessionHandler());
-                        if (_statsPropFile != null)
+                        //if no stats handler already configured
+                        if (handlers.getChildHandlerByClass(StatisticsHandler.class) == null)
                         {
-                            HashLoginService loginService = new HashLoginService("StatsRealm", _statsPropFile);
-                            Constraint constraint = new Constraint();
-                            constraint.setName("Admin Only");
-                            constraint.setRoles(new String[]{"admin"});
-                            constraint.setAuthenticate(true);
+                            StatisticsHandler statsHandler = new StatisticsHandler();
+                            prependHandler(statsHandler,handlers);
+                            ServletContextHandler statsContext = new ServletContextHandler(_contexts, "/stats");
+                            statsContext.addServlet(new ServletHolder(new StatisticsServlet()), "/");
+                            statsContext.setSessionHandler(new SessionHandler());
+                            if (_statsPropFile != null)
+                            {
+                                HashLoginService loginService = new HashLoginService("StatsRealm", _statsPropFile);
+                                Constraint constraint = new Constraint();
+                                constraint.setName("Admin Only");
+                                constraint.setRoles(new String[]{"admin"});
+                                constraint.setAuthenticate(true);
 
-                            ConstraintMapping cm = new ConstraintMapping();
-                            cm.setConstraint(constraint);
-                            cm.setPathSpec("/*");
+                                ConstraintMapping cm = new ConstraintMapping();
+                                cm.setConstraint(constraint);
+                                cm.setPathSpec("/*");
 
-                            ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
-                            securityHandler.setLoginService(loginService);
-                            securityHandler.setConstraintMappings(Collections.singletonList(cm));
-                            securityHandler.setAuthenticator(new BasicAuthenticator());
-                            statsContext.setSecurityHandler(securityHandler);
+                                ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
+                                securityHandler.setLoginService(loginService);
+                                securityHandler.setConstraintMappings(Collections.singletonList(cm));
+                                securityHandler.setAuthenticator(new BasicAuthenticator());
+                                statsContext.setSecurityHandler(securityHandler);
+                            }
                         }
                     }
-                    else
+                   
+                    //ensure a DefaultHandler is present
+                    if (handlers.getChildHandlerByClass(DefaultHandler.class) == null)
                     {
-                        handlers.setHandlers(new Handler[]{_contexts, new DefaultHandler()});
+                        handlers.addHandler(new DefaultHandler());
                     }
-
-
-                    // check if log handler has been added
+                  
+                    //ensure a log handler is present
                     _logHandler = (RequestLogHandler)handlers.getChildHandlerByClass( RequestLogHandler.class );
                     if ( _logHandler == null )
                     {
                         _logHandler = new RequestLogHandler();
                         handlers.addHandler( _logHandler );
                     }
+                    
 
                     //check a connector is configured to listen on
                     Connector[] connectors = _server.getConnectors();
@@ -396,10 +404,24 @@ public class Runner
             requestLog.setExtended(false);
             _logHandler.setRequestLog(requestLog);
         }
-
-
+    }
+    
+    
+    protected void prependHandler (Handler handler, HandlerCollection handlers)
+    {
+        if (handler == null || handlers == null)
+            return;
+        
+       Handler[] existing = handlers.getChildHandlers();
+       Handler[] children = new Handler[existing.length + 1];
+       children[0] = handler;
+       System.arraycopy(existing, 0, children, 1, existing.length);
+       handlers.setHandlers(children);
     }
 
+    
+    
+    
     protected int configJDBC(String[] args,int i) throws Exception
     {
         String jdbcClass=null;

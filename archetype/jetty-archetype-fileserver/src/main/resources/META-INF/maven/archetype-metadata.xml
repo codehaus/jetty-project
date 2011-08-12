@@ -12,21 +12,13 @@
       <directory></directory>
       <includes>
         <include>README.md</include>
+        <include>index.html</include>
       </includes>
     </fileSet>
     <fileSet filtered="true" packaged="true" encoding="UTF-8">
       <directory>src/main/java</directory>
       <includes>
         <include>**/*.java</include>
-      </includes>
-    </fileSet>
-    <fileSet filtered="true" encoding="UTF-8">
-      <directory>src/main/webapp</directory>
-      <includes>
-        <include>**/*.html</include>
-        <include>**/*.jsp</include>
-        <include>**/*.xml</include>
-	    <include>**/*.tag</include>
       </includes>
     </fileSet>
     <fileSet filtered="true" encoding="UTF-8">
@@ -40,14 +32,6 @@
       <directory>META-INF/maven</directory>
       <includes>
         <include>archetype-metadata.xml</include>
-      </includes>
-    </fileSet>
-    <fileSet encoding="UTF-8">
-      <directory>src/main/webapp</directory>
-      <includes>
-        <include>**/*.MF</include>
-        <include>**/*.png</include>
-        <include>**/*.css</include>
       </includes>
     </fileSet>
     <fileSet filtered="true" packaged="true" encoding="UTF-8">
