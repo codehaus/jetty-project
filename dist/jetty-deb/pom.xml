@@ -12,9 +12,9 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>org.mortbay.jetty.toolchain</groupId>
         <artifactId>unix-maven-plugin</artifactId>
-        <version>1.0-alpha-6-SNAPSHOT</version>
+        <version>1.0-alpha-6</version>
         <extensions>true</extensions>
         <configuration>
           <contact>Webtide LLC</contact>
@@ -30,14 +30,6 @@
             <priority>optional</priority>
             <section>java</section>
           </deb>
-          <!--assembly>
-            <extractArtifact>
-              <artifact>org.mortbay.jetty:jetty-hightide:zip</artifact>
-              <to>/opt/jetty</to>
-              <pattern>/jetty-hightide-${project.version}(.*)</pattern>
-              <replacement>$1</replacement>
-            </extractArtifact>
-          </assembly-->
            <packages>
             <package>
               <id>default</id>
