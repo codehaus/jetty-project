@@ -14,7 +14,7 @@
       <plugin>
         <groupId>org.mortbay.jetty.toolchain</groupId>
         <artifactId>unix-maven-plugin</artifactId>
-        <version>1.0-alpha-6</version>
+        <version>1.0-alpha-6.1</version>
         <extensions>true</extensions>
         <configuration>
           <contact>Webtide LLC</contact>
