@@ -120,7 +120,7 @@
     <module>jetty-jspc-maven-plugin</module>
     <!-- module>jetty-ant</module -->
     <module>jetty-integration-tests</module>
-    <!-- module>jetty-runner</module -->
+    <module>jetty-runner</module>
     <module>jetty-blazeds</module>
     <module>jetty-pkcs12</module>
     <!-- module>jetty-j2sehttp-spi</module -->
