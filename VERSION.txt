@@ -1,7 +1,7 @@
 jetty@codehaus 8.0.0.RC0-SNAPSHOT
  + 353285 ServletSecurity annotation ignored
 
-jetty@codehaus 7.5.0-SNAPSHOT
+jetty@codehaus 7.5.0.RC0 August 15th 2011
  + Fix test-jaas-webapp/authfail.html format
  + JETTY-991 Implement run-forked mojo for jetty-maven-plugin
  + JETTY-1383 Provide Debian and RPM binary distribution of Core Jetty 
@@ -14,8 +14,6 @@ jetty@codehaus 7.5.0-SNAPSHOT
  + 352512 setup archetypes into jetty codehaus build
  + 353932 add file server archetype
  
- 
-
 jetty@codehaus 7.4.4.v20110707
  + JETTY-1380 Jetty Rewrite example does not work in Hightide
 
