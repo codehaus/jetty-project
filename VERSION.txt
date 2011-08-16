@@ -1,4 +1,5 @@
-jetty@codehaus 8.0.0.RC0-SNAPSHOT
+jetty@codehaus 8.0.0.RC0 August 16th 2011
+ + merge of 7.5.0.RC0
  + 353285 ServletSecurity annotation ignored
 
 jetty@codehaus 7.5.0.RC0 August 15th 2011
