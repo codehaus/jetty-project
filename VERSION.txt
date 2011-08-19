@@ -1,3 +1,5 @@
+jetty@codehaus 7.5.0.RC1 August 19th 2011
+
 jetty@codehaus 7.5.0.RC0 August 15th 2011
  + Fix test-jaas-webapp/authfail.html format
  + JETTY-991 Implement run-forked mojo for jetty-maven-plugin
