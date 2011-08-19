@@ -87,7 +87,7 @@ public class JettyWebAppConfiguration extends WebXmlConfiguration
      * Adds classpath files into web application classloader, and
      * sets web.xml and base directory for the configured web application.
      *
-     * @see Configuration#configure(WebAppContext)
+     * @see WebXmlConfiguration#configure(WebAppContext)
      */
     public void configure(WebAppContext context) throws Exception
     {

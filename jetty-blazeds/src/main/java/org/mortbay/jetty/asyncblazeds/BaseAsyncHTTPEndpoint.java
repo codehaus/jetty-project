@@ -352,8 +352,8 @@ public abstract class BaseAsyncHTTPEndpoint extends BaseHTTPEndpoint implements 
      * client as soon as a waited poll response is received. This property does
      * not effect polling clients that poll the server without a server wait.
      * 
-     * @value The number of milliseconds a client will wait before issuing its
-     *        next poll when the server is configured to wait.
+     * @param value The number of milliseconds a client will wait before issuing its
+     *              next poll when the server is configured to wait.
      */
     public void setClientWaitInterval(int value)
     {
