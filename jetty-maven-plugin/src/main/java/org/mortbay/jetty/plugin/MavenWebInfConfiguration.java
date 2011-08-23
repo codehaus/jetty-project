@@ -72,84 +72,63 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
 
     public void preConfigure(WebAppContext context) throws Exception
     {
+        super.preConfigure(context);
+
         _originalResourceBase = context.getBaseResource();
         JettyWebAppContext jwac = (JettyWebAppContext)context;
 
         //Add in any overlaid wars as base resources
         if (jwac.getOverlays() != null && !jwac.getOverlays().isEmpty())
         {
-            ResourceCollection rc;
+            Resource[] origResources = null;
+            int origSize = 0;
 
-            if(jwac.getBaseResource()==null)
+            if (jwac.getBaseResource() != null)
             {
-                // nothing configured, so we automagically enable the overlays                    
-                int size = jwac.getOverlays().size()+1;
-                Resource[] resources = new Resource[size];
-                _unpackedOverlays = new Resource[size];
-                for(int i=0; i<size; i++)
+                if (jwac.getBaseResource() instanceof ResourceCollection)
                 {
-                    if (jwac.getUnpackOverlays())
-                    {
-                        resources[i] = unpackOverlay(context,jwac.getOverlays().get(i));
-                        _unpackedOverlays[i] = resources[i];
-                    }
-                    else
-                        resources[i] =jwac.getOverlays().get(i);
-
-                    Log.info("Adding overlay: " + resources[i]);
-                }
-                
-                rc=new ResourceCollection(resources);
-            }                
-            else
-            {                    
-                if(jwac.getBaseResource() instanceof ResourceCollection)
-                {
-                    // there was a preconfigured ResourceCollection ... append the artifact wars
-                    Resource[] old = ((ResourceCollection)jwac.getBaseResource()).getResources();
-                    int size = old.length + jwac.getOverlays().size();
-                    Resource[] resources = new Resource[size];
-                    _unpackedOverlays = new Resource[size];
-                    System.arraycopy(old, 0, resources, 0, old.length);
-                    for(int i=old.length,j=0; i<size; i++,j++)
-                    {
-                        if (jwac.getUnpackOverlays())
-                        {
-                            resources[i] = unpackOverlay(context,jwac.getOverlays().get(j));
-                            _unpackedOverlays[i] = resources[i];
-                        }
-                        else
-                            resources[i] = jwac.getOverlays().get(j);
-
-                        Log.info("Adding overlay: " + resources[i]);
-                    }
-                    rc=new ResourceCollection(resources);
+                    origResources = ((ResourceCollection)jwac.getBaseResource()).getResources();
+                    origSize = origResources.length;
                 }
                 else
                 {
-                    int size = jwac.getOverlays().size()+1;
-                    Resource[] resources = new Resource[size];
-                    _unpackedOverlays = new Resource[size-1];
-                    resources[0] = jwac.getBaseResource();
-                    for(int i=1; i<size; i++)
-                    {
-                        if (jwac.getUnpackOverlays())
-                        {
-                            resources[i] = unpackOverlay(context,jwac.getOverlays().get(i-1));
-                            _unpackedOverlays[i-1] = resources[i];
-                        }
-                        else
-                            resources[i] = jwac.getOverlays().get(i-1);
-                        
-                        Log.info("Adding overlay: " + resources[i]);
-                    }
-                    rc=new ResourceCollection(resources);
+                    origResources = new Resource[1];
+                    origResources[0] = jwac.getBaseResource();
+                    origSize = 1;
                 }
             }
+            
+            int overlaySize = jwac.getOverlays().size();
+            Resource[] newResources = new Resource[origSize + overlaySize];
 
-            jwac.setBaseResource(rc);
+            int offset = 0;
+            if (origSize > 0)
+            {
+                if (jwac.getBaseAppFirst())
+                {
+                    System.arraycopy(origResources,0,newResources,0,origSize);
+
+                    offset = origSize;
+                }
+                else
+                {
+                    System.arraycopy(origResources,0,newResources,overlaySize,origSize);
+                }
+            }
+            
+            // Overlays are always unpacked
+            _unpackedOverlays = new Resource[overlaySize];
+            List<Resource> overlays = jwac.getOverlays();
+            for (int idx=0; idx<overlaySize; idx++)
+            {
+                _unpackedOverlays[idx] = unpackOverlay(context, overlays.get(idx));
+                 newResources[idx+offset] = _unpackedOverlays[idx];
+
+                Log.info("Adding overlay: " + _unpackedOverlays[idx]);
+            }
+            
+            jwac.setBaseResource(new ResourceCollection(newResources));
         }
-        super.preConfigure(context);
     }
     
     public void postConfigure(WebAppContext context) throws Exception
@@ -163,7 +142,7 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
         JettyWebAppContext jwac = (JettyWebAppContext)context;
         
         //remove the unpacked wars
-        if (jwac.getUnpackOverlays() && _unpackedOverlays != null && _unpackedOverlays.length>0)
+        if (_unpackedOverlays != null && _unpackedOverlays.length>0)
         {
             try
             {

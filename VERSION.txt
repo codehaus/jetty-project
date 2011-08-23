@@ -1,7 +1,18 @@
-jetty@codehaus 7.5.0-SNAPSHOT
+jetty@codehaus 7.5.0.RC1 August 19th 2011
+
+jetty@codehaus 7.5.0.RC0 August 15th 2011
+ + Fix test-jaas-webapp/authfail.html format
+ + JETTY-991 Implement run-forked mojo for jetty-maven-plugin
+ + JETTY-1383 Provide Debian and RPM binary distribution of Core Jetty 
  + JETTY-1393 add jetty-jboss session manager methods
  + JETTY-1394 Do not use deprecated method File.toURL()
-
+ + JETTY-1399 Add more setters for jetty-maven-plugin configuration parameters
+ + JETTY-1401 migrate jetty-jmx-ws module
+ + JETTY-1404 Allow configuring resource path precedence in jetty-maven-plugin
+ + JETTY-1412 runner ignores log config from config
+ + 352512 setup archetypes into jetty codehaus build
+ + 353932 add file server archetype
+ 
 jetty@codehaus 7.4.4.v20110707
  + JETTY-1380 Jetty Rewrite example does not work in Hightide
 

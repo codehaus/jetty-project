@@ -180,8 +180,7 @@ public class SetUIDServer extends Server
 
     /* ------------------------------------------------------------ */
     /**
-     * @see {@link Connector#open()}
-     * @param startServerAsPrivileged if true, the server is started and then the process UID is switched. If false, the connectors are opened, the UID is switched and then the server is started.
+     * @param startContextsAsPrivileged if true, the server is started and then the process UID is switched. If false, the connectors are opened, the UID is switched and then the server is started.
      */
     public void setStartServerAsPrivileged(boolean startContextsAsPrivileged)
     {

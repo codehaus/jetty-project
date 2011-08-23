@@ -71,11 +71,10 @@ public class ServerProxyImpl implements ServerProxy
      * Default constructor. Creates a new Jetty server with a standard connector
      * listening on a given port.
      *
+     * @param connectors
      * @param loginServicesList
-     *
-     * @param port default connector port number.
-     * @param maxIdleTime default connector maximum idle time of for each
-     *            connection.
+     * @param requestLog
+     * @param jettyXml
      */
     public ServerProxyImpl(List connectors, List loginServicesList, RequestLog requestLog,
             File jettyXml)

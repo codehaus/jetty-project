@@ -73,6 +73,7 @@ public class Runner
             };
 
     protected Server _server;
+    protected Monitor _monitor;
     protected URLClassLoader _classLoader;
     protected List<URL> _classpath=new ArrayList<URL>();
     protected ContextHandlerCollection _contexts;
@@ -105,8 +106,10 @@ public class Runner
         System.err.println(" --log file                         - request log filename (with optional 'yyyy_mm_dd' wildcard");
         System.err.println(" --out file                         - info/warn/debug log filename (with optional 'yyyy_mm_dd' wildcard");
         System.err.println(" --port n                           - port to listen on (default 8080)");
+        System.err.println(" --stop-port n                      - port to listen for stop command");
+        System.err.println(" --stop-key n                       - security string for stop command (required if --stop-port is present)");
         System.err.println(" --jar file                         - a jar to be added to the classloader");
-        System.err.println("--jdbc classname properties jndiname - classname of XADataSource or driver; properties string; name to register in jndi");
+        System.err.println(" --jdbc classname properties jndiname - classname of XADataSource or driver; properties string; name to register in jndi");
         System.err.println(" --lib dir                          - a directory of jars to be added to the classloader");
         System.err.println(" --classes dir                      - a directory of classes to be added to the classloader");
         System.err.println(" --txFile                           - override properties file for Atomikos");
@@ -173,6 +176,8 @@ public class Runner
         String contextPath="/";
         boolean contextPathSet=false;
         int port=8080;
+        int stopPort=0;
+        String stopKey=null;
 
         boolean transactionManagerProcessed = false;
         boolean runnerServerInitialized = false;
@@ -181,6 +186,10 @@ public class Runner
         {
             if ("--port".equals(args[i]))
                 port=Integer.parseInt(args[++i]);
+            else if ("--stop-port".equals(args[i]))
+                stopPort=Integer.parseInt(args[++i]);
+            else if ("--stop-key".equals(args[i]))
+                stopKey=args[++i];
             else if ("--log".equals(args[i]))
                 _logFile=args[++i];
             else if ("--out".equals(args[i]))
@@ -251,7 +260,6 @@ public class Runner
                     }
 
                     //check that everything got configured, and if not, make the handlers
-
                     HandlerCollection handlers = (HandlerCollection) _server.getChildHandlerByClass(HandlerCollection.class);
                     if (handlers == null)
                     {
@@ -259,52 +267,61 @@ public class Runner
                         _server.setHandler(handlers);
                     }
                     
+                    //check if contexts already configured
                     _contexts = (ContextHandlerCollection) handlers.getChildHandlerByClass(ContextHandlerCollection.class);
                     if (_contexts == null)
                     {
                         _contexts = new ContextHandlerCollection();
+                        prependHandler(_contexts, handlers);
                     }
-
+                    
+                  
 
                     if (_enableStatsGathering)
                     {
-                        StatisticsHandler statsHandler = new StatisticsHandler();
-                        handlers.setHandlers(new Handler[]{statsHandler, _contexts, new DefaultHandler()});
-                        ServletContextHandler statsContext = new ServletContextHandler(_contexts, "/stats");
-                        statsContext.addServlet(new ServletHolder(new StatisticsServlet()), "/");
-                        statsContext.setSessionHandler(new SessionHandler());
-                        if (_statsPropFile != null)
+                        //if no stats handler already configured
+                        if (handlers.getChildHandlerByClass(StatisticsHandler.class) == null)
                         {
-                            HashLoginService loginService = new HashLoginService("StatsRealm", _statsPropFile);
-                            Constraint constraint = new Constraint();
-                            constraint.setName("Admin Only");
-                            constraint.setRoles(new String[]{"admin"});
-                            constraint.setAuthenticate(true);
+                            StatisticsHandler statsHandler = new StatisticsHandler();
+                            prependHandler(statsHandler,handlers);
+                            ServletContextHandler statsContext = new ServletContextHandler(_contexts, "/stats");
+                            statsContext.addServlet(new ServletHolder(new StatisticsServlet()), "/");
+                            statsContext.setSessionHandler(new SessionHandler());
+                            if (_statsPropFile != null)
+                            {
+                                HashLoginService loginService = new HashLoginService("StatsRealm", _statsPropFile);
+                                Constraint constraint = new Constraint();
+                                constraint.setName("Admin Only");
+                                constraint.setRoles(new String[]{"admin"});
+                                constraint.setAuthenticate(true);
 
-                            ConstraintMapping cm = new ConstraintMapping();
-                            cm.setConstraint(constraint);
-                            cm.setPathSpec("/*");
+                                ConstraintMapping cm = new ConstraintMapping();
+                                cm.setConstraint(constraint);
+                                cm.setPathSpec("/*");
 
-                            ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
-                            securityHandler.setLoginService(loginService);
-                            securityHandler.setConstraintMappings(Collections.singletonList(cm));
-                            securityHandler.setAuthenticator(new BasicAuthenticator());
-                            statsContext.setSecurityHandler(securityHandler);
+                                ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
+                                securityHandler.setLoginService(loginService);
+                                securityHandler.setConstraintMappings(Collections.singletonList(cm));
+                                securityHandler.setAuthenticator(new BasicAuthenticator());
+                                statsContext.setSecurityHandler(securityHandler);
+                            }
                         }
                     }
-                    else
+                   
+                    //ensure a DefaultHandler is present
+                    if (handlers.getChildHandlerByClass(DefaultHandler.class) == null)
                     {
-                        handlers.setHandlers(new Handler[]{_contexts, new DefaultHandler()});
+                        handlers.addHandler(new DefaultHandler());
                     }
-
-
-                    // check if log handler has been added
+                  
+                    //ensure a log handler is present
                     _logHandler = (RequestLogHandler)handlers.getChildHandlerByClass( RequestLogHandler.class );
                     if ( _logHandler == null )
                     {
                         _logHandler = new RequestLogHandler();
                         handlers.addHandler( _logHandler );
                     }
+                    
 
                     //check a connector is configured to listen on
                     Connector[] connectors = _server.getConnectors();
@@ -365,7 +382,21 @@ public class Runner
             usage("No Contexts defined");
         _server.setStopAtShutdown(true);
         _server.setSendServerVersion(true);
-        
+
+        switch ((stopPort > 0 ? 1 : 0) + (stopKey != null ? 2 : 0))
+        {
+            case 1:
+                usage("Must specify --stop-key when --stop-port is specified");
+                break;
+                
+            case 2:
+                usage("Must specify --stop-port when --stop-key is specified");
+                break;
+                
+            case 3:
+                _monitor = new Monitor(stopPort, stopKey);
+                break;
+        }
 
         if (_logFile!=null)
         {
@@ -373,10 +404,24 @@ public class Runner
             requestLog.setExtended(false);
             _logHandler.setRequestLog(requestLog);
         }
-
-
+    }
+    
+    
+    protected void prependHandler (Handler handler, HandlerCollection handlers)
+    {
+        if (handler == null || handlers == null)
+            return;
+        
+       Handler[] existing = handlers.getChildHandlers();
+       Handler[] children = new Handler[existing.length + 1];
+       children[0] = handler;
+       System.arraycopy(existing, 0, children, 1, existing.length);
+       handlers.setHandlers(children);
     }
 
+    
+    
+    
     protected int configJDBC(String[] args,int i) throws Exception
     {
         String jdbcClass=null;
@@ -444,6 +489,11 @@ public class Runner
 
     public void run() throws Exception
     {
+        if (_monitor != null)
+        {
+            _monitor.start();
+        }
+        
         _server.start();
         _server.join();
     }

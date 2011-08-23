@@ -58,6 +58,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
+        <version>2.2.1</version>
         <configuration>
          <autoVersionSubmodules>true</autoVersionSubmodules>
          <mavenExecutorId>forked-path</mavenExecutorId>
@@ -131,20 +132,11 @@
     <module>jetty-webapp-verifier</module>
     <module>jetty-webapp-logging</module>
     <module>jetty-monitor</module>
+    <module>jetty-jmx-ws</module>
+    <module>archetype</module>
+    <module>dist</module>
   </modules>
   <profiles>
-    
-    <profile>
-      <!-- 
-        * This enabled deb and rpm distributions, you will need additional packages installed in order 
-        * for the unix-maven-plugin to work.  At the least you need fakeroot and rpm packages.
-      -->
-      <!--id>unix-distributions</id-->
-      <id>codehaus-release</id>
-      <modules>
-        <module>jetty-unix</module>
-      </modules>
-    </profile>
     <profile>
       <id>jetty-snapshot-repo</id>
       <repositories>
