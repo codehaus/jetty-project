@@ -53,6 +53,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlet.StatisticsServlet;
 import org.eclipse.jetty.util.RolloverFileOutputStream;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.xml.XmlConfiguration;
@@ -61,6 +62,8 @@ import org.eclipse.jetty.xml.XmlConfiguration;
 
 public class Runner
 {
+    private static final Logger LOG = Log.getLogger(Runner.class);
+
     public static final String[] __plusConfigurationClasses = new String[] {
             org.eclipse.jetty.webapp.WebInfConfiguration.class.getCanonicalName(),
             org.eclipse.jetty.webapp.WebXmlConfiguration.class.getCanonicalName(),
@@ -170,8 +173,8 @@ public class Runner
         if (System.getProperties().containsKey("DEBUG"))
             Log.getLog().setDebugEnabled(true);
 
-        Log.info("Runner");
-        Log.debug("Runner classpath {}",_classpath);
+        LOG.info("Runner");
+        LOG.debug("Runner classpath {}",_classpath);
 
         String contextPath="/";
         boolean contextPathSet=false;
@@ -196,7 +199,7 @@ public class Runner
             {
                 String outFile=args[++i];
                 PrintStream out = new PrintStream(new RolloverFileOutputStream(outFile,true,-1));
-                Log.info("Redirecting stderr/stdout to "+outFile);
+                LOG.info("Redirecting stderr/stdout to "+outFile);
                 System.setErr(out);
                 System.setOut(out);
             }
@@ -369,7 +372,7 @@ public class Runner
                     if (contextPathSet && !(contextPath.startsWith("/")))
                         contextPath = "/"+contextPath;
                     
-                    Log.info("Deploying "+ctx.toString()+" @ "+contextPath);
+                    LOG.info("Deploying "+ctx.toString()+" @ "+contextPath);
                     WebAppContext webapp = new WebAppContext(_contexts,ctx.toString(),contextPath);
                     webapp.setConfigurationClasses(__plusConfigurationClasses);
                     
@@ -430,7 +433,7 @@ public class Runner
 
         if (!_isTxServiceAvailable)
         {
-            Log.warn("JDBC TX support not found on classpath");
+            LOG.warn("JDBC TX support not found on classpath");
             i+=3;
         }
         else
@@ -556,7 +559,7 @@ public class Runner
             }
             clazz=clazz.getSuperclass();
         }
-        Log.debug(isXA?"XA":"!XA");
+        LOG.debug(isXA?"XA":"!XA");
         return isXA;
     }
 
@@ -565,7 +568,7 @@ public class Runner
         //set up a transaction manager
         if (!_isTxServiceAvailable)
         {
-            Log.warn("No tx manager found");
+            LOG.warn("No tx manager found");
         }
         else
         {
@@ -588,7 +591,7 @@ public class Runner
                 File tmpDir = new File(System.getProperty("java.io.tmpdir"));
                 tmpDir = new File(tmpDir, _utId);
                 tmpDir.mkdir();
-                Log.debug("Made " + tmpDir.getAbsolutePath());
+                LOG.debug("Made " + tmpDir.getAbsolutePath());
                 txprops.put("com.atomikos.icatch.service", "com.atomikos.icatch.standalone.UserTransactionServiceFactory");
                 Class infoClass = Thread.currentThread().getContextClassLoader().loadClass("com.atomikos.icatch.config.TSInitInfo");
                 txprops.put(infoClass.getField("LOG_BASE_DIR_PROPERTY_NAME").get(null).toString(), tmpDir.getCanonicalPath());

@@ -17,6 +17,7 @@ package org.mortbay.setuid;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 
 /**
  * This extension of {@link Server} will make a JNI call to set the unix UID.
@@ -38,6 +39,8 @@ import org.eclipse.jetty.util.log.Log;
  */
 public class SetUIDServer extends Server
 {
+    private static final Logger LOG = Log.getLogger(SetUIDServer.class);
+
     private int _uid=0;
     private int _gid=0;
     private int _umask=0;
@@ -123,17 +126,17 @@ public class SetUIDServer extends Server
     {
         if (_umask!=0)
         {
-            Log.info("Setting umask=0"+Integer.toString(_umask,8));
+            LOG.info("Setting umask=0"+Integer.toString(_umask,8));
             SetUID.setumask(_umask);
         }
         
         if (_rlimitNoFiles != null)
         {
-            Log.info("Current "+SetUID.getrlimitnofiles());
+            LOG.info("Current "+SetUID.getrlimitnofiles());
             int success = SetUID.setrlimitnofiles(_rlimitNoFiles);
             if (success < 0)
-                Log.warn("Failed to set rlimit_nofiles, returned status "+success);
-            Log.info("Set "+SetUID.getrlimitnofiles());
+                LOG.warn("Failed to set rlimit_nofiles, returned status "+success);
+            LOG.info("Set "+SetUID.getrlimitnofiles());
         }
         
         if (_startServerAsPrivileged)
@@ -141,12 +144,12 @@ public class SetUIDServer extends Server
             super.doStart();
             if (_gid!=0)
             {
-                Log.info("Setting GID="+_gid);
+                LOG.info("Setting GID="+_gid);
                 SetUID.setgid(_gid);
             }
             if (_uid!=0)
             {
-                Log.info("Setting UID="+_uid);
+                LOG.info("Setting UID="+_uid);
                 SetUID.setuid(_uid);
             }
         }
@@ -157,12 +160,12 @@ public class SetUIDServer extends Server
                 connectors[i].open();
             if (_gid!=0)
             {
-                Log.info("Setting GID="+_gid);
+                LOG.info("Setting GID="+_gid);
                 SetUID.setgid(_gid);
             }
             if (_uid!=0)
             {
-                Log.info("Setting UID="+_uid);
+                LOG.info("Setting UID="+_uid);
                 SetUID.setuid(_uid);
             }
             super.doStart();

@@ -42,6 +42,7 @@ import org.eclipse.jetty.server.SessionIdManager;
 import org.eclipse.jetty.server.SessionManager;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.jboss.jetty.JBossWebAppContext;
 
@@ -86,6 +87,8 @@ import org.jboss.jetty.JBossWebAppContext;
 
 public class Manager implements org.eclipse.jetty.server.SessionManager
 {
+    private static final Logger LOG = Log.getLogger(Manager.class);
+
     // ----------------------------------------
     protected WebAppContext _context;
     
@@ -190,7 +193,7 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
 
     public Object clone()
     {
-        // Log.info("cloning Manager: "+this);
+        // LOG.info("cloning Manager: "+this);
         Manager m = new Manager();
 
         // deep-copy Store attribute - each Manager gets it's own Store instance
@@ -243,25 +246,25 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
             }
             catch (Throwable e)
             {
-                Log.warn("could not scavenge local sessions", e);
+                LOG.warn("could not scavenge local sessions", e);
             }
         }
     }
 
     public void start()
     {
-        Log.debug("starting...");
+        LOG.debug("starting...");
         synchronized (_startedLock)
         {
             if (_started)
             {
-                Log.warn("already started");
+                LOG.warn("already started");
                 return;
             }
 
             if (_store == null)
             {
-                Log.warn("No Store. Falling back to a local session implementation - NO HTTPSESSION DISTRIBUTION");
+                LOG.warn("No Store. Falling back to a local session implementation - NO HTTPSESSION DISTRIBUTION");
                 setStore(new LocalStore());
             }
 
@@ -274,7 +277,7 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
             }
             catch (Exception e)
             {
-                Log.warn("Faulty Store. Falling back to a local session implementation - NO HTTPSESSION DISTRIBUTION", e);
+                LOG.warn("Faulty Store. Falling back to a local session implementation - NO HTTPSESSION DISTRIBUTION", e);
                 setStore(new LocalStore());
                 try
                 {
@@ -282,21 +285,21 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
                 }
                 catch (Exception e2)
                 {
-                    Log.warn("could not start Store", e2);
+                    LOG.warn("could not start Store", e2);
                 }
             }
 
-            if (Log.isDebugEnabled())
-                Log.debug("starting local scavenger thread...(period: " + getScavengerPeriod() + " secs)");
+            if (LOG.isDebugEnabled())
+                LOG.debug("starting local scavenger thread...(period: " + getScavengerPeriod() + " secs)");
             long delay = getScavengerPeriod() * 1000;
             boolean isDaemon = true;
             _scavenger = new Timer(isDaemon);
             _scavenger.scheduleAtFixedRate(new Scavenger(), delay, delay);
-            Log.debug("...local scavenger thread started");
+            LOG.debug("...local scavenger thread started");
             _started = true;
         }
 
-        Log.debug("...started");
+        LOG.debug("...started");
     }
 
     public boolean isStarted()
@@ -309,13 +312,13 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
 
     public void stop()
     {
-        Log.debug("stopping...");
+        LOG.debug("stopping...");
 
         synchronized (_startedLock)
         {
             if (!_started)
             {
-                Log.warn("already stopped/not yet started");
+                LOG.warn("already stopped/not yet started");
                 return;
             }
 
@@ -331,10 +334,10 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
                 _sessions.clear();
             }
 
-            Log.debug("stopping local scavenger thread...");
+            LOG.debug("stopping local scavenger thread...");
             _scavenger.cancel();
             _scavenger = null;
-            Log.debug("...local scavenger thread stopped");
+            LOG.debug("...local scavenger thread stopped");
             scavenge();
 
             _store.stop();
@@ -343,7 +346,7 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
             _started = false;
         }
 
-        Log.debug("...stopped");
+        LOG.debug("...stopped");
     }
 
     // ----------------------------------------
@@ -400,13 +403,13 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
             boolean known = false;
             if (listener instanceof HttpSessionAttributeListener)
             {
-                // Log.info("adding HttpSessionAttributeListener: "+listener);
+                // LOG.info("adding HttpSessionAttributeListener: "+listener);
                 _sessionAttributeListeners.add(listener);
                 known = true;
             }
             if (listener instanceof HttpSessionListener)
             {
-                // Log.info("adding HttpSessionListener: "+listener);
+                // LOG.info("adding HttpSessionListener: "+listener);
                 _sessionListeners.add(listener);
                 known = true;
             }
@@ -497,12 +500,12 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
         }
         catch (Exception e)
         {
-            Log.debug("could not create HttpSession", e);
+            LOG.debug("could not create HttpSession", e);
             return null; // BAD - TODO
         }
 
-        if (Log.isDebugEnabled())
-            Log.debug("remembering session - " + id);
+        if (LOG.isDebugEnabled())
+            LOG.debug("remembering session - " + id);
 
         synchronized (_sessions)
         {
@@ -522,20 +525,20 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
     protected void destroySession(HttpSession container)
     {
         String id = container.getId();
-        if (Log.isDebugEnabled())
-            Log.debug("forgetting session - " + id);
+        if (LOG.isDebugEnabled())
+            LOG.debug("forgetting session - " + id);
         Object tmp;
         synchronized (_sessions)
         {
             tmp = _sessions.remove(id);
         }
         container = (HttpSession) tmp;
-        if (Log.isDebugEnabled())
-            Log.debug("forgetting session - " + container);
+        if (LOG.isDebugEnabled())
+            LOG.debug("forgetting session - " + container);
 
         if (container == null)
         {
-            Log.warn("session - " + id + " has already been destroyed");
+            LOG.warn("session - " + id + " has already been destroyed");
             return;
         }
 
@@ -581,15 +584,15 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
         }
         catch (RemoteException e)
         {
-            Log.debug("could not raise events on session destruction - problem in distribution layer", e);
+            LOG.debug("could not raise events on session destruction - problem in distribution layer", e);
         }
 
-        if (Log.isDebugEnabled())
-            Log.debug("notifying session - " + id);
+        if (LOG.isDebugEnabled())
+            LOG.debug("notifying session - " + id);
         notifySessionDestroyed(container);
 
-        if (Log.isDebugEnabled())
-            Log.debug("destroying container - " + id);
+        if (LOG.isDebugEnabled())
+            LOG.debug("destroying container - " + id);
         State state = destroyContainer(container);
 
         try
@@ -598,14 +601,14 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
             // it does not want this state
             // removed...
             {
-                if (Log.isDebugEnabled())
-                    Log.debug("removing state - " + id);
+                if (LOG.isDebugEnabled())
+                    LOG.debug("removing state - " + id);
                 _store.removeState(state);
             }
         }
         catch (Exception e)
         {
-            Log.debug("could not remove session state", e);
+            LOG.debug("could not remove session state", e);
         }
     }
 
@@ -652,8 +655,8 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
         }
         catch (Exception ignore)
         {
-            if (Log.isDebugEnabled())
-                Log.debug("did not find distributed session: " + id);
+            if (LOG.isDebugEnabled())
+                LOG.debug("did not find distributed session: " + id);
         }
 
         return container;
@@ -754,7 +757,7 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
     // ensure that this code is run with the correct ContextClassLoader...
     protected void scavenge()
     {
-        Log.debug("starting local scavenging...");
+        LOG.debug("starting local scavenging...");
         try
         {
             // prevent session destruction (from scavenging)
@@ -768,8 +771,8 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
             {
                 copy = new ArrayList(_sessions.values());
             }
-            if (Log.isDebugEnabled())
-                Log.debug(copy.size() + " local sessions");
+            if (LOG.isDebugEnabled())
+                LOG.debug(copy.size() + " local sessions");
             //
             // iterate over it at our leisure...
             int n = 0;
@@ -789,21 +792,21 @@ public class Manager implements org.eclipse.jetty.server.SessionManager
                 }
                 catch (IllegalStateException ignore)
                 {
-                    if (Log.isDebugEnabled())
-                        Log.debug("scavenging local session " + sa.getId());
+                    if (LOG.isDebugEnabled())
+                        LOG.debug("scavenging local session " + sa.getId());
                     destroySession(sa);
                     i.remove();
                     ++n;
                 }
             }
-            if (Log.isDebugEnabled())
-                Log.debug("scavenged " + n + " local sessions");
+            if (LOG.isDebugEnabled())
+                LOG.debug("scavenged " + n + " local sessions");
         }
         finally
         {
             AbstractReplicatedStore.setReplicating(false);
         }
-        Log.debug("...finished local scavenging");
+        LOG.debug("...finished local scavenging");
     }
 
     /** 

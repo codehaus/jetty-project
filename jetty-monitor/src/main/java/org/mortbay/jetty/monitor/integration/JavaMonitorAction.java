@@ -37,6 +37,7 @@ import org.eclipse.jetty.http.HttpMethods;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.io.ByteArrayBuffer;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.mortbay.jetty.monitor.EventNotifier;
 import org.mortbay.jetty.monitor.EventState;
 import org.mortbay.jetty.monitor.EventState.TriggerState;
@@ -51,6 +52,8 @@ import org.mortbay.jetty.monitor.triggers.AggregateEventTrigger;
  */
 public class JavaMonitorAction extends MonitorAction
 {
+    private static final Logger LOG = Log.getLogger(JavaMonitorAction.class);
+
     private final HttpClient _client;
     
     private final String _url;
@@ -87,7 +90,7 @@ public class JavaMonitorAction extends MonitorAction
         }
         catch (Exception ex)
         {
-            Log.debug(ex);
+            LOG.debug(ex);
         }
         
         sendData(new Properties());
@@ -133,7 +136,7 @@ public class JavaMonitorAction extends MonitorAction
             }
             catch (Exception ex)
             {
-                Log.debug(ex);
+                LOG.debug(ex);
             }
         }
      }
@@ -205,7 +208,7 @@ public class JavaMonitorAction extends MonitorAction
             }
             catch (IOException ex)
             {
-                Log.ignore(ex);
+                LOG.ignore(ex);
             }
             
             try
@@ -215,7 +218,7 @@ public class JavaMonitorAction extends MonitorAction
             }
             catch (IOException ex)
             {
-                Log.ignore(ex);
+                LOG.ignore(ex);
             }
         }
         
@@ -261,11 +264,11 @@ public class JavaMonitorAction extends MonitorAction
                 }
                 catch (IOException e)
                 {
-                    Log.debug(e);
+                    LOG.debug(e);
                 }
                 catch (MalformedObjectNameException e)
                 {
-                    Log.debug(e);
+                    LOG.debug(e);
                 }
                 
                 if (queryResults != null)
@@ -345,7 +348,7 @@ public class JavaMonitorAction extends MonitorAction
             } 
             catch (IOException ex)
             {
-                Log.ignore(ex);
+                LOG.ignore(ex);
             }
         }
     }
@@ -377,7 +380,7 @@ public class JavaMonitorAction extends MonitorAction
         }
         catch (Exception ex)
         {
-            Log.debug(ex);
+            LOG.debug(ex);
         }
         
         return 0;

@@ -23,6 +23,7 @@ import java.util.Set;
 import javax.management.remote.JMXServiceURL;
 
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.mortbay.jetty.jmx.ws.domain.JMXNode;
 import org.mortbay.jetty.jmx.ws.service.JMXNodeService;
 
@@ -31,6 +32,8 @@ import org.mortbay.jetty.jmx.ws.service.JMXNodeService;
  */
 public class JMXNodeServiceImpl implements JMXNodeService
 {
+    private static final Logger LOG = Log.getLogger(JMXNodeServiceImpl.class);
+
     private Properties _properties = new Properties();
 
     public Set<JMXNode> getNodes()
@@ -53,7 +56,7 @@ public class JMXNodeServiceImpl implements JMXNodeService
         }
         catch (IOException e)
         {
-            Log.warn(e);
+            LOG.warn(e);
         }
         finally
         {
@@ -63,7 +66,7 @@ public class JMXNodeServiceImpl implements JMXNodeService
             }
             catch (IOException e)
             {
-                Log.warn("getNodes: Couldn't close InputStream. This might lead to a file descriptor leak: ",e);
+                LOG.warn("getNodes: Couldn't close InputStream. This might lead to a file descriptor leak: ",e);
             }
         }
         return jmxNodes;
