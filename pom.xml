@@ -232,32 +232,4 @@
       </repositories>
     </profile>
   </profiles>
-
-  <repositories>
-    <repository>
-      <id>download.java.net</id>
-      <name>Java.net Repository</name>
-      <layout>default</layout>
-      <url>http://download.java.net/maven/2/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-   </repository>
-    <repository>
-      <id>glassfish.download.java.net</id>
-      <name>Java.net Repository for Glassfish</name>
-      <layout>default</layout>
-      <url>http://download.java.net/maven/glassfish/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-   </repository>
-  </repositories>
-
 </project>
