@@ -154,7 +154,7 @@
         <plugin>
           <groupId>org.eclipse.jetty.toolchain</groupId>
           <artifactId>jetty-version-maven-plugin</artifactId>
-          <version>1.0.4</version>
+          <version>1.0.5</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -194,12 +194,13 @@
             <artifactId>jetty-version-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>gen-versiontxt</id>
+                <id>update-version-text</id>
                 <phase>generate-resources</phase>
                 <goals>
-                  <goal>gen-version-text</goal>
+                  <goal>update-version-text</goal>
                 </goals>
                 <configuration>
+                  <versionTextKey>jetty@codehaus-VERSION</versionTextKey>
                   <refreshTags>true</refreshTags>
                   <copyGenerated>true</copyGenerated>
                   <attachArtifact>false</attachArtifact>
