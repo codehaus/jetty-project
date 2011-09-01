@@ -1,4 +1,5 @@
-jetty@codehaus-7.5.0-SNAPSHOT
+jetty@codehaus-7.5.0-SNAPSHOT - 01 September 2011
+ + JETTY-1218 delete example extra webapp, too much bitrot
 
 jetty@codehaus-7.5.0.RC2 - 30 August 2011
  + 293739 Deprecate static Jetty Log usage in favor of named logs
