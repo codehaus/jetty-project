@@ -29,6 +29,7 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.toolchain.jmx.JmxServiceConnection;
 import org.eclipse.jetty.toolchain.test.JettyDistro;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.junit.AfterClass;
@@ -44,6 +45,8 @@ import org.mortbay.jetty.monitor.triggers.OrEventTrigger;
  */
 public class ProgramConfigTest
 {
+    private static final Logger LOG = Log.getLogger(ProgramConfigTest.class);
+
     private static JettyDistro jetty;
     
     @BeforeClass
@@ -125,7 +128,7 @@ public class ProgramConfigTest
         }
         catch (Exception ex)
         {
-            Log.debug(ex);
+            LOG.debug(ex);
         }
 
         if (client != null)
@@ -156,7 +159,7 @@ public class ProgramConfigTest
                 }
                 catch (IOException ex)
                 {
-                    Log.debug(ex);
+                    LOG.debug(ex);
                 }
             }
 
@@ -166,7 +169,7 @@ public class ProgramConfigTest
             }
             catch (Exception ex)
             {
-                Log.debug(ex);
+                LOG.debug(ex);
             }
         }
     }

@@ -28,6 +28,7 @@ import org.eclipse.jetty.server.BlockingHttpConnection;
 import org.eclipse.jetty.server.HttpConnection;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.mortbay.jetty.rhttp.client.RHTTPClient;
 import org.mortbay.jetty.rhttp.client.RHTTPListener;
 import org.mortbay.jetty.rhttp.client.RHTTPRequest;
@@ -42,6 +43,8 @@ import org.mortbay.jetty.rhttp.client.RHTTPResponse;
  */
 public class ReverseHTTPConnector extends AbstractConnector implements RHTTPListener
 {
+    private static final Logger LOG = Log.getLogger(ReverseHTTPConnector.class);
+
     private final BlockingQueue<RHTTPRequest> requests = new LinkedBlockingQueue<RHTTPRequest>();
     private final RHTTPClient client;
 
@@ -154,7 +157,7 @@ public class ReverseHTTPConnector extends AbstractConnector implements RHTTPList
             }
             catch (Exception x)
             {
-                Log.debug(x);
+                LOG.debug(x);
             }
             finally
             {

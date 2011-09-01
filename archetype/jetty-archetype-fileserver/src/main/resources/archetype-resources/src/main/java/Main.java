@@ -10,7 +10,10 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.*;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 public class Main {
+    private static final Logger LOG = Log.getLogger(Main.class);
+
         
       public static void main(String[] args) throws Exception
       {
@@ -29,7 +32,7 @@ public class Main {
           resource_handler.setWelcomeFiles(new String[]{ "index.html" });
   
           resource_handler.setResourceBase(".");
-          Log.info("serving " + resource_handler.getBaseResource());
+          LOG.info("serving " + resource_handler.getBaseResource());
           
           HandlerList handlers = new HandlerList();
           handlers.setHandlers(new Handler[] { resource_handler, new DefaultHandler() });

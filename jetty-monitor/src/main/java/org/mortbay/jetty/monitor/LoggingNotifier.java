@@ -15,6 +15,7 @@
 package org.mortbay.jetty.monitor;
 
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 
 
 /* ------------------------------------------------------------ */
@@ -25,6 +26,8 @@ import org.eclipse.jetty.util.log.Log;
  */
 public class LoggingNotifier implements EventNotifier
 {
+    private static final Logger LOG = Log.getLogger(LoggingNotifier.class);
+
     String _messageFormat;
 
     /* ------------------------------------------------------------ */
@@ -51,7 +54,7 @@ public class LoggingNotifier implements EventNotifier
     {
         String output = String.format(_messageFormat, state);
         
-        Log.info(output);
+        LOG.info(output);
     }
 
 }

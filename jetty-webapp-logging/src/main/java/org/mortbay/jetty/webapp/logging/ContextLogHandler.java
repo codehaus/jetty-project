@@ -35,6 +35,10 @@ public class ContextLogHandler extends HandlerWrapper
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
         // Collect Info for NDC/MDC
+        MDC.put("localname",request.getLocalName());
+        MDC.put("servername",request.getServerName());
+        MDC.put("serverport",Integer.toString(request.getServerPort()));
+
         MDC.put("target",target);
         String contextPath = request.getContextPath();
         if (contextPath != null)

@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.mortbay.jetty.jmx.ws.domain.JMXNode;
 import org.mortbay.jetty.jmx.ws.domain.jaxb.jmx.MBeanAttributeValueJaxBeans;
 import org.mortbay.jetty.jmx.ws.util.FilterNodesUtils;
@@ -38,6 +39,8 @@ import org.mortbay.jetty.jmx.ws.web.BaseAggregateWebController;
 @Path("/mbeans/{objectName}/attributes")
 public class MBeansObjectNameAttributes extends BaseAggregateWebController
 {
+    private static final Logger LOG = Log.getLogger(MBeansObjectNameAttributes.class);
+
     @Context
     UriInfo uriInfo;
 
@@ -53,7 +56,7 @@ public class MBeansObjectNameAttributes extends BaseAggregateWebController
         }
         catch (InstanceNotFoundException e)
         {
-            Log.info("getAttribute: ", e);
+            LOG.info("getAttribute: ", e);
             return null;
         }
     }

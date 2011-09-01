@@ -19,6 +19,7 @@ import javax.management.ObjectName;
 
 import org.jboss.jetty.JBossWebAppContext;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 
 
 /**
@@ -29,6 +30,8 @@ import org.eclipse.jetty.util.log.Log;
  */
 public class JBossWebAppContextMBean extends org.eclipse.jetty.server.handler.jmx.ContextHandlerMBean
 {
+    private static final Logger LOG = Log.getLogger(JBossWebAppContextMBean.class);
+
     private JBossWebAppContext _webAppContext;
     
     public JBossWebAppContextMBean(Object managedObject)
@@ -47,7 +50,7 @@ public class JBossWebAppContextMBean extends org.eclipse.jetty.server.handler.jm
         }
         catch (Exception e)
         {
-            Log.warn(e);
+            LOG.warn(e);
         }
         return oname;
     }

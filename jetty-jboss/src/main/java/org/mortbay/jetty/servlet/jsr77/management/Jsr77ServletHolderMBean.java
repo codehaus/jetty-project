@@ -23,6 +23,7 @@ import org.jboss.jetty.JBossWebAppContext;
 import org.mortbay.jetty.servlet.jsr77.Jsr77ServletHolder;
 import org.eclipse.jetty.jmx.ObjectMBean;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 
 
 /**
@@ -35,6 +36,8 @@ import org.eclipse.jetty.util.log.Log;
  */
 public class Jsr77ServletHolderMBean extends ObjectMBean
 {
+    private static final Logger LOG = Log.getLogger(Jsr77ServletHolderMBean.class);
+
     private Jsr77ServletHolder _servletHolder = null;
     private ServletStats _stats;
     
@@ -164,7 +167,7 @@ public class Jsr77ServletHolderMBean extends ObjectMBean
        }
        catch (Exception e)
        {
-           Log.warn(e);
+           LOG.warn(e);
        }
        return oname;
        

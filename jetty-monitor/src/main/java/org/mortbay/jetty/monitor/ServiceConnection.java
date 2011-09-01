@@ -25,6 +25,7 @@ import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 
 
 /* ------------------------------------------------------------ */
@@ -36,6 +37,8 @@ import org.eclipse.jetty.util.log.Log;
  */
 public class ServiceConnection
 {
+    private static final Logger LOG = Log.getLogger(ServiceConnection.class);
+
     private String _serviceUrl;
     private MBeanServer _server;
     private JMXConnectorServer _connectorServer;
@@ -158,7 +161,7 @@ public class ServiceConnection
         }
         catch (Exception ex)
         {
-            Log.debug(ex);
+            LOG.debug(ex);
         }
     }
 }

@@ -24,6 +24,7 @@ import org.eclipse.jetty.deploy.AppLifeCycle;
 import org.eclipse.jetty.deploy.graph.Node;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.mortbay.jetty.webapp.verifier.RuleSet;
 import org.mortbay.jetty.webapp.verifier.Severity;
@@ -37,6 +38,8 @@ import org.mortbay.jetty.webapp.verifier.WebappVerifier;
  */
 public class WebappVerifierBinding implements AppLifeCycle.Binding
 {
+    private static final Logger LOG = Log.getLogger(WebappVerifierBinding.class);
+
     private String rulesetPath;
 
     public String getRulesetPath()
@@ -60,7 +63,7 @@ public class WebappVerifierBinding implements AppLifeCycle.Binding
         ContextHandler context = app.getContextHandler();
         
         if(!(context instanceof WebAppContext)) {
-            Log.info("Webapp Verifier - " + app.getContextHandler().getClass().getName() + " is not an instance of " +
+            LOG.info("Webapp Verifier - " + app.getContextHandler().getClass().getName() + " is not an instance of " +
                     WebAppContext.class.getName());
             return;
         }
@@ -80,12 +83,12 @@ public class WebappVerifierBinding implements AppLifeCycle.Binding
         if (violations.size() <= 0)
         {
             // Nothing to report.
-            Log.info("Webapp Verifier - All Rules Passed - No Violations");
+            LOG.info("Webapp Verifier - All Rules Passed - No Violations");
             return;
         }
 
         boolean haltWebapp = false;
-        Log.info("Webapp Verifier Found " + violations.size() + " violations.");
+        LOG.info("Webapp Verifier Found " + violations.size() + " violations.");
 
         for (Violation violation : violations)
         {
@@ -94,7 +97,7 @@ public class WebappVerifierBinding implements AppLifeCycle.Binding
                 haltWebapp = true;
             }
 
-            Log.info(violation.toString());
+            LOG.info(violation.toString());
         }
 
         if (haltWebapp)

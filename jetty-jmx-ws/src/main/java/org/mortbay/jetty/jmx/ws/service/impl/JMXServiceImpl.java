@@ -30,10 +30,13 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.mortbay.jetty.jmx.ws.service.JMXService;
 
 public class JMXServiceImpl implements JMXService
 {
+    private static final Logger LOG = Log.getLogger(JMXServiceImpl.class);
+
     public static final String MEMORY_MXBEAN = "java.lang:type=Memory";
     public static final String THREADING_MXBEAN = "java.lang:type=Threading";
     public static final String LOGGING_MBEAN = "java.util.logging:type=Logging";
@@ -69,7 +72,7 @@ public class JMXServiceImpl implements JMXService
         }
         catch (IOException e)
         {
-            Log.warn("getObjectNames: ",e);
+            LOG.warn("getObjectNames: ",e);
         }
         return Collections.emptySet();
     }
@@ -99,7 +102,7 @@ public class JMXServiceImpl implements JMXService
         }
         catch (Exception e)
         {
-            Log.warn("getAttributes: ",e);
+            LOG.warn("getAttributes: ",e);
         }
         return new MBeanAttributeInfo[] {};
     }
@@ -116,7 +119,7 @@ public class JMXServiceImpl implements JMXService
         }
         catch (Exception e)
         {
-            Log.warn("getOperations: ",e);
+            LOG.warn("getOperations: ",e);
         }
         return new MBeanOperationInfo[] {};
     }
@@ -125,12 +128,12 @@ public class JMXServiceImpl implements JMXService
     {
         try
         {
-            Log.debug("invoke: jmxServiceURL: " + jmxServiceURL.toString() + ", objectName: " + objectName + ", operationName: " + operationName); //TODO: remove me
+            LOG.debug("invoke: jmxServiceURL: " + jmxServiceURL.toString() + ", objectName: " + objectName + ", operationName: " + operationName); //TODO: remove me
             return getConnection(jmxServiceURL).invoke(new ObjectName(objectName),operationName,params,signature);
         }
         catch (Exception e)
         {
-            Log.warn("invoke: jmxServiceURL: " + jmxServiceURL.toString() + ", objectName: " + objectName + ", operationName: " + operationName,e);
+            LOG.warn("invoke: jmxServiceURL: " + jmxServiceURL.toString() + ", objectName: " + objectName + ", operationName: " + operationName,e);
             return e.toString();
         }
     }
@@ -147,7 +150,7 @@ public class JMXServiceImpl implements JMXService
         }
         catch (Exception e)
         {
-            Log.warn("Couldn't get attribute: " + attribute,e);
+            LOG.warn("Couldn't get attribute: " + attribute,e);
             return e.toString();
         }
 
@@ -157,7 +160,7 @@ public class JMXServiceImpl implements JMXService
     {
         if (connections.get(jmxServiceURL) == null)
         {
-            Log.debug("getConnection: opening jmx connection to: " + jmxServiceURL.toString());
+            LOG.debug("getConnection: opening jmx connection to: " + jmxServiceURL.toString());
             JMXConnector jmxConnector = JMXConnectorFactory.connect(jmxServiceURL,null);
             connections.put(jmxServiceURL,jmxConnector.getMBeanServerConnection());
         }

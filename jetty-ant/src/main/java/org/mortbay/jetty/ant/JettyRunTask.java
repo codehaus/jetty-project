@@ -66,7 +66,6 @@ public class JettyRunTask extends Task
     /**
      * Creates a new <code>WebApp</code> Ant object.
      *
-     * @return a WebApp object.
      */
     public void addWebApp(WebApp webapp)
     {
@@ -94,9 +93,6 @@ public class JettyRunTask extends Task
         TaskLog.log("User realms are deprecated.");
     }
 
-    /**
-     * @return a new Ant's loginServices tag object if it have not been created yet.
-     */
     public void addLoginServices(LoginServices services)
     {
         TaskLog.log("Setting <loginServices> via Ant is currently not supported.");

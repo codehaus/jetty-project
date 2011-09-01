@@ -23,6 +23,7 @@ import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
 
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.mortbay.jetty.monitor.EventState;
 import org.mortbay.jetty.monitor.EventTrigger;
 import org.mortbay.jetty.monitor.JMXMonitor;
@@ -42,7 +43,9 @@ import org.mortbay.jetty.monitor.JMXMonitor;
  */
 public class AttrEventTrigger<TYPE extends Comparable<TYPE>> 
     extends EventTrigger
-{   
+{
+    private static final Logger LOG = Log.getLogger(AttrEventTrigger.class);
+   
     private final ObjectName _nameObject;
 
     protected final String _objectName;
@@ -131,7 +134,7 @@ public class AttrEventTrigger<TYPE extends Comparable<TYPE>>
         }
         catch (Exception ex)
         {
-            Log.debug(ex);
+            LOG.debug(ex);
         }
 
         boolean result = false;

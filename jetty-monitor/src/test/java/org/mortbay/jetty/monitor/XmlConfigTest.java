@@ -26,6 +26,7 @@ import org.eclipse.jetty.http.HttpMethods;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.toolchain.test.JettyDistro;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
@@ -41,6 +42,8 @@ import org.junit.Test;
  */
 public class XmlConfigTest
 {
+    private static final Logger LOG = Log.getLogger(XmlConfigTest.class);
+
     private static JettyDistro jetty;
     
     @BeforeClass
@@ -109,7 +112,7 @@ public class XmlConfigTest
         }
         catch (Exception ex)
         {
-            Log.debug(ex);
+            LOG.debug(ex);
         }
         
         if (client != null)
@@ -141,7 +144,7 @@ public class XmlConfigTest
                 }
                 catch (IOException ex)
                 {
-                    Log.debug(ex);
+                    LOG.debug(ex);
                 }
             }
 
@@ -151,7 +154,7 @@ public class XmlConfigTest
             }
             catch (Exception ex)
             {
-                Log.debug(ex);
+                LOG.debug(ex);
             }
         }
     }
