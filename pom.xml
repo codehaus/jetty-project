@@ -84,6 +84,49 @@
             </execution>
           </executions>
         </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <id>named-logging-enforcement</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <targetJdk>1.5</targetJdk>
+          <rulesets>
+            <ruleset>jetty/pmd_logging_ruleset.xml</ruleset>
+          </rulesets>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.eclipse.jetty.toolchain</groupId>
+            <artifactId>jetty-build-support</artifactId>
+            <version>1.1</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.jetty.toolchain</groupId>
+        <artifactId>jetty-version-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-version</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>attach-version-text</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -110,6 +153,11 @@
               <version>1.0</version>
             </dependency>
           </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.jetty.toolchain</groupId>
+          <artifactId>jetty-version-maven-plugin</artifactId>
+          <version>1.0.4</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -140,6 +188,32 @@
     <module>dist</module>
   </modules>
   <profiles>
+    <profile>
+      <id>update-version</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.jetty.toolchain</groupId>
+            <artifactId>jetty-version-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>gen-versiontxt</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>gen-version-text</goal>
+                </goals>
+                <configuration>
+                  <refreshTags>true</refreshTags>
+                  <copyGenerated>true</copyGenerated>
+                  <attachArtifact>false</attachArtifact>
+                  <updateDate>true</updateDate>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>jetty-snapshot-repo</id>
       <repositories>

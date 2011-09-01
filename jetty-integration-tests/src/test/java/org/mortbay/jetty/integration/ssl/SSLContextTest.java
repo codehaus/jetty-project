@@ -192,10 +192,7 @@ public class SSLContextTest extends TestCase
      * 
      * @param sslClientContext
      *            SSLContext to be used by the client.
-     * @param sslServerContext
-     *            SSLContext to be used by the server.
      * @return true if the server accepted the SSL certificate.
-     * @throws SSLContextFactoryException
      * @throws IOException
      */
     public boolean runSSLContextTest(SSLContext sslClientContext, Connector connector) throws Exception

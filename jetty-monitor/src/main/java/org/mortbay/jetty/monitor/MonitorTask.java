@@ -20,6 +20,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
@@ -33,6 +34,8 @@ import org.eclipse.jetty.util.thread.ThreadPool;
  */
 public class MonitorTask extends TimerTask
 {
+    private static final Logger LOG = Log.getLogger(MonitorTask.class);
+
     private static Timer __timer = new Timer(true);
     private static ThreadPool _callback = new ExecutorThreadPool(4,64,60,TimeUnit.SECONDS);;
     private static Map<String,TimerTask> __tasks  = new HashMap<String,TimerTask>();
@@ -103,7 +106,7 @@ public class MonitorTask extends TimerTask
                 }
                 catch (Exception ex)
                 {
-                    Log.debug(ex);
+                    LOG.debug(ex);
                 }
             }
         });

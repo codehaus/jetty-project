@@ -212,7 +212,7 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
     }
 
     /**
-     * @see com.sabre.ant.jetty.WebApplicationProxy#getProxiedObject()
+     * @see WebApplicationProxy#getProxiedObject()
      */
     public Object getProxiedObject()
     {
@@ -220,7 +220,7 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
     }
 
     /**
-     * @see com.sabre.ant.jetty.WebApplicationProxy#start()
+     * @see WebApplicationProxy#start()
      */
     public void start()
     {
@@ -237,7 +237,7 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
     }
 
     /**
-     * @see com.sabre.ant.jetty.WebApplicationProxy#stop()
+     * @see WebApplicationProxy#stop()
      */
     public void stop()
     {
@@ -259,7 +259,7 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
     }
 
     /**
-     * @see com.sabre.ant.jetty.WebApplicationProxy#createApplicationContext(org.eclipse.jetty.server.handler.ContextHandlerCollection)
+     * @see WebApplicationProxy#createApplicationContext(org.eclipse.jetty.server.handler.ContextHandlerCollection)
      */
     public void createApplicationContext(ContextHandlerCollection contexts)
     {

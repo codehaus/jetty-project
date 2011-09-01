@@ -23,6 +23,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.mortbay.jetty.jmx.ws.domain.JMXNode;
 import org.mortbay.jetty.jmx.ws.domain.jaxb.jmx.OperationReturnValueJaxBeans;
 import org.mortbay.jetty.jmx.ws.util.FilterNodesUtils;
@@ -35,6 +36,8 @@ import org.mortbay.jetty.jmx.ws.web.BaseAggregateWebController;
 @Path("/mbeans/{objectName}/operations/{operationName}")
 public class MBeansObjectNameOperationsOperationName extends BaseAggregateWebController
 {
+    private static final Logger LOG = Log.getLogger(MBeansObjectNameOperationsOperationName.class);
+
 
     @GET
     @Produces(
@@ -42,7 +45,7 @@ public class MBeansObjectNameOperationsOperationName extends BaseAggregateWebCon
     public OperationReturnValueJaxBeans invokeOperation(@PathParam("objectName") String objectName, @PathParam("operationName") String operationName,
             @QueryParam("nodes") String nodes)
     {
-        Log.info("invokeOperationWithParameters: " + operationName);
+        LOG.info("invokeOperationWithParameters: " + operationName);
         Collection<JMXNode> jmxNodes = FilterNodesUtils.getNodesToAggregate(nodes);
 
         return aggregateService.invokeOperation(jmxNodes,objectName,operationName);
@@ -56,7 +59,7 @@ public class MBeansObjectNameOperationsOperationName extends BaseAggregateWebCon
             @PathParam("operationName") String operationName, @PathParam("params") String params, @PathParam("signature") String signature,
             @QueryParam("nodes") String nodes)
     {
-        Log.info("invokeOperationWithParameters: " + operationName);
+        LOG.info("invokeOperationWithParameters: " + operationName);
         Collection<JMXNode> jmxNodes = FilterNodesUtils.getNodesToAggregate(nodes);
 
         String[] paramArray = params.split(",");

@@ -46,6 +46,7 @@ import org.eclipse.jetty.continuation.ContinuationSupport;
 import org.eclipse.jetty.http.HttpHeaders;
 import org.eclipse.jetty.util.StringUtil;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 
 /* ------------------------------------------------------------ */
 /** Dump Servlet Request.
@@ -53,6 +54,8 @@ import org.eclipse.jetty.util.log.Log;
 */
 public class DumpServlet extends HttpServlet
 {
+    private static final Logger LOG = Log.getLogger(DumpServlet.class);
+
  boolean fixed;
  
  /* ------------------------------------------------------------ */
@@ -203,7 +206,7 @@ public class DumpServlet extends HttpServlet
                      }
                      catch (IOException e)
                      {
-                         Log.ignore(e);
+                         LOG.ignore(e);
                      }
                  }
                  

@@ -24,7 +24,8 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Log;import org.eclipse.jetty.util.log.Logger;
+
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -39,6 +40,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
 {
+    private static final Logger LOG = Log.getLogger(JettyHttpServer.class);
+
 
     private Server _server;
     
@@ -69,7 +72,7 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
             for (Connector connector : connectors)
             {
                 if (connector.getPort() == addr.getPort()) {
-                    if (Log.isDebugEnabled()) Log.debug("server already bound to port " + addr.getPort() + ", no need to rebind");
+                    if (LOG.isDebugEnabled()) LOG.debug("server already bound to port " + addr.getPort() + ", no need to rebind");
                     return;
                 }
             }
@@ -80,7 +83,7 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
         
         this._addr = addr;
 
-        if (Log.isDebugEnabled()) Log.debug("binding server to port " + addr.getPort());
+        if (LOG.isDebugEnabled()) LOG.debug("binding server to port " + addr.getPort());
         SelectChannelConnector connector = new SelectChannelConnector();
         connector.setAcceptors(1);
         connector.setPort(addr.getPort());
@@ -120,7 +123,7 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
     	if (!(executor instanceof ThreadPoolExecutor))
     		throw new IllegalArgumentException("only java.util.concurrent.ThreadPoolExecutor instances are allowed, got: " + executor.getClass().getName());
     	
-    	if (Log.isDebugEnabled()) Log.debug("using ThreadPoolExecutor for server thread pool");
+    	if (LOG.isDebugEnabled()) LOG.debug("using ThreadPoolExecutor for server thread pool");
     	this._executor = (ThreadPoolExecutor) executor;
     	_server.setThreadPool(new ThreadPoolExecutorAdapter(_executor));
     }
@@ -168,7 +171,7 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
             {
                 connector.stop();
             } catch (Exception ex) {
-                Log.warn(ex);
+                LOG.warn(ex);
             }
             _server.removeConnector(connector);
         }

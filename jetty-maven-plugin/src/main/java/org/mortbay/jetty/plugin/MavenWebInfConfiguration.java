@@ -25,6 +25,7 @@ import java.util.List;
 import org.eclipse.jetty.util.IO;
 import org.eclipse.jetty.util.LazyList;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
@@ -33,6 +34,8 @@ import org.eclipse.jetty.webapp.WebInfConfiguration;
 
 public class MavenWebInfConfiguration extends WebInfConfiguration
 {
+    private static final Logger LOG = Log.getLogger(MavenWebInfConfiguration.class);
+
     protected Resource _originalResourceBase;
     protected Resource[]  _unpackedOverlays;
   
@@ -42,15 +45,15 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
         JettyWebAppContext jwac = (JettyWebAppContext)context;
         if (jwac.getClassPathFiles() != null)
         {
-            if (Log.isDebugEnabled()) Log.debug("Setting up classpath ...");
+            if (LOG.isDebugEnabled()) LOG.debug("Setting up classpath ...");
 
             //put the classes dir and all dependencies into the classpath
             Iterator itor = jwac.getClassPathFiles().iterator();
             while (itor.hasNext())
                 ((WebAppClassLoader)context.getClassLoader()).addClassPath(((File)itor.next()).getCanonicalPath());
 
-            if (Log.isDebugEnabled())
-                Log.debug("Classpath = "+LazyList.array2List(((URLClassLoader)context.getClassLoader()).getURLs()));
+            if (LOG.isDebugEnabled())
+                LOG.debug("Classpath = "+LazyList.array2List(((URLClassLoader)context.getClassLoader()).getURLs()));
         }
         super.configure(context);
 
@@ -60,11 +63,11 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
         newServerClasses[0] = "org.apache.maven.";
         newServerClasses[1] = "org.codehaus.plexus.";
         System.arraycopy( existingServerClasses, 0, newServerClasses, 2, existingServerClasses.length );
-        if (Log.isDebugEnabled())
+        if (LOG.isDebugEnabled())
         {
-            Log.debug("Server classes:");
+            LOG.debug("Server classes:");
             for (int i=0;i<newServerClasses.length;i++)
-                Log.debug(newServerClasses[i]);
+                LOG.debug(newServerClasses[i]);
         }
         context.setServerClasses( newServerClasses ); 
     }
@@ -124,7 +127,7 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
                 _unpackedOverlays[idx] = unpackOverlay(context, overlays.get(idx));
                  newResources[idx+offset] = _unpackedOverlays[idx];
 
-                Log.info("Adding overlay: " + _unpackedOverlays[idx]);
+                LOG.info("Adding overlay: " + _unpackedOverlays[idx]);
             }
             
             jwac.setBaseResource(new ResourceCollection(newResources));
@@ -153,7 +156,7 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
             }
             catch (IOException e)
             {
-                Log.ignore(e);
+                LOG.ignore(e);
             }
         }
         super.deconfigure(context);
@@ -187,7 +190,7 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
                     }
                     catch (Exception e)
                     {
-                        Log.warn("Bad url ", e);
+                        LOG.warn("Bad url ", e);
                     }
                 }
             }

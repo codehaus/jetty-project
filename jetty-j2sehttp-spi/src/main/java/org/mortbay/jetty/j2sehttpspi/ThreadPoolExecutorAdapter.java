@@ -20,7 +20,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
-import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Log;import org.eclipse.jetty.util.log.Logger;
+
 import org.eclipse.jetty.util.thread.ThreadPool;
 
 /**
@@ -29,6 +30,8 @@ import org.eclipse.jetty.util.thread.ThreadPool;
  */
 public class ThreadPoolExecutorAdapter extends AbstractLifeCycle implements ThreadPool
 {
+    private static final Logger LOG = Log.getLogger(ThreadPoolExecutorAdapter.class);
+
 	
 	private ThreadPoolExecutor executor;
 	
@@ -46,7 +49,7 @@ public class ThreadPoolExecutorAdapter extends AbstractLifeCycle implements Thre
         }
         catch(RejectedExecutionException e)
         {
-            Log.warn(e);
+            LOG.warn(e);
             return false;
         }
 	}

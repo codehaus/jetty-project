@@ -43,7 +43,7 @@ public class SystemProperties
     /**
      * Set a System.property with this value if it is not already set.
      * 
-     * @return
+     * @returns true if property has been set
      */
     public static boolean setIfNotSetAlready(Property property)
     {

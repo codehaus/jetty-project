@@ -28,6 +28,7 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.toolchain.jmx.JmxServiceConnection;
 import org.eclipse.jetty.toolchain.test.JettyDistro;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
@@ -43,6 +44,8 @@ import org.junit.Test;
  */
 public class JmxServiceTest
 {
+    private static final Logger LOG = Log.getLogger(JmxServiceTest.class);
+
     private static JettyDistro jetty;
 
     @BeforeClass
@@ -111,7 +114,7 @@ public class JmxServiceTest
         }
         catch (Exception ex)
         {
-            Log.debug(ex);
+            LOG.debug(ex);
         }
         
         if (client != null)
@@ -142,7 +145,7 @@ public class JmxServiceTest
                 }
                 catch (IOException ex)
                 {
-                    Log.debug(ex);
+                    LOG.debug(ex);
                 }
             }
 
@@ -152,7 +155,7 @@ public class JmxServiceTest
             }
             catch (Exception ex)
             {
-                Log.debug(ex);
+                LOG.debug(ex);
             }
         }
     }
