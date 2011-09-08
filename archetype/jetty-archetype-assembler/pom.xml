@@ -13,7 +13,7 @@
   <name>Jetty :: Archetype :: App Assembler</name>
 
 	<properties>
-	<jetty-version>8.0.0.RC0-SNAPSHOT</jetty-version>
+	<jetty-version>8.0.1-SNAPSHOT</jetty-version>
 	</properties>
 
   <build>
