@@ -86,7 +86,6 @@
         <version>${project.version}</version>
         <configuration>
           <scanIntervalSeconds>10</scanIntervalSeconds>
-          <useTestClasspath>true</useTestClasspath>
          <webAppXml>${project.build.directory}/plugin-context.xml</webAppXml>
          <webAppConfig>
            <war>src/main/webapp</war>

@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
-import org.eclipse.jetty.annotations.ContainerInitializerConfiguration;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.util.URIUtil;
 import org.eclipse.jetty.util.log.Log;
@@ -91,8 +90,7 @@ public class JettyWebAppContext extends WebAppContext
                 envConfig = new EnvConfiguration(),
                 new org.eclipse.jetty.plus.webapp.PlusConfiguration(),
                 new MavenAnnotationConfiguration(),
-                new JettyWebXmlConfiguration(),
-                new ContainerInitializerConfiguration()
+                new JettyWebXmlConfiguration()
         });
         // Turn off copyWebInf option as it is not applicable for plugin.
         super.setCopyWebInf(false);
