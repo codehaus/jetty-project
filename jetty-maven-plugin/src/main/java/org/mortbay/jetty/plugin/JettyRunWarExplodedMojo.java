@@ -149,16 +149,7 @@ public class JettyRunWarExplodedMojo extends AbstractJettyMojo
         getLog().info("Restart completed.");
     }
 
-        
-    /* (non-Javadoc)
-     * @see org.eclipse.jetty.server.plugin.AbstractJettyMojo#finishConfigurationBeforeStart()
-     */
-    public void finishConfigurationBeforeStart() throws Exception
-    {
-        return;
-    }
-
-    
+   
     
     public void configureWebApplication () throws Exception
     {
@@ -172,19 +163,6 @@ public class JettyRunWarExplodedMojo extends AbstractJettyMojo
     }
 
     
-    
-    public void applyJettyXml() throws Exception
-    {
-        if (getJettyXmlFiles() == null)
-            return;
-        
-        for ( File xmlFile : getJettyXmlFiles() )
-        {
-            getLog().info( "Configuring Jetty from xml configuration file = " + xmlFile.getCanonicalPath() );        
-            XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(xmlFile));
-            xmlConfiguration.configure(this.server);
-        }
-    }
-
+  
   
 }

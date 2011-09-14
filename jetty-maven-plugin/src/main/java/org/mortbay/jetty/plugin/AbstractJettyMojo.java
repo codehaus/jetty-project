@@ -35,6 +35,8 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.util.Scanner;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.xml.XmlConfiguration;
@@ -254,9 +256,6 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     public abstract void configureScanner () throws MojoExecutionException;
     
-    public abstract void applyJettyXml () throws Exception;
-    
-    public abstract void finishConfigurationBeforeStart() throws Exception;
     
 
 
@@ -272,6 +271,36 @@ public abstract class AbstractJettyMojo extends AbstractMojo
         checkPomConfiguration();
         startJetty();
     }
+    
+
+    public void finishConfigurationBeforeStart() throws Exception
+    {
+        HandlerCollection contexts = (HandlerCollection)server.getChildHandlerByClass(ContextHandlerCollection.class);
+        if (contexts==null)
+            contexts = (HandlerCollection)server.getChildHandlerByClass(HandlerCollection.class);
+        
+        for (int i=0; (this.contextHandlers != null) && (i < this.contextHandlers.length); i++)
+        {
+            contexts.addHandler(this.contextHandlers[i]);
+        }
+    }
+
+   
+   
+    
+    public void applyJettyXml() throws Exception
+    {
+        if (getJettyXmlFiles() == null)
+            return;
+        
+        for ( File xmlFile : getJettyXmlFiles() )
+        {
+            getLog().info( "Configuring Jetty from xml configuration file = " + xmlFile.getCanonicalPath() );        
+            XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(xmlFile));
+            xmlConfiguration.configure(this.server);
+        }
+    }
+
 
 
     public void startJetty () throws MojoExecutionException

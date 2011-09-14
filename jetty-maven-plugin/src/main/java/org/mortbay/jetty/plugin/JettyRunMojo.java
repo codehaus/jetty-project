@@ -513,34 +513,7 @@ public class JettyRunMojo extends AbstractJettyMojo
     }
   
 
-    public void finishConfigurationBeforeStart() throws Exception
-    {
-        HandlerCollection contexts = (HandlerCollection)server.getChildHandlerByClass(ContextHandlerCollection.class);
-        if (contexts==null)
-            contexts = (HandlerCollection)server.getChildHandlerByClass(HandlerCollection.class);
-        
-        for (int i=0; (this.contextHandlers != null) && (i < this.contextHandlers.length); i++)
-        {
-            contexts.addHandler(this.contextHandlers[i]);
-        }
-    }
-
-   
  
-    
-    public void applyJettyXml() throws Exception
-    {
-        if (getJettyXmlFiles() == null)
-            return;
-        
-        for ( File xmlFile : getJettyXmlFiles() )
-        {
-            getLog().info( "Configuring Jetty from xml configuration file = " + xmlFile.getCanonicalPath() );        
-            XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(xmlFile));
-            xmlConfiguration.configure(this.server);
-        }
-    }
-
 
     
     public void execute() throws MojoExecutionException, MojoFailureException
