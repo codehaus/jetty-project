@@ -186,6 +186,7 @@ public class JettyRunForkedMojo extends AbstractMojo
      * Port to listen to stop jetty on executing -DSTOP.PORT=&lt;stopPort&gt; 
      * -DSTOP.KEY=&lt;stopKey&gt; -jar start.jar --stop
      * @parameter
+     * @required
      */
     protected int stopPort;
     
@@ -193,6 +194,7 @@ public class JettyRunForkedMojo extends AbstractMojo
      * Key to provide when stopping jetty on executing java -DSTOP.KEY=&lt;stopKey&gt; 
      * -DSTOP.PORT=&lt;stopPort&gt; -jar start.jar --stop
      * @parameter
+     * @required
      */
     protected String stopKey;
 
@@ -403,10 +405,10 @@ public class JettyRunForkedMojo extends AbstractMojo
     }
     
 
-    private Artifact getPluginJar ()
+    private List<Artifact>  getExtraJars()
     throws Exception
     {
-
+        List<Artifact> extraJars = new ArrayList<Artifact>();
         List l = plugin.getArtifacts();
         Artifact pluginArtifact = null;
 
@@ -416,17 +418,22 @@ public class JettyRunForkedMojo extends AbstractMojo
             while (itor.hasNext() && pluginArtifact == null)
             {
                 Artifact a = (Artifact)itor.next();
+                System.err.println("PA: "+a.getArtifactId());
                 if (a.getArtifactId().equals(plugin.getArtifactId()))
-                    pluginArtifact = a;
+                {
+                    resolver.resolve( a, remoteRepositories, localRepository );
+                    extraJars.add(a);
+                }
+                if ("maven-plugin-api".equals(a.getArtifactId()))
+                {
+                    resolver.resolve(a, remoteRepositories, localRepository);
+                    extraJars.add(a);
+                }
+                    
             }
         }
 
-
-        resolver.resolve( pluginArtifact, remoteRepositories, localRepository );
-        if (pluginArtifact.isResolved())
-            return pluginArtifact;
-
-        return null;
+        return extraJars;
     }
 
     
@@ -473,25 +480,17 @@ public class JettyRunForkedMojo extends AbstractMojo
             ProcessBuilder builder = new ProcessBuilder(cmd);
             builder.directory(project.getBasedir());
             
-            System.err.println(Arrays.toString(cmd.toArray()));
+            if (PluginLog.getLog().isDebugEnabled())
+                PluginLog.getLog().debug(Arrays.toString(cmd.toArray()));
             
             forkedProcess = builder.start();
 
-            ConsoleParser parser = new ConsoleParser();
-            List<String[]> connList = parser.newPattern("Started [A-Za-z]*Connector@([0-9]*\\.[0-9]*\\.[0-9]*\\.[0-9]*):([0-9]*)",1);
-
-            startPump("STDOUT",parser,forkedProcess.getInputStream());
-            startPump("STDERR",parser,forkedProcess.getErrorStream());
-
-            //parser.waitForDone(60,TimeUnit.SECONDS);
+            startPump("STDOUT",forkedProcess.getInputStream());
+            startPump("STDERR",forkedProcess.getErrorStream());
             
             int exitcode = forkedProcess.waitFor();
-            System.err.println("Forked exit: "+exitcode);
-
-            //if (connList.isEmpty())
-            //{
-            //    throw new InterruptedException();
-            //}
+            
+            PluginLog.getLog().info("Forked execution exit: "+exitcode);
         }
         catch (InterruptedException ex)
         {
@@ -524,14 +523,16 @@ public class JettyRunForkedMojo extends AbstractMojo
                     classPath.append(':');
                 }
                 classPath.append(artifact.getFile().getCanonicalPath());
+
             }
         }
         
-        Artifact pluginJar = getPluginJar();
-        if (pluginJar != null)
+        List<Artifact> extraJars = getExtraJars();
+        for (Artifact a:extraJars)
         { 
             classPath.append(':');
-            classPath.append(pluginJar.getFile().getAbsolutePath());
+            classPath.append(a.getFile().getAbsolutePath());
+            System.err.println("CP: "+a.getFile().getCanonicalPath());
         }
         return pathSeparators(classPath.toString());
     }
@@ -588,99 +589,15 @@ public class JettyRunForkedMojo extends AbstractMojo
         return ret.toString();
     }
 
-    private void startPump(String mode, ConsoleParser parser, InputStream inputStream)
+    private void startPump(String mode, InputStream inputStream)
     {
         ConsoleStreamer pump = new ConsoleStreamer(mode,inputStream);
-        pump.setParser(parser);
         Thread thread = new Thread(pump,"ConsoleStreamer/" + mode);
         thread.start();
     }
 
-    private static class ConsoleParser
-    {
-        private List<ConsolePattern> patterns = new ArrayList<ConsolePattern>();
-        private CountDownLatch latch;
-        private int count;
+  
 
-        public List<String[]> newPattern(String exp, int cnt)
-        {
-            ConsolePattern pat = new ConsolePattern(exp,cnt);
-            patterns.add(pat);
-            count += cnt;
-
-            return pat.getMatches();
-        }
-
-        public void parse(String line)
-        {
-            for (ConsolePattern pat : patterns)
-            {
-                Matcher mat = pat.getMatcher(line);
-                if (mat.find())
-                {
-                    int num = 0, count = mat.groupCount();
-                    String[] match = new String[count];
-                    while (num++ < count)
-                    {
-                        match[num - 1] = mat.group(num);
-                    }
-                    pat.getMatches().add(match);
-
-                    if (pat.getCount() > 0)
-                    {
-                        getLatch().countDown();
-                    }
-                }
-            }
-        }
-
-        public void waitForDone(long timeout, TimeUnit unit) throws InterruptedException
-        {
-            getLatch().await(timeout,unit);
-        }
-
-        private CountDownLatch getLatch()
-        {
-            synchronized (this)
-            {
-                if (latch == null)
-                {
-                    latch = new CountDownLatch(count);
-                }
-            }
-
-            return latch;
-        }
-    }
-
-    private static class ConsolePattern
-    {
-        private Pattern pattern;
-        private List<String[]> matches;
-        private int count;
-
-        ConsolePattern(String exp, int cnt)
-        {
-            pattern = Pattern.compile(exp);
-            matches = new ArrayList<String[]>();
-            count = cnt;
-        }
-
-        public Matcher getMatcher(String line)
-        {
-            return pattern.matcher(line);
-        }
-
-        public List<String[]> getMatches()
-        {
-            return matches;
-        }
-
-        public int getCount()
-        {
-            return count;
-        }
-    }
 
     /**
      * Simple streamer for the console output from a Process
@@ -689,7 +606,6 @@ public class JettyRunForkedMojo extends AbstractMojo
     {
         private String mode;
         private BufferedReader reader;
-        private ConsoleParser parser;
 
         public ConsoleStreamer(String mode, InputStream is)
         {
@@ -697,10 +613,6 @@ public class JettyRunForkedMojo extends AbstractMojo
             this.reader = new BufferedReader(new InputStreamReader(is));
         }
 
-        public void setParser(ConsoleParser connector)
-        {
-            this.parser = connector;
-        }
 
         public void run()
         {
@@ -709,10 +621,6 @@ public class JettyRunForkedMojo extends AbstractMojo
             {
                 while ((line = reader.readLine()) != (null))
                 {
-                    if (parser != null)
-                    {
-                        parser.parse(line);
-                    }
                     System.out.println("[" + mode + "] " + line);
                 }
             }
@@ -724,7 +632,6 @@ public class JettyRunForkedMojo extends AbstractMojo
             {
                 IO.close(reader);
             }
-            // System.out.printf("ConsoleStreamer/%s finished%n",mode);
         }
     }
 }

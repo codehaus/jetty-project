@@ -81,10 +81,10 @@ public class Starter
 
         this.server.addWebApplication(webApp);
 
+        System.err.println("STOP PORT="+stopPort+", STOP KEY="+stopKey);
         if(stopPort>0 && stopKey!=null)
         {
             monitor = new Monitor(stopPort, stopKey, new Server[]{server}, true);
-            monitor.start();
         }
     }
     
