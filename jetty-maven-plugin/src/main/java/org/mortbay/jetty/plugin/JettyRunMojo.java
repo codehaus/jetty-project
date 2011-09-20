@@ -135,11 +135,7 @@ public class JettyRunMojo extends AbstractJettyMojo
     private ScanTargetPattern[] scanTargetPatterns;
 
 
-    /**
-     * List of files on the classpath for the webapp
-     */
-    private List<File> classPathFiles;
-    
+   
     
     /**
      * Extra scan targets as a list
@@ -276,11 +272,13 @@ public class JettyRunMojo extends AbstractJettyMojo
        
        if (webAppConfig.getBaseResource() == null)
                webAppConfig.setBaseResource(webAppSourceDirectoryResource);
-  
-       webAppConfig.setWebInfClasses (getClassesDirs());
+
+       if (getClassesDirectory() != null)
+           webAppConfig.setClasses (getClassesDirectory());
+       if (useTestClasspath && (testClassesDirectory != null))
+           webAppConfig.setTestClasses (testClassesDirectory);
        webAppConfig.setWebInfLib (getDependencyFiles());
-       
-       setClassPathFiles(setUpClassPath(webAppConfig.getWebInfClasses(), webAppConfig.getWebInfLib()));
+
         
         //if we have not already set web.xml location, need to set one up
         if (webAppConfig.getDescriptor() == null)
@@ -315,12 +313,7 @@ public class JettyRunMojo extends AbstractJettyMojo
                 }
             }
         }
-        getLog().info( "web.xml file = "+webAppConfig.getDescriptor());
-
-        if (webAppConfig.getClassPathFiles() == null)
-            webAppConfig.setClassPathFiles(getClassPathFiles());
-        
-       
+        getLog().info( "web.xml file = "+webAppConfig.getDescriptor());       
         getLog().info("Webapp directory = " + getWebAppSourceDirectory().getCanonicalPath());
     }
     
@@ -390,7 +383,11 @@ public class JettyRunMojo extends AbstractJettyMojo
             scanList.add(jettyWebXmlFile);
         scanList.addAll(getExtraScanTargets());
         scanList.add(getProject().getFile());
-        scanList.addAll(getClassPathFiles());
+        if (webAppConfig.getTestClasses() != null)
+            scanList.add(webAppConfig.getTestClasses());
+        if (webAppConfig.getClasses() != null)
+        scanList.add(webAppConfig.getClasses());
+        scanList.addAll(webAppConfig.getWebInfLib());
         setScanList(scanList);
         ArrayList<Scanner.BulkListener> listeners = new ArrayList<Scanner.BulkListener>();
         listeners.add(new Scanner.BulkListener()
@@ -432,7 +429,11 @@ public class JettyRunMojo extends AbstractJettyMojo
                 scanList.add(new File(webAppConfig.getJettyEnvXml()));
             scanList.addAll(getExtraScanTargets());
             scanList.add(getProject().getFile());
-            scanList.addAll(getClassPathFiles());
+            if (webAppConfig.getTestClasses() != null)
+                scanList.add(webAppConfig.getTestClasses());
+            if (webAppConfig.getClasses() != null)
+            scanList.add(webAppConfig.getClasses());
+            scanList.addAll(webAppConfig.getWebInfLib());
             getScanner().setScanDirs(scanList);
         }
 
@@ -481,12 +482,15 @@ public class JettyRunMojo extends AbstractJettyMojo
     
    
 
-    private List<File> setUpClassPath(List<File> webInfClasses, List<File> webInfJars)
+    private List<File> setUpClassPath(File webInfClasses, File testClasses, List<File> webInfJars)
     {
-        List<File> classPathFiles = new ArrayList<File>();       
-        classPathFiles.addAll(webInfClasses);
+        List<File> classPathFiles = new ArrayList<File>();   
+        if (webInfClasses != null)
+            classPathFiles.add(webInfClasses);
+        if (testClasses != null)
+            classPathFiles.add(testClasses);
         classPathFiles.addAll(webInfJars);
-      
+
         if (getLog().isDebugEnabled())
         {
             for (int i = 0; i < classPathFiles.size(); i++)
@@ -549,15 +553,7 @@ public class JettyRunMojo extends AbstractJettyMojo
         this.webAppSourceDirectory = webAppSourceDirectory;
     }
 
-    public void setClassPathFiles (List<File> list)
-    {
-        this.classPathFiles = new ArrayList<File>(list);
-    }
-
-    public List<File> getClassPathFiles ()
-    {
-        return this.classPathFiles;
-    }
+  
 
 
     public List<File> getExtraScanTargets ()
