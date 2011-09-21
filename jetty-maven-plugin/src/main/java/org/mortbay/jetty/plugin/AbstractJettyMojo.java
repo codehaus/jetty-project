@@ -48,8 +48,22 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  *
  *
  */
+/**
+ * AbstractJettyMojo
+ *
+ *
+ */
 public abstract class AbstractJettyMojo extends AbstractMojo
 {
+    
+    /**
+     * List of goals that are NOT to be used
+     * @parameter
+     */
+    protected String[] excludedGoals;
+    
+    
+    
     /**
      * A wrapper for the Server object
      */
@@ -106,7 +120,6 @@ public abstract class AbstractJettyMojo extends AbstractMojo
      * @readonly
      */
     protected MavenProject project;
-
 
 
     /**
@@ -225,6 +238,14 @@ public abstract class AbstractJettyMojo extends AbstractMojo
      */
     protected String webAppXml;
 
+    
+    /** 
+     * @parameter expression="${mojoExecution}" 
+     */
+    private org.apache.maven.plugin.MojoExecution execution;
+
+    
+    
     /**
      * A scanner to check for changes to the webapp
      */
@@ -256,6 +277,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     public abstract void configureScanner () throws MojoExecutionException;
     
+
     
 
 
@@ -267,6 +289,14 @@ public abstract class AbstractJettyMojo extends AbstractMojo
             getLog().info("Skipping Jetty start: jetty.skip==true");
             return;
         }
+
+        if (isExcluded(execution.getMojoDescriptor().getGoal()))
+        {
+            getLog().info("The goal \""+execution.getMojoDescriptor().getFullGoalName()+
+                          "\" has been made unavailable for this web application by an <excludedGoal> configuration.");
+            return;
+        }
+        
         PluginLog.setLog(getLog());
         checkPomConfiguration();
         startJetty();
@@ -687,104 +717,147 @@ public abstract class AbstractJettyMojo extends AbstractMojo
         this.scannerListeners = new ArrayList<Scanner.BulkListener>(listeners);
     }
 
-    public ArrayList getScannerListeners ()
+    public ArrayList getScannerListeners()
     {
         return this.scannerListeners;
     }
 
-    public JettyWebAppContext getWebAppConfig() {
+    public JettyWebAppContext getWebAppConfig()
+    {
         return webAppConfig;
     }
 
-    public void setWebAppConfig(JettyWebAppContext webAppConfig) {
+    public void setWebAppConfig(JettyWebAppContext webAppConfig)
+    {
         this.webAppConfig = webAppConfig;
     }
 
-    public RequestLog getRequestLog() {
+    public RequestLog getRequestLog()
+    {
         return requestLog;
     }
 
-    public void setRequestLog(RequestLog requestLog) {
+    public void setRequestLog(RequestLog requestLog)
+    {
         this.requestLog = requestLog;
     }
 
-    public LoginService[] getLoginServices() {
+    public LoginService[] getLoginServices()
+    {
         return loginServices;
     }
 
-    public void setLoginServices(LoginService[] loginServices) {
+    public void setLoginServices(LoginService[] loginServices)
+    {
         this.loginServices = loginServices;
     }
 
-    public ContextHandler[] getContextHandlers() {
+    public ContextHandler[] getContextHandlers()
+    {
         return contextHandlers;
     }
 
-    public void setContextHandlers(ContextHandler[] contextHandlers) {
+    public void setContextHandlers(ContextHandler[] contextHandlers)
+    {
         this.contextHandlers = contextHandlers;
     }
 
-    public Connector[] getConnectors() {
+    public Connector[] getConnectors()
+    {
         return connectors;
     }
 
-    public void setConnectors(Connector[] connectors) {
+    public void setConnectors(Connector[] connectors)
+    {
         this.connectors = connectors;
     }
 
-    public String getReload() {
+    public String getReload()
+    {
         return reload;
     }
 
-    public void setReload(String reload) {
+    public void setReload(String reload)
+    {
         this.reload = reload;
     }
 
-    public String getJettyConfig() {
+    public String getJettyConfig()
+    {
         return jettyConfig;
     }
 
-    public void setJettyConfig(String jettyConfig) {
+    public void setJettyConfig(String jettyConfig)
+    {
         this.jettyConfig = jettyConfig;
     }
 
-    public String getWebAppXml() {
+    public String getWebAppXml()
+    {
         return webAppXml;
     }
 
-    public void setWebAppXml(String webAppXml) {
+    public void setWebAppXml(String webAppXml)
+    {
         this.webAppXml = webAppXml;
     }
 
-    public boolean isSkip() {
+    public boolean isSkip()
+    {
         return skip;
     }
 
-    public void setSkip(boolean skip) {
+    public void setSkip(boolean skip)
+    {
         this.skip = skip;
     }
 
-    public boolean isDaemon() {
+    public boolean isDaemon()
+    {
         return daemon;
     }
 
-    public void setDaemon(boolean daemon) {
+    public void setDaemon(boolean daemon)
+    {
         this.daemon = daemon;
     }
 
-    public String getStopKey() {
+    public String getStopKey()
+    {
         return stopKey;
     }
 
-    public void setStopKey(String stopKey) {
+    public void setStopKey(String stopKey)
+    {
         this.stopKey = stopKey;
     }
 
-    public int getStopPort() {
+    public int getStopPort()
+    {
         return stopPort;
     }
 
-    public void setStopPort(int stopPort) {
+    public void setStopPort(int stopPort)
+    {
         this.stopPort = stopPort;
+    }
+    
+    public boolean isExcluded (String goal)
+    {
+        if (excludedGoals == null || goal == null)
+            return false;
+        
+        goal = goal.trim();
+        if ("".equals(goal))
+            return false;
+        
+        boolean excluded = false;
+        for (int i=0; i<excludedGoals.length && !excluded; i++)
+        {
+            if (excludedGoals[i].equalsIgnoreCase(goal))
+                excluded = true;
+        }
+        
+        return excluded;
     }
 }

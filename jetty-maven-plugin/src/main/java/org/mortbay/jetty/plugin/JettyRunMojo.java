@@ -549,62 +549,69 @@ public class JettyRunMojo extends AbstractJettyMojo
         return this.webAppSourceDirectory;
     }
 
-    public void setWebAppSourceDirectory(File webAppSourceDirectory) {
+    public void setWebAppSourceDirectory(File webAppSourceDirectory)
+    {
         this.webAppSourceDirectory = webAppSourceDirectory;
     }
 
-  
-
-
-    public List<File> getExtraScanTargets ()
+    public List<File> getExtraScanTargets()
     {
         return this.extraScanTargets;
     }
-    
+
     public void setExtraScanTargets(List<File> list)
     {
         this.extraScanTargets = list;
     }
-    
-    
 
-    public boolean isUseTestClasspath() {
+    public boolean isUseTestClasspath()
+    {
         return useTestClasspath;
     }
 
-    public void setUseTestClasspath(boolean useTestClasspath) {
+    public void setUseTestClasspath(boolean useTestClasspath)
+    {
         this.useTestClasspath = useTestClasspath;
     }
 
-    public File getTestClassesDirectory() {
+    public File getTestClassesDirectory()
+    {
         return testClassesDirectory;
     }
 
-    public void setTestClassesDirectory(File testClassesDirectory) {
+    public void setTestClassesDirectory(File testClassesDirectory)
+    {
         this.testClassesDirectory = testClassesDirectory;
     }
 
-    public List getPluginArtifacts() {
+    public List getPluginArtifacts()
+    {
         return pluginArtifacts;
     }
 
-    public void setPluginArtifacts(List pluginArtifacts) {
+    public void setPluginArtifacts(List pluginArtifacts)
+    {
         this.pluginArtifacts = pluginArtifacts;
     }
 
-    public File[] getScanTargets() {
+    public File[] getScanTargets()
+    {
         return scanTargets;
     }
 
-    public void setScanTargets(File[] scanTargets) {
+    public void setScanTargets(File[] scanTargets)
+    {
         this.scanTargets = scanTargets;
     }
 
-    public ScanTargetPattern[] getScanTargetPatterns() {
+    public ScanTargetPattern[] getScanTargetPatterns()
+    {
         return scanTargetPatterns;
     }
 
-    public void setScanTargetPatterns(ScanTargetPattern[] scanTargetPatterns) {
+    public void setScanTargetPatterns(ScanTargetPattern[] scanTargetPatterns)
+    {
         this.scanTargetPatterns = scanTargetPatterns;
     }
+    
 }

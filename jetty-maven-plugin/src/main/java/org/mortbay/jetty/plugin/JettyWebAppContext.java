@@ -219,10 +219,6 @@ public class JettyWebAppContext extends WebAppContext
             webInfClasses.add(testClasses);
         if (classes != null)
             webInfClasses.add(classes);
-
-        System.err.println("Classes : "+classes);
-        System.err.println("TestClasses : "+testClasses);
-        
         
         // Set up the classpath
         classpathFiles = new ArrayList<File>();
