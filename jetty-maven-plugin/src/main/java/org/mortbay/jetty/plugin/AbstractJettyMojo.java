@@ -19,12 +19,18 @@ package org.mortbay.jetty.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -55,6 +61,15 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  */
 public abstract class AbstractJettyMojo extends AbstractMojo
 {
+  
+    
+    /**
+     * Whether or not to include dependencies on the plugin's classpath with &lt;scope&gt;provided&lt;/scope&gt;
+     * Use WITH CAUTION as you may wind up with duplicate jars/classes.
+     * @parameter alias="useProvidedScope" default-value="false"
+     */
+    protected boolean useProvided;
+    
     
     /**
      * List of goals that are NOT to be used
@@ -110,16 +125,6 @@ public abstract class AbstractJettyMojo extends AbstractMojo
      */
     protected JettyWebAppContext webAppConfig;
 
-
-
-    /**
-     * The maven project.
-     *
-     * @parameter expression="${executedProject}"
-     * @required
-     * @readonly
-     */
-    protected MavenProject project;
 
 
     /**
@@ -238,12 +243,38 @@ public abstract class AbstractJettyMojo extends AbstractMojo
      */
     protected String webAppXml;
 
+
+    /**
+     * The maven project.
+     *
+     * @parameter expression="${project}"
+     * @readonly
+     */
+    protected MavenProject project;
+
+    
+    /**
+     * The artifacts for the project.
+     * 
+     * @parameter expression="${project.artifacts}"
+     * @readonly
+     */
+    protected Set projectArtifacts;
+    
     
     /** 
      * @parameter expression="${mojoExecution}" 
      */
     private org.apache.maven.plugin.MojoExecution execution;
 
+    /**
+     * The artifacts for the plugin itself.
+     * 
+     * @parameter expression="${plugin.artifacts}"
+     * @readonly
+     */
+    private List pluginArtifacts;
+    
     
     
     /**
@@ -297,11 +328,69 @@ public abstract class AbstractJettyMojo extends AbstractMojo
             return;
         }
         
+        configurePluginClasspath();
         PluginLog.setLog(getLog());
         checkPomConfiguration();
         startJetty();
     }
     
+    
+    public void configurePluginClasspath() throws MojoExecutionException
+    {  
+        //if we are configured to include the provided dependencies on the plugin's classpath
+        //(which mimics being on jetty's classpath vs being on the webapp's classpath), we first
+        //try and filter out ones that will clash with jars that are plugin dependencies, then
+        //create a new classloader that we setup in the parent chain.
+        if (useProvided)
+        {
+            try
+            {
+                List<URL> provided = new ArrayList<URL>();
+                URL[] urls = null;
+               
+                for ( Iterator<Artifact> iter = projectArtifacts.iterator(); iter.hasNext(); )
+                {                   
+                    Artifact artifact = iter.next();
+                    if (Artifact.SCOPE_PROVIDED.equals(artifact.getScope()) && !isPluginArtifact(artifact))
+                    {
+                        provided.add(artifact.getFile().toURI().toURL());
+                        if (getLog().isDebugEnabled()) { getLog().debug("Adding provided artifact: "+artifact);}
+                    }
+                }
+
+                if (!provided.isEmpty())
+                {
+                    urls = new URL[provided.size()];
+                    provided.toArray(urls);
+                    URLClassLoader loader  = new URLClassLoader(urls, getClass().getClassLoader());
+                    Thread.currentThread().setContextClassLoader(loader);
+                    getLog().info("Plugin classpath augmented with <scope>provided</scope> dependencies: "+Arrays.toString(urls));
+                }
+            }
+            catch (MalformedURLException e)
+            {
+                throw new MojoExecutionException("Invalid url", e);
+            }
+        }
+    }
+    
+    
+    public boolean isPluginArtifact(Artifact artifact)
+    {
+        if (pluginArtifacts == null || pluginArtifacts.isEmpty())
+            return false;
+        
+        boolean isPluginArtifact = false;
+        for (Iterator<Artifact> iter = pluginArtifacts.iterator(); iter.hasNext() && !isPluginArtifact; )
+        {
+            Artifact pluginArtifact = iter.next();
+            if (getLog().isDebugEnabled()) { getLog().debug("Checking "+pluginArtifact);}
+            if (pluginArtifact.getGroupId().equals(artifact.getGroupId()) && pluginArtifact.getArtifactId().equals(artifact.getArtifactId()))
+                isPluginArtifact = true;
+        }
+        
+        return isPluginArtifact;
+    }
 
     public void finishConfigurationBeforeStart() throws Exception
     {
@@ -841,6 +930,17 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     {
         this.stopPort = stopPort;
     }
+    
+    public List getPluginArtifacts()
+    {
+        return pluginArtifacts;
+    }
+
+    public void setPluginArtifacts(List pluginArtifacts)
+    {
+        this.pluginArtifacts = pluginArtifacts;
+    }
+    
     
     public boolean isExcluded (String goal)
     {

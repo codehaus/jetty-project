@@ -9,8 +9,8 @@
   <packaging>maven-plugin</packaging>
   <name>Jetty :: Jetty Maven Plugin</name>
   <properties>
-    <mavenVersion>2.0.8</mavenVersion>
-    <pluginToolsVersion>2.5.1</pluginToolsVersion>
+    <mavenVersion>3.0.3</mavenVersion>
+    <pluginToolsVersion>2.9</pluginToolsVersion>
   </properties>
   <build>
     <plugins>
@@ -57,11 +57,6 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
       <version>${jetty-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-project</artifactId>
-      <version>${mavenVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>

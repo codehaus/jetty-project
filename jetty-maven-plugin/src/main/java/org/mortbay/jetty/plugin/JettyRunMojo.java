@@ -26,15 +26,9 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.FileUtils;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.util.Scanner;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.resource.JarResource;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.xml.XmlConfiguration;
 
 /**
  *  <p>
@@ -60,7 +54,7 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  * 
  * 
  * @goal run
- * @requiresDependencyResolution runtime
+ * @requiresDependencyResolution compile+runtime
  * @execute phase="test-compile"
  * @description Runs jetty directly from a maven project
  */
@@ -70,12 +64,11 @@ public class JettyRunMojo extends AbstractJettyMojo
      * If true, the &lt;testOutputDirectory&gt;
      * and the dependencies of &lt;scope&gt;test&lt;scope&gt;
      * will be put first on the runtime classpath.
-     * @parameter default-value="false"
+     * @parameter alias="useTestScope" default-value="false"
      */
     private boolean useTestClasspath;
     
-    
-    
+  
     /**
      * The default location of the web.xml file. Will be used
      * if <webAppConfig><descriptor> is not set.
@@ -113,12 +106,7 @@ public class JettyRunMojo extends AbstractJettyMojo
      */
     private File webAppSourceDirectory;
     
-    /**
-     * @parameter expression="${plugin.artifacts}"
-     * @readonly
-     */
-    private List pluginArtifacts;
-    
+ 
     /**
      * List of files or directories to additionally periodically scan for changes. Optional.
      * @parameter
@@ -446,7 +434,7 @@ public class JettyRunMojo extends AbstractJettyMojo
     {
         List<File> dependencyFiles = new ArrayList<File>();
         List<Resource> overlays = new ArrayList<Resource>();
-        for ( Iterator<Artifact> iter = getProject().getArtifacts().iterator(); iter.hasNext(); )
+        for ( Iterator<Artifact> iter = projectArtifacts.iterator(); iter.hasNext(); )
         {
             Artifact artifact = (Artifact) iter.next();
             // Include runtime and compile time libraries, and possibly test libs too
@@ -474,8 +462,7 @@ public class JettyRunMojo extends AbstractJettyMojo
         }
         
         webAppConfig.setOverlays(overlays);
-        
-      
+              
         return dependencyFiles; 
     }
     
@@ -522,9 +509,10 @@ public class JettyRunMojo extends AbstractJettyMojo
     
     public void execute() throws MojoExecutionException, MojoFailureException
     {
+       
         super.execute();
     }
-    
+  
 
     public String getWebXml()
     {
@@ -582,16 +570,6 @@ public class JettyRunMojo extends AbstractJettyMojo
     public void setTestClassesDirectory(File testClassesDirectory)
     {
         this.testClassesDirectory = testClassesDirectory;
-    }
-
-    public List getPluginArtifacts()
-    {
-        return pluginArtifacts;
-    }
-
-    public void setPluginArtifacts(List pluginArtifacts)
-    {
-        this.pluginArtifacts = pluginArtifacts;
     }
 
     public File[] getScanTargets()
