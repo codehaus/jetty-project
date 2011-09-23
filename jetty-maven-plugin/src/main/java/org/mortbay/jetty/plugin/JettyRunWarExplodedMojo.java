@@ -44,6 +44,7 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  *  </p>
  *
  *@goal run-exploded
+ *@requiresDependencyResolution compile+runtime
  *@execute phase=package
  */
 public class JettyRunWarExplodedMojo extends AbstractJettyMojo

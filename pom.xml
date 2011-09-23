@@ -20,10 +20,9 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-parent</artifactId>
-    <version>12</version>
+    <version>13</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mortbay.jetty</groupId>
   <artifactId>jetty-integration-project</artifactId>
   <version>7.5.2-SNAPSHOT</version>
   <name>Jetty :: Codehaus Integration Project</name>

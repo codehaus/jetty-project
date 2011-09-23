@@ -5,13 +5,12 @@
     <version>7.5.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mortbay.jetty</groupId>
   <artifactId>jetty-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>Jetty :: Jetty Maven Plugin</name>
   <properties>
-    <mavenVersion>2.0.8</mavenVersion>
-    <pluginToolsVersion>2.5.1</pluginToolsVersion>
+    <mavenVersion>3.0.3</mavenVersion>
+    <pluginToolsVersion>2.9</pluginToolsVersion>
   </properties>
   <build>
     <plugins>
@@ -61,17 +60,17 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
-      <artifactId>maven-project</artifactId>
-      <version>${mavenVersion}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>${mavenVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
+      <version>${mavenVersion}</version>
+    </dependency>
+     <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
       <version>${mavenVersion}</version>
     </dependency>
     <dependency>
