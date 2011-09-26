@@ -13,9 +13,11 @@
 
 package org.mortbay.jetty.plugin;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -367,7 +369,7 @@ public class JettyRunForkedMojo extends AbstractMojo
             }
             props.put("overlay.files", strbuff.toString());
 
-            props.store(new BufferedWriter(new FileWriter(propsFile)), "properties for forked webapp");
+            props.store(new BufferedOutputStream(new FileOutputStream(propsFile)), "properties for forked webapp");
             return propsFile;
         }
         catch (Exception e)
