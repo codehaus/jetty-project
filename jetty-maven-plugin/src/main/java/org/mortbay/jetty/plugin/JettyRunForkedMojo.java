@@ -222,18 +222,7 @@ public class JettyRunForkedMojo extends AbstractMojo
      * @readonly
      */
     private PluginDescriptor plugin;
-    
-    
-    /** @component */
-    //private org.apache.maven.artifact.resolver.ArtifactResolver resolver;
-     
-    /**@parameter default-value="${localRepository}" */
-    private org.apache.maven.artifact.repository.ArtifactRepository localRepository;
-     
-    /** @parameter default-value="${project.remoteArtifactRepositories}" */
-    private java.util.List remoteRepositories;
-    
-    
+
     
     private Process forkedProcess;
     
