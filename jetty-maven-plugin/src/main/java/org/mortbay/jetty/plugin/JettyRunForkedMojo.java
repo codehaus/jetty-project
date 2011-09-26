@@ -20,11 +20,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -36,6 +41,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.util.IO;
 import org.eclipse.jetty.util.resource.Resource;
@@ -62,8 +68,8 @@ import org.eclipse.jetty.util.resource.Resource;
  *  </p>
  * 
  * @goal run-forked
- * @requiresDependencyResolution runtime
- * @execute phase="package"
+ * @requiresDependencyResolution compile+runtime
+ * @execute phase="test-compile"
  * @description Runs Jetty in forked JVM on an unassembled webapp
  *
  */
@@ -71,12 +77,18 @@ public class JettyRunForkedMojo extends AbstractMojo
 {    
     public String PORT_SYSPROPERTY = "jetty.port";
     
-   
+    /**
+     * Whether or not to include dependencies on the plugin's classpath with &lt;scope&gt;provided&lt;/scope&gt;
+     * Use WITH CAUTION as you may wind up with duplicate jars/classes.
+     * @parameter alias="useProvidedScope" default-value="false"
+     */
+    protected boolean useProvided;
+    
     
     /**
      * The maven project.
      *
-     * @parameter expression="${executedProject}"
+     * @parameter expression="${project}"
      * @required
      * @readonly
      */
@@ -213,7 +225,7 @@ public class JettyRunForkedMojo extends AbstractMojo
     
     
     /** @component */
-    private org.apache.maven.artifact.resolver.ArtifactResolver resolver;
+    //private org.apache.maven.artifact.resolver.ArtifactResolver resolver;
      
     /**@parameter default-value="${localRepository}" */
     private org.apache.maven.artifact.repository.ArtifactRepository localRepository;
@@ -258,6 +270,32 @@ public class JettyRunForkedMojo extends AbstractMojo
         startJettyRunner();
     }
     
+    
+    public List<String> getProvidedJars() throws MojoExecutionException
+    {  
+        //if we are configured to include the provided dependencies on the plugin's classpath
+        //(which mimics being on jetty's classpath vs being on the webapp's classpath), we first
+        //try and filter out ones that will clash with jars that are plugin dependencies, then
+        //create a new classloader that we setup in the parent chain.
+        if (useProvided)
+        {
+            
+                List<String> provided = new ArrayList<String>();        
+                for ( Iterator<Artifact> iter = project.getArtifacts().iterator(); iter.hasNext(); )
+                {                   
+                    Artifact artifact = iter.next();
+                    if (Artifact.SCOPE_PROVIDED.equals(artifact.getScope()) && !isPluginArtifact(artifact))
+                    {
+                        provided.add(artifact.getFile().getAbsolutePath());
+                        if (getLog().isDebugEnabled()) { getLog().debug("Adding provided artifact: "+artifact);}
+                    }
+                }
+                return provided;
+
+        }
+        else
+            return null;
+    }
     
     /* ------------------------------------------------------------ */
     public File prepareConfiguration() throws MojoExecutionException
@@ -305,8 +343,17 @@ public class JettyRunForkedMojo extends AbstractMojo
                 if (i < classDirs.size()-1)
                     strbuff.append(",");
             }
-            props.put("classes.dirs", strbuff.toString());
+
+            if (classesDirectory != null)
+            {
+                props.put("classes.dir", classesDirectory.getAbsolutePath());
+            }
             
+            if (useTestClasspath && testClassesDirectory != null)
+            {
+                props.put("testClasses.dir", testClassesDirectory.getAbsolutePath());
+            }
+
             //web-inf lib
             List<File> deps = getDependencyFiles();
             strbuff.setLength(0);
@@ -404,32 +451,44 @@ public class JettyRunForkedMojo extends AbstractMojo
         return dependencyFiles; 
     }
     
-
-    private List<Artifact>  getExtraJars()
+    public boolean isPluginArtifact(Artifact artifact)
+    {
+        if (pluginArtifacts == null || pluginArtifacts.isEmpty())
+            return false;
+        
+        boolean isPluginArtifact = false;
+        for (Iterator<Artifact> iter = pluginArtifacts.iterator(); iter.hasNext() && !isPluginArtifact; )
+        {
+            Artifact pluginArtifact = iter.next();
+            if (getLog().isDebugEnabled()) { getLog().debug("Checking "+pluginArtifact);}
+            if (pluginArtifact.getGroupId().equals(artifact.getGroupId()) && pluginArtifact.getArtifactId().equals(artifact.getArtifactId()))
+                isPluginArtifact = true;
+        }
+        
+        return isPluginArtifact;
+    }
+    
+    
+    
+    private Set<Artifact>  getExtraJars()
     throws Exception
     {
-        List<Artifact> extraJars = new ArrayList<Artifact>();
-        List l = plugin.getArtifacts();
+        Set<Artifact> extraJars = new HashSet<Artifact>();
+  
+        
+        List l = pluginArtifacts;
         Artifact pluginArtifact = null;
 
         if (l != null)
         {
             Iterator itor = l.iterator();
             while (itor.hasNext() && pluginArtifact == null)
-            {
+            {              
                 Artifact a = (Artifact)itor.next();
-                System.err.println("PA: "+a.getArtifactId());
-                if (a.getArtifactId().equals(plugin.getArtifactId()))
+                if (a.getArtifactId().equals(plugin.getArtifactId())) //get the jetty-maven-plugin jar
                 {
-                    resolver.resolve( a, remoteRepositories, localRepository );
                     extraJars.add(a);
                 }
-                if ("maven-plugin-api".equals(a.getArtifactId()))
-                {
-                    resolver.resolve(a, remoteRepositories, localRepository);
-                    extraJars.add(a);
-                }
-                    
             }
         }
 
@@ -442,6 +501,7 @@ public class JettyRunForkedMojo extends AbstractMojo
     {      
         try
         {
+        
             File props = prepareConfiguration();
             
             List<String> cmd = new ArrayList<String>();
@@ -522,18 +582,32 @@ public class JettyRunForkedMojo extends AbstractMojo
                 {
                     classPath.append(':');
                 }
-                classPath.append(artifact.getFile().getCanonicalPath());
+                classPath.append(artifact.getFile().getAbsolutePath());
 
             }
         }
         
-        List<Artifact> extraJars = getExtraJars();
+        //Any jars that we need from the plugin environment (like the ones containing Starter class)
+        Set<Artifact> extraJars = getExtraJars();
         for (Artifact a:extraJars)
         { 
             classPath.append(':');
             classPath.append(a.getFile().getAbsolutePath());
-            System.err.println("CP: "+a.getFile().getCanonicalPath());
         }
+        
+        
+        //Any jars that we need from the project's dependencies because we're useProvided
+        List<String> providedJars = getProvidedJars();
+        if (providedJars != null && !providedJars.isEmpty())
+        {
+            for (String jar:providedJars)
+            {
+                classPath.append(':');
+                classPath.append(jar);
+                if (getLog().isDebugEnabled()) getLog().debug("Adding provided jar: "+jar);
+            }
+        }
+        
         return pathSeparators(classPath.toString());
     }
 

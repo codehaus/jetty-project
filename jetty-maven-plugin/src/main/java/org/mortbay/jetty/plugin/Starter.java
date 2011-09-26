@@ -130,19 +130,19 @@ public class Starter
             webApp.setOverlays(overlays);
         }
 
-        List<File> webAppClassPath = new ArrayList<File>();
-        
         // - the equivalent of web-inf classes
-        str = (String)props.getProperty("classes.dirs");
+        str = (String)props.getProperty("classes.dir");
         if (str != null && !"".equals(str.trim()))
         {
-            List<File> dirs = new ArrayList<File>();
-            String[] names = str.split(",");
-            for (int j=0; names != null && j < names.length; j++)
-                dirs.add(new File(names[j].trim()));
-            webApp.setWebInfClasses(dirs);
-            webAppClassPath.addAll(dirs);
+            webApp.setClasses(new File(str));
         }
+        
+        str = (String)props.getProperty("testClasses.dir"); 
+        if (str != null && !"".equals(str.trim()))
+        {
+            webApp.setTestClasses(new File(str));
+        }
+
 
         // - the equivalent of web-inf lib
         str = (String)props.getProperty("lib.jars");
@@ -153,10 +153,8 @@ public class Starter
             for (int j=0; names != null && j < names.length; j++)
                 jars.add(new File(names[j].trim()));
             webApp.setWebInfLib(jars);
-            webAppClassPath.addAll(jars);
         }
         
-        webApp.setClassPathFiles(webAppClassPath);
     }
 
     public void getConfiguration (String[] args)
