@@ -213,7 +213,12 @@ public class JettyWebAppContext extends WebAppContext
 
     public void doStart () throws Exception
     {
-        
+        //Set up the pattern that tells us where the jars are that need scanning for
+        //stuff like taglibs so we can tell jasper about it (see TagLibConfiguration)
+        setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
+        ".*/.*jsp-api-[^/]*]\\.jar$|.*/.*jsp-[^/]*\\.jar$|.*/.*taglibs[^/]*\\.jar$|.*/.*jstl[^/]*\\.jar$");
+      
+
         //Set up the classes dirs that comprises the equivalent of WEB-INF/classes
         if (testClasses != null)
             webInfClasses.add(testClasses);
