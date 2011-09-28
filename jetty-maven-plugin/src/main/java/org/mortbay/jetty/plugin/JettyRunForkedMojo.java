@@ -224,6 +224,13 @@ public class JettyRunForkedMojo extends AbstractMojo
      * @readonly
      */
     private PluginDescriptor plugin;
+    
+    
+    /**
+     * Arbitrary jvm args to pass to the forked process
+     * @parameter
+     */
+    private String jvmArgs;
 
     
     private Process forkedProcess;
@@ -497,6 +504,16 @@ public class JettyRunForkedMojo extends AbstractMojo
             
             List<String> cmd = new ArrayList<String>();
             cmd.add(getJavaBin());
+            
+            if (jvmArgs != null)
+            {
+                String[] args = jvmArgs.split(" ");
+                for (int i=0;args != null && i<args.length;i++)
+                {
+                    if (args[i] !=null && !"".equals(args[i]))
+                        cmd.add(args[i].trim());
+                }
+            }
             
             String classPath = getClassPath();
             if (classPath != null && classPath.length() > 0)
