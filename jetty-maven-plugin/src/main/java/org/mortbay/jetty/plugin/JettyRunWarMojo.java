@@ -18,7 +18,9 @@ package org.mortbay.jetty.plugin;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.eclipse.jetty.util.Scanner;
@@ -44,7 +46,7 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  *  </p>
  * 
  * @goal run-war
- * @requiresDependencyResolution runtime
+ * @requiresDependencyResolution compile+runtime
  * @execute phase="package"
  * @description Runs jetty on a war file
  *
@@ -116,12 +118,9 @@ public class JettyRunWarMojo extends AbstractJettyMojo
                 }
             }
         });
-        setScannerListeners(listeners);
-        
+        setScannerListeners(listeners);        
     }
 
-    
-    
 
     public void restartWebApp(boolean reconfigureScanner) throws Exception 
     {
@@ -150,32 +149,4 @@ public class JettyRunWarMojo extends AbstractJettyMojo
         getLog().info("Restart completed.");
     }
 
-
-    /**
-     * @see org.mortbay.jetty.plugin.AbstractJettyMojo#finishConfigurationBeforeStart()
-     */
-    public void finishConfigurationBeforeStart()
-    {
-        return;
-    }
-    
-
-    
-    
-    public void applyJettyXml() throws Exception
-    {
-        if (getJettyXmlFiles() == null)
-            return;
-        
-        for ( File xmlFile : getJettyXmlFiles() )
-        {
-            getLog().info( "Configuring Jetty from xml configuration file = " + xmlFile.getCanonicalPath() );        
-            XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(xmlFile));
-            xmlConfiguration.configure(this.server);
-        }
-    }
-
-  
-
-    
 }

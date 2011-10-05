@@ -8,11 +8,6 @@
 
 <Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext">
 
-  <!-- =============================================================== -->
-  <!-- Configure the webapp                                            -->
-  <!-- =============================================================== -->
-  <Set name="contextPath">/test-annotations</Set>
-  <Set name="configurationDiscovered">true</Set>
 
   <!-- Configure the tx mgr (only needed for mvn jetty:run -->
     <New id="tx" class="org.eclipse.jetty.plus.jndi.Transaction">

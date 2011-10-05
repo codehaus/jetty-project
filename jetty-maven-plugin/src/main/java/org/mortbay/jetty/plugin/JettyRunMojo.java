@@ -26,15 +26,9 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.FileUtils;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.util.Scanner;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.resource.JarResource;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.xml.XmlConfiguration;
 
 /**
  *  <p>
@@ -60,7 +54,7 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  * 
  * 
  * @goal run
- * @requiresDependencyResolution runtime
+ * @requiresDependencyResolution compile+runtime
  * @execute phase="test-compile"
  * @description Runs jetty directly from a maven project
  */
@@ -70,12 +64,11 @@ public class JettyRunMojo extends AbstractJettyMojo
      * If true, the &lt;testOutputDirectory&gt;
      * and the dependencies of &lt;scope&gt;test&lt;scope&gt;
      * will be put first on the runtime classpath.
-     * @parameter default-value="false"
+     * @parameter alias="useTestScope" default-value="false"
      */
     private boolean useTestClasspath;
     
-    
-    
+  
     /**
      * The default location of the web.xml file. Will be used
      * if <webAppConfig><descriptor> is not set.
@@ -113,12 +106,7 @@ public class JettyRunMojo extends AbstractJettyMojo
      */
     private File webAppSourceDirectory;
     
-    /**
-     * @parameter expression="${plugin.artifacts}"
-     * @readonly
-     */
-    private List pluginArtifacts;
-    
+ 
     /**
      * List of files or directories to additionally periodically scan for changes. Optional.
      * @parameter
@@ -135,11 +123,7 @@ public class JettyRunMojo extends AbstractJettyMojo
     private ScanTargetPattern[] scanTargetPatterns;
 
 
-    /**
-     * List of files on the classpath for the webapp
-     */
-    private List<File> classPathFiles;
-    
+   
     
     /**
      * Extra scan targets as a list
@@ -276,11 +260,13 @@ public class JettyRunMojo extends AbstractJettyMojo
        
        if (webAppConfig.getBaseResource() == null)
                webAppConfig.setBaseResource(webAppSourceDirectoryResource);
-  
-       webAppConfig.setWebInfClasses (getClassesDirs());
+
+       if (getClassesDirectory() != null)
+           webAppConfig.setClasses (getClassesDirectory());
+       if (useTestClasspath && (testClassesDirectory != null))
+           webAppConfig.setTestClasses (testClassesDirectory);
        webAppConfig.setWebInfLib (getDependencyFiles());
-       
-       setClassPathFiles(setUpClassPath(webAppConfig.getWebInfClasses(), webAppConfig.getWebInfLib()));
+
         
         //if we have not already set web.xml location, need to set one up
         if (webAppConfig.getDescriptor() == null)
@@ -315,12 +301,7 @@ public class JettyRunMojo extends AbstractJettyMojo
                 }
             }
         }
-        getLog().info( "web.xml file = "+webAppConfig.getDescriptor());
-
-        if (webAppConfig.getClassPathFiles() == null)
-            webAppConfig.setClassPathFiles(getClassPathFiles());
-        
-       
+        getLog().info( "web.xml file = "+webAppConfig.getDescriptor());       
         getLog().info("Webapp directory = " + getWebAppSourceDirectory().getCanonicalPath());
     }
     
@@ -390,7 +371,11 @@ public class JettyRunMojo extends AbstractJettyMojo
             scanList.add(jettyWebXmlFile);
         scanList.addAll(getExtraScanTargets());
         scanList.add(getProject().getFile());
-        scanList.addAll(getClassPathFiles());
+        if (webAppConfig.getTestClasses() != null)
+            scanList.add(webAppConfig.getTestClasses());
+        if (webAppConfig.getClasses() != null)
+        scanList.add(webAppConfig.getClasses());
+        scanList.addAll(webAppConfig.getWebInfLib());
         setScanList(scanList);
         ArrayList<Scanner.BulkListener> listeners = new ArrayList<Scanner.BulkListener>();
         listeners.add(new Scanner.BulkListener()
@@ -432,7 +417,11 @@ public class JettyRunMojo extends AbstractJettyMojo
                 scanList.add(new File(webAppConfig.getJettyEnvXml()));
             scanList.addAll(getExtraScanTargets());
             scanList.add(getProject().getFile());
-            scanList.addAll(getClassPathFiles());
+            if (webAppConfig.getTestClasses() != null)
+                scanList.add(webAppConfig.getTestClasses());
+            if (webAppConfig.getClasses() != null)
+            scanList.add(webAppConfig.getClasses());
+            scanList.addAll(webAppConfig.getWebInfLib());
             getScanner().setScanDirs(scanList);
         }
 
@@ -445,7 +434,7 @@ public class JettyRunMojo extends AbstractJettyMojo
     {
         List<File> dependencyFiles = new ArrayList<File>();
         List<Resource> overlays = new ArrayList<Resource>();
-        for ( Iterator<Artifact> iter = getProject().getArtifacts().iterator(); iter.hasNext(); )
+        for ( Iterator<Artifact> iter = projectArtifacts.iterator(); iter.hasNext(); )
         {
             Artifact artifact = (Artifact) iter.next();
             // Include runtime and compile time libraries, and possibly test libs too
@@ -473,20 +462,22 @@ public class JettyRunMojo extends AbstractJettyMojo
         }
         
         webAppConfig.setOverlays(overlays);
-        
-      
+              
         return dependencyFiles; 
     }
     
     
    
 
-    private List<File> setUpClassPath(List<File> webInfClasses, List<File> webInfJars)
+    private List<File> setUpClassPath(File webInfClasses, File testClasses, List<File> webInfJars)
     {
-        List<File> classPathFiles = new ArrayList<File>();       
-        classPathFiles.addAll(webInfClasses);
+        List<File> classPathFiles = new ArrayList<File>();   
+        if (webInfClasses != null)
+            classPathFiles.add(webInfClasses);
+        if (testClasses != null)
+            classPathFiles.add(testClasses);
         classPathFiles.addAll(webInfJars);
-      
+
         if (getLog().isDebugEnabled())
         {
             for (int i = 0; i < classPathFiles.size(); i++)
@@ -513,41 +504,15 @@ public class JettyRunMojo extends AbstractJettyMojo
     }
   
 
-    public void finishConfigurationBeforeStart() throws Exception
-    {
-        HandlerCollection contexts = (HandlerCollection)server.getChildHandlerByClass(ContextHandlerCollection.class);
-        if (contexts==null)
-            contexts = (HandlerCollection)server.getChildHandlerByClass(HandlerCollection.class);
-        
-        for (int i=0; (this.contextHandlers != null) && (i < this.contextHandlers.length); i++)
-        {
-            contexts.addHandler(this.contextHandlers[i]);
-        }
-    }
-
-   
  
-    
-    public void applyJettyXml() throws Exception
-    {
-        if (getJettyXmlFiles() == null)
-            return;
-        
-        for ( File xmlFile : getJettyXmlFiles() )
-        {
-            getLog().info( "Configuring Jetty from xml configuration file = " + xmlFile.getCanonicalPath() );        
-            XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(xmlFile));
-            xmlConfiguration.configure(this.server);
-        }
-    }
-
 
     
     public void execute() throws MojoExecutionException, MojoFailureException
     {
+       
         super.execute();
     }
-    
+  
 
     public String getWebXml()
     {
@@ -572,70 +537,59 @@ public class JettyRunMojo extends AbstractJettyMojo
         return this.webAppSourceDirectory;
     }
 
-    public void setWebAppSourceDirectory(File webAppSourceDirectory) {
+    public void setWebAppSourceDirectory(File webAppSourceDirectory)
+    {
         this.webAppSourceDirectory = webAppSourceDirectory;
     }
 
-    public void setClassPathFiles (List<File> list)
-    {
-        this.classPathFiles = new ArrayList<File>(list);
-    }
-
-    public List<File> getClassPathFiles ()
-    {
-        return this.classPathFiles;
-    }
-
-
-    public List<File> getExtraScanTargets ()
+    public List<File> getExtraScanTargets()
     {
         return this.extraScanTargets;
     }
-    
+
     public void setExtraScanTargets(List<File> list)
     {
         this.extraScanTargets = list;
     }
-    
-    
 
-    public boolean isUseTestClasspath() {
+    public boolean isUseTestClasspath()
+    {
         return useTestClasspath;
     }
 
-    public void setUseTestClasspath(boolean useTestClasspath) {
+    public void setUseTestClasspath(boolean useTestClasspath)
+    {
         this.useTestClasspath = useTestClasspath;
     }
 
-    public File getTestClassesDirectory() {
+    public File getTestClassesDirectory()
+    {
         return testClassesDirectory;
     }
 
-    public void setTestClassesDirectory(File testClassesDirectory) {
+    public void setTestClassesDirectory(File testClassesDirectory)
+    {
         this.testClassesDirectory = testClassesDirectory;
     }
 
-    public List getPluginArtifacts() {
-        return pluginArtifacts;
-    }
-
-    public void setPluginArtifacts(List pluginArtifacts) {
-        this.pluginArtifacts = pluginArtifacts;
-    }
-
-    public File[] getScanTargets() {
+    public File[] getScanTargets()
+    {
         return scanTargets;
     }
 
-    public void setScanTargets(File[] scanTargets) {
+    public void setScanTargets(File[] scanTargets)
+    {
         this.scanTargets = scanTargets;
     }
 
-    public ScanTargetPattern[] getScanTargetPatterns() {
+    public ScanTargetPattern[] getScanTargetPatterns()
+    {
         return scanTargetPatterns;
     }
 
-    public void setScanTargetPatterns(ScanTargetPattern[] scanTargetPatterns) {
+    public void setScanTargetPatterns(ScanTargetPattern[] scanTargetPatterns)
+    {
         this.scanTargetPatterns = scanTargetPatterns;
     }
+    
 }

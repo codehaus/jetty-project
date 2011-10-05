@@ -19,7 +19,6 @@ package org.mortbay.jetty.plugin;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.RequestLog;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -63,7 +62,6 @@ public class JettyServer extends org.eclipse.jetty.server.Server
      */
     public void doStart() throws Exception
     {
-        PluginLog.getLog().info("Starting jetty "+getClass().getSuperclass().getPackage().getImplementationVersion()+" ...");
         super.doStart();
     }
 

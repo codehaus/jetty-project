@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-parent</artifactId>
-    <version>12</version>
+    <version>13</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.mortbay.jetty</groupId>
@@ -157,7 +157,7 @@
         <plugin>
           <groupId>org.eclipse.jetty.toolchain</groupId>
           <artifactId>jetty-version-maven-plugin</artifactId>
-          <version>1.0.5</version>
+          <version>1.0.6</version>
         </plugin>
       </plugins>
     </pluginManagement>

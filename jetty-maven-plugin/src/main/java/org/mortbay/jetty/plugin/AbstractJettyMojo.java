@@ -19,12 +19,18 @@ package org.mortbay.jetty.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -35,6 +41,8 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.util.Scanner;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.xml.XmlConfiguration;
@@ -46,8 +54,31 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  *
  *
  */
+/**
+ * AbstractJettyMojo
+ *
+ *
+ */
 public abstract class AbstractJettyMojo extends AbstractMojo
 {
+  
+    
+    /**
+     * Whether or not to include dependencies on the plugin's classpath with &lt;scope&gt;provided&lt;/scope&gt;
+     * Use WITH CAUTION as you may wind up with duplicate jars/classes.
+     * @parameter alias="useProvidedScope" default-value="false"
+     */
+    protected boolean useProvided;
+    
+    
+    /**
+     * List of goals that are NOT to be used
+     * @parameter
+     */
+    protected String[] excludedGoals;
+    
+    
+    
     /**
      * A wrapper for the Server object
      */
@@ -93,17 +124,6 @@ public abstract class AbstractJettyMojo extends AbstractMojo
      * @parameter
      */
     protected JettyWebAppContext webAppConfig;
-
-
-
-    /**
-     * The maven project.
-     *
-     * @parameter expression="${executedProject}"
-     * @required
-     * @readonly
-     */
-    protected MavenProject project;
 
 
 
@@ -223,6 +243,40 @@ public abstract class AbstractJettyMojo extends AbstractMojo
      */
     protected String webAppXml;
 
+
+    /**
+     * The maven project.
+     *
+     * @parameter expression="${project}"
+     * @readonly
+     */
+    protected MavenProject project;
+
+    
+    /**
+     * The artifacts for the project.
+     * 
+     * @parameter expression="${project.artifacts}"
+     * @readonly
+     */
+    protected Set projectArtifacts;
+    
+    
+    /** 
+     * @parameter expression="${mojoExecution}" 
+     */
+    private org.apache.maven.plugin.MojoExecution execution;
+
+    /**
+     * The artifacts for the plugin itself.
+     * 
+     * @parameter expression="${plugin.artifacts}"
+     * @readonly
+     */
+    private List pluginArtifacts;
+    
+    
+    
     /**
      * A scanner to check for changes to the webapp
      */
@@ -254,9 +308,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     public abstract void configureScanner () throws MojoExecutionException;
     
-    public abstract void applyJettyXml () throws Exception;
-    
-    public abstract void finishConfigurationBeforeStart() throws Exception;
+
     
 
 
@@ -268,10 +320,106 @@ public abstract class AbstractJettyMojo extends AbstractMojo
             getLog().info("Skipping Jetty start: jetty.skip==true");
             return;
         }
+
+        if (isExcluded(execution.getMojoDescriptor().getGoal()))
+        {
+            getLog().info("The goal \""+execution.getMojoDescriptor().getFullGoalName()+
+                          "\" has been made unavailable for this web application by an <excludedGoal> configuration.");
+            return;
+        }
+        
+        configurePluginClasspath();
         PluginLog.setLog(getLog());
         checkPomConfiguration();
         startJetty();
     }
+    
+    
+    public void configurePluginClasspath() throws MojoExecutionException
+    {  
+        //if we are configured to include the provided dependencies on the plugin's classpath
+        //(which mimics being on jetty's classpath vs being on the webapp's classpath), we first
+        //try and filter out ones that will clash with jars that are plugin dependencies, then
+        //create a new classloader that we setup in the parent chain.
+        if (useProvided)
+        {
+            try
+            {
+                List<URL> provided = new ArrayList<URL>();
+                URL[] urls = null;
+               
+                for ( Iterator<Artifact> iter = projectArtifacts.iterator(); iter.hasNext(); )
+                {                   
+                    Artifact artifact = iter.next();
+                    if (Artifact.SCOPE_PROVIDED.equals(artifact.getScope()) && !isPluginArtifact(artifact))
+                    {
+                        provided.add(artifact.getFile().toURI().toURL());
+                        if (getLog().isDebugEnabled()) { getLog().debug("Adding provided artifact: "+artifact);}
+                    }
+                }
+
+                if (!provided.isEmpty())
+                {
+                    urls = new URL[provided.size()];
+                    provided.toArray(urls);
+                    URLClassLoader loader  = new URLClassLoader(urls, getClass().getClassLoader());
+                    Thread.currentThread().setContextClassLoader(loader);
+                    getLog().info("Plugin classpath augmented with <scope>provided</scope> dependencies: "+Arrays.toString(urls));
+                }
+            }
+            catch (MalformedURLException e)
+            {
+                throw new MojoExecutionException("Invalid url", e);
+            }
+        }
+    }
+    
+    
+    public boolean isPluginArtifact(Artifact artifact)
+    {
+        if (pluginArtifacts == null || pluginArtifacts.isEmpty())
+            return false;
+        
+        boolean isPluginArtifact = false;
+        for (Iterator<Artifact> iter = pluginArtifacts.iterator(); iter.hasNext() && !isPluginArtifact; )
+        {
+            Artifact pluginArtifact = iter.next();
+            if (getLog().isDebugEnabled()) { getLog().debug("Checking "+pluginArtifact);}
+            if (pluginArtifact.getGroupId().equals(artifact.getGroupId()) && pluginArtifact.getArtifactId().equals(artifact.getArtifactId()))
+                isPluginArtifact = true;
+        }
+        
+        return isPluginArtifact;
+    }
+
+    public void finishConfigurationBeforeStart() throws Exception
+    {
+        HandlerCollection contexts = (HandlerCollection)server.getChildHandlerByClass(ContextHandlerCollection.class);
+        if (contexts==null)
+            contexts = (HandlerCollection)server.getChildHandlerByClass(HandlerCollection.class);
+        
+        for (int i=0; (this.contextHandlers != null) && (i < this.contextHandlers.length); i++)
+        {
+            contexts.addHandler(this.contextHandlers[i]);
+        }
+    }
+
+   
+   
+    
+    public void applyJettyXml() throws Exception
+    {
+        if (getJettyXmlFiles() == null)
+            return;
+        
+        for ( File xmlFile : getJettyXmlFiles() )
+        {
+            getLog().info( "Configuring Jetty from xml configuration file = " + xmlFile.getCanonicalPath() );        
+            XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(xmlFile));
+            xmlConfiguration.configure(this.server);
+        }
+    }
+
 
 
     public void startJetty () throws MojoExecutionException
@@ -658,104 +806,158 @@ public abstract class AbstractJettyMojo extends AbstractMojo
         this.scannerListeners = new ArrayList<Scanner.BulkListener>(listeners);
     }
 
-    public ArrayList getScannerListeners ()
+    public ArrayList getScannerListeners()
     {
         return this.scannerListeners;
     }
 
-    public JettyWebAppContext getWebAppConfig() {
+    public JettyWebAppContext getWebAppConfig()
+    {
         return webAppConfig;
     }
 
-    public void setWebAppConfig(JettyWebAppContext webAppConfig) {
+    public void setWebAppConfig(JettyWebAppContext webAppConfig)
+    {
         this.webAppConfig = webAppConfig;
     }
 
-    public RequestLog getRequestLog() {
+    public RequestLog getRequestLog()
+    {
         return requestLog;
     }
 
-    public void setRequestLog(RequestLog requestLog) {
+    public void setRequestLog(RequestLog requestLog)
+    {
         this.requestLog = requestLog;
     }
 
-    public LoginService[] getLoginServices() {
+    public LoginService[] getLoginServices()
+    {
         return loginServices;
     }
 
-    public void setLoginServices(LoginService[] loginServices) {
+    public void setLoginServices(LoginService[] loginServices)
+    {
         this.loginServices = loginServices;
     }
 
-    public ContextHandler[] getContextHandlers() {
+    public ContextHandler[] getContextHandlers()
+    {
         return contextHandlers;
     }
 
-    public void setContextHandlers(ContextHandler[] contextHandlers) {
+    public void setContextHandlers(ContextHandler[] contextHandlers)
+    {
         this.contextHandlers = contextHandlers;
     }
 
-    public Connector[] getConnectors() {
+    public Connector[] getConnectors()
+    {
         return connectors;
     }
 
-    public void setConnectors(Connector[] connectors) {
+    public void setConnectors(Connector[] connectors)
+    {
         this.connectors = connectors;
     }
 
-    public String getReload() {
+    public String getReload()
+    {
         return reload;
     }
 
-    public void setReload(String reload) {
+    public void setReload(String reload)
+    {
         this.reload = reload;
     }
 
-    public String getJettyConfig() {
+    public String getJettyConfig()
+    {
         return jettyConfig;
     }
 
-    public void setJettyConfig(String jettyConfig) {
+    public void setJettyConfig(String jettyConfig)
+    {
         this.jettyConfig = jettyConfig;
     }
 
-    public String getWebAppXml() {
+    public String getWebAppXml()
+    {
         return webAppXml;
     }
 
-    public void setWebAppXml(String webAppXml) {
+    public void setWebAppXml(String webAppXml)
+    {
         this.webAppXml = webAppXml;
     }
 
-    public boolean isSkip() {
+    public boolean isSkip()
+    {
         return skip;
     }
 
-    public void setSkip(boolean skip) {
+    public void setSkip(boolean skip)
+    {
         this.skip = skip;
     }
 
-    public boolean isDaemon() {
+    public boolean isDaemon()
+    {
         return daemon;
     }
 
-    public void setDaemon(boolean daemon) {
+    public void setDaemon(boolean daemon)
+    {
         this.daemon = daemon;
     }
 
-    public String getStopKey() {
+    public String getStopKey()
+    {
         return stopKey;
     }
 
-    public void setStopKey(String stopKey) {
+    public void setStopKey(String stopKey)
+    {
         this.stopKey = stopKey;
     }
 
-    public int getStopPort() {
+    public int getStopPort()
+    {
         return stopPort;
     }
 
-    public void setStopPort(int stopPort) {
+    public void setStopPort(int stopPort)
+    {
         this.stopPort = stopPort;
+    }
+    
+    public List getPluginArtifacts()
+    {
+        return pluginArtifacts;
+    }
+
+    public void setPluginArtifacts(List pluginArtifacts)
+    {
+        this.pluginArtifacts = pluginArtifacts;
+    }
+    
+    
+    public boolean isExcluded (String goal)
+    {
+        if (excludedGoals == null || goal == null)
+            return false;
+        
+        goal = goal.trim();
+        if ("".equals(goal))
+            return false;
+        
+        boolean excluded = false;
+        for (int i=0; i<excludedGoals.length && !excluded; i++)
+        {
+            if (excludedGoals[i].equalsIgnoreCase(goal))
+                excluded = true;
+        }
+        
+        return excluded;
     }
 }

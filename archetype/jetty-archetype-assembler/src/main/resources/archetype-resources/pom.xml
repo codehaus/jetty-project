@@ -52,7 +52,6 @@
                 <version>1.1.1</version>
                 <configuration>
                     <assembleDirectory>target</assembleDirectory> 
-                    <generateRepository>false</generateRepository>
                     <programs>
                         <program>
                             <mainClass>${package}.Main</mainClass>

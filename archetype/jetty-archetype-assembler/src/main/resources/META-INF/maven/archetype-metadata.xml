@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <requiredProperties>
     <requiredProperty key="jetty-version">
-        <defaultValue>7.4.5.v20110725</defaultValue>
+        <defaultValue>7.5.1.v20110908</defaultValue>
     </requiredProperty>  
   </requiredProperties>
   <fileSets>
