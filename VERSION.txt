@@ -1,6 +1,20 @@
-jetty@codehaus-8.0.2-SNAPSHOT
-
-jetty@codehaus-7.5.2-SNAPSHOT
+jetty@codehaus-8.0.2.v20111006 - 06 October 2011
+ + 353157 Pass jvm args to forked jetty
+ + 357209 JSP tag listeners not called
+ + 358319 update appassembler archetype
+ + 358784 JSP broken on Java 1.5
+ + 360061 Deprecate jetty-maven-plugin params in favour of using <webAppConfig>
+   to configure
+ + JETTY-429 allow <scope>provided</scope> for jetty-maven-plugin
+ + JETTY-706 add <excludedGoals> to jetty-maven-plugin configuration
+ + JETTY-991 JETTY-1429
+ + JETTY-1334 maven-jetty-plugin run-exploded and ContextHandlers are not
+   working together
+ + JETTY-1419 remove jetty-monitor as it has been moved to eclipse
+ + JETTY-1427 useTestClasspath option doesn't work with frameworks like JSF
+   that scan web-inf\classes for annotated classes
+ + JETTY-1434 Update jetty-maven-plugin jsp version
+ + JETTY-1437 test-jndi-webapp is missing the injection for datasource
 
 jetty@codehaus-8.0.1.v20110908 - 08 September 2011
  + JETTY-1419 remove jetty-monitor from codehaus side
