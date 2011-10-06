@@ -44,6 +44,7 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  *  </p>
  *
  *@goal run-exploded
+ *@requiresDependencyResolution compile+runtime
  *@execute phase=package
  */
 public class JettyRunWarExplodedMojo extends AbstractJettyMojo
@@ -53,10 +54,11 @@ public class JettyRunWarExplodedMojo extends AbstractJettyMojo
     
     /**
      * The location of the war file.
-     * @parameter expression="${project.build.directory}/${project.build.finalName}"
+     * 
+     * @parameter alias="webApp" expression="${project.build.directory}/${project.build.finalName}"
      * @required
      */
-    private File webApp;
+    private File war;
 
     
    
@@ -79,7 +81,7 @@ public class JettyRunWarExplodedMojo extends AbstractJettyMojo
     {
         final ArrayList<File> scanList = new ArrayList<File>();
         scanList.add(getProject().getFile());
-        File webInfDir = new File(webApp,"WEB-INF");
+        File webInfDir = new File(war,"WEB-INF");
         scanList.add(new File(webInfDir, "web.xml"));
         File jettyWebXmlFile = findJettyWebXmlFile(webInfDir);
         if (jettyWebXmlFile != null)
@@ -117,7 +119,7 @@ public class JettyRunWarExplodedMojo extends AbstractJettyMojo
     {
         getLog().info("Restarting webapp");
         getLog().debug("Stopping webapp ...");
-        webAppConfig.stop();
+        webApp.stop();
         getLog().debug("Reconfiguring webapp ...");
 
         checkPomConfiguration();
@@ -130,7 +132,7 @@ public class JettyRunWarExplodedMojo extends AbstractJettyMojo
             ArrayList<File> scanList = getScanList();
             scanList.clear();
             scanList.add(getProject().getFile());
-            File webInfDir = new File(webApp,"WEB-INF");
+            File webInfDir = new File(war,"WEB-INF");
             scanList.add(new File(webInfDir, "web.xml"));
             File jettyWebXmlFile = findJettyWebXmlFile(webInfDir);
             if (jettyWebXmlFile != null)
@@ -145,25 +147,16 @@ public class JettyRunWarExplodedMojo extends AbstractJettyMojo
         }
 
         getLog().debug("Restarting webapp ...");
-        webAppConfig.start();
+        webApp.start();
         getLog().info("Restart completed.");
     }
 
-        
-    /* (non-Javadoc)
-     * @see org.eclipse.jetty.server.plugin.AbstractJettyMojo#finishConfigurationBeforeStart()
-     */
-    public void finishConfigurationBeforeStart() throws Exception
-    {
-        return;
-    }
-
-    
+   
     
     public void configureWebApplication () throws Exception
     {
         super.configureWebApplication();        
-        webAppConfig.setWar(webApp.getCanonicalPath());
+        webApp.setWar(war.getCanonicalPath());
     }
     
     public void execute () throws MojoExecutionException, MojoFailureException
@@ -172,19 +165,6 @@ public class JettyRunWarExplodedMojo extends AbstractJettyMojo
     }
 
     
-    
-    public void applyJettyXml() throws Exception
-    {
-        if (getJettyXmlFiles() == null)
-            return;
-        
-        for ( File xmlFile : getJettyXmlFiles() )
-        {
-            getLog().info( "Configuring Jetty from xml configuration file = " + xmlFile.getCanonicalPath() );        
-            XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(xmlFile));
-            xmlConfiguration.configure(this.server);
-        }
-    }
-
+  
   
 }

@@ -12,7 +12,7 @@
   <packaging>maven-archetype</packaging>
   <name>Jetty :: Archetype :: File Server</name>
 	<properties>
-	<jetty-version>8.0.1-SNAPSHOT</jetty-version>
+	<jetty-version>8.0.2-SNAPSHOT</jetty-version>
 	</properties>
 
   <build>
