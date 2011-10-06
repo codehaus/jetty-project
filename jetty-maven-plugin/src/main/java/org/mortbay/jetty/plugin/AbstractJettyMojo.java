@@ -54,11 +54,6 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  *
  *
  */
-/**
- * AbstractJettyMojo
- *
- *
- */
 public abstract class AbstractJettyMojo extends AbstractMojo
 {
   
@@ -66,29 +61,29 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     /**
      * Whether or not to include dependencies on the plugin's classpath with &lt;scope&gt;provided&lt;/scope&gt;
      * Use WITH CAUTION as you may wind up with duplicate jars/classes.
-     * @parameter alias="useProvidedScope" default-value="false"
+     * 
+     * @since jetty-7.5.2
+     * @parameter  default-value="false"
      */
-    protected boolean useProvided;
+    protected boolean useProvidedScope;
     
     
     /**
      * List of goals that are NOT to be used
+     * 
+     * @since jetty-7.5.2
      * @parameter
      */
     protected String[] excludedGoals;
     
-    
-    
-    /**
-     * A wrapper for the Server object
-     */
-    protected JettyServer server;
+
     
     /**
      * List of connectors to use. If none are configured
      * then the default is a single SelectChannelConnector at port 8080. You can
      * override this default port number by using the system property jetty.port
-     * on the command line, eg:  mvn -Djetty.port=9999 jetty:run
+     * on the command line, eg:  mvn -Djetty.port=9999 jetty:run. Consider using instead
+     * the &lt;jettyXml&gt; element to specify external jetty xml config file. 
      * 
      * @parameter 
      */
@@ -96,14 +91,22 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     
     /**
-     * List of other contexts to set up. Optional.
+     * List of other contexts to set up. Consider using instead
+     * the &lt;jettyXml&gt; element to specify external jetty xml config file. 
+     * Optional.
+     * 
+     * 
      * @parameter
      */
     protected ContextHandler[] contextHandlers;
     
     
     /**
-     * List of security realms to set up. Optional.
+     * List of security realms to set up. Consider using instead
+     * the &lt;jettyXml&gt; element to specify external jetty xml config file. 
+     * Optional.
+     * 
+     * 
      * @parameter
      */
     protected LoginService[] loginServices;
@@ -112,7 +115,10 @@ public abstract class AbstractJettyMojo extends AbstractMojo
 
     /**
      * A RequestLog implementation to use for the webapp at runtime.
+     * Consider using instead the &lt;jettyXml&gt; element to specify external jetty xml config file. 
      * Optional.
+     * 
+     *
      * @parameter
      */
     protected RequestLog requestLog;
@@ -120,10 +126,14 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
 
     /**
-     * The "virtual" webapp created by the plugin
-     * @parameter
+     * An instance of org.eclipse.jetty.webapp.WebAppContext that represents the webapp.
+     * Use any of its setters to configure the webapp. This is the preferred and most
+     * flexible method of configuration, rather than using the (deprecated) individual
+     * parameters like "tmpDirectory", "contextPath" etc.
+     * 
+     * @parameter alias="webAppConfig"
      */
-    protected JettyWebAppContext webAppConfig;
+    protected JettyWebAppContext webApp;
 
 
 
@@ -131,6 +141,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
      * The context path for the webapp. Defaults to the
      * name of the webapp's artifact.
      *
+     * @deprecated Use &lt;webApp&gt;&lt;contextPath&gt; instead.
      * @parameter expression="/${project.artifactId}"
      * @required
      * @readonly
@@ -140,8 +151,9 @@ public abstract class AbstractJettyMojo extends AbstractMojo
 
     /**
      * The temporary directory to use for the webapp.
-     * Defaults to target/tmp
+     * Defaults to target/tmp.  
      *
+     * @deprecated Use %lt;webApp&gt;&lt;tempDirectory&gt; instead.
      * @parameter expression="${project.build.directory}/tmp"
      * @required
      * @readonly
@@ -197,13 +209,17 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     /**
      * Comma separated list of a jetty xml configuration files whose contents 
      * will be applied before any plugin configuration. Optional.
-     * @parameter
+     * 
+     * 
+     * @parameter alias="jettyConfig"
      */
-    protected String jettyConfig;
+    protected String jettyXml;
+    
     
     /**
      * Port to listen to stop jetty on executing -DSTOP.PORT=&lt;stopPort&gt; 
      * -DSTOP.KEY=&lt;stopKey&gt; -jar start.jar --stop
+     * 
      * @parameter
      */
     protected int stopPort;
@@ -211,6 +227,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     /**
      * Key to provide when stopping jetty on executing java -DSTOP.KEY=&lt;stopKey&gt; 
      * -DSTOP.PORT=&lt;stopPort&gt; -jar start.jar --stop
+     * 
      * @parameter
      */
     protected String stopKey;
@@ -226,11 +243,14 @@ public abstract class AbstractJettyMojo extends AbstractMojo
      * processes in an automated build environment. This can be facilitated by setting
      * daemon to true.
      * </p>
+     * 
      * @parameter expression="${jetty.daemon}" default-value="false"
      */
     protected boolean daemon;
     
     /**  
+     * Skip this mojo execution.
+     * 
      * @parameter expression="${jetty.skip}" default-value="false"
      */
     protected boolean skip;
@@ -238,10 +258,12 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     /**
      * Location of a context xml configuration file whose contents
-     * will be applied to the webapp AFTER anything in &lt;webAppConfig&gt;.Optional.
-     * @parameter
+     * will be applied to the webapp AFTER anything in &lt;webApp&gt;.Optional.
+     * 
+     * 
+     * @parameter alias="webAppXml"
      */
-    protected String webAppXml;
+    protected String contextXml;
 
 
     /**
@@ -264,8 +286,11 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     /** 
      * @parameter expression="${mojoExecution}" 
+     * @readonly
      */
     private org.apache.maven.plugin.MojoExecution execution;
+    
+    
 
     /**
      * The artifacts for the plugin itself.
@@ -276,6 +301,11 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     private List pluginArtifacts;
     
     
+    
+    /**
+     * A wrapper for the Server object
+     */
+    protected JettyServer server;
     
     /**
      * A scanner to check for changes to the webapp
@@ -341,7 +371,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
         //(which mimics being on jetty's classpath vs being on the webapp's classpath), we first
         //try and filter out ones that will clash with jars that are plugin dependencies, then
         //create a new classloader that we setup in the parent chain.
-        if (useProvided)
+        if (useProvidedScope)
         {
             try
             {
@@ -464,7 +494,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
             //set up the webapp and any context provided
             this.server.configureHandlers();
             configureWebApplication();
-            this.server.addWebApplication(webAppConfig);
+            this.server.addWebApplication(webApp);
 
             // set up security realms
             for (int i = 0; (this.loginServices != null) && i < this.loginServices.length; i++)
@@ -526,41 +556,41 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     public void configureWebApplication () throws Exception
     {
         //As of jetty-7, you must use a <webAppConfig> element
-        if (webAppConfig == null)
-            webAppConfig = new JettyWebAppContext();
+        if (webApp == null)
+            webApp = new JettyWebAppContext();
         
         //Apply any context xml file to set up the webapp
         //CAUTION: if you've defined a <webAppConfig> element then the
         //context xml file can OVERRIDE those settings
-        if (webAppXml != null)
+        if (contextXml != null)
         {
-            File file = FileUtils.getFile(webAppXml);
+            File file = FileUtils.getFile(contextXml);
             XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(file));
-            getLog().info("Applying context xml file "+webAppXml);
-            xmlConfiguration.configure(webAppConfig);   
+            getLog().info("Applying context xml file "+contextXml);
+            xmlConfiguration.configure(webApp);   
         }
 
         
         //If no contextPath was specified, go with our default
-        String cp = webAppConfig.getContextPath();
+        String cp = webApp.getContextPath();
         if (cp == null || "".equals(cp))
         {
-            webAppConfig.setContextPath((contextPath.startsWith("/") ? contextPath : "/"+ contextPath));
+            webApp.setContextPath((contextPath.startsWith("/") ? contextPath : "/"+ contextPath));
         }
 
         //If no tmp directory was specified, and we have one, use it
-        if (webAppConfig.getTempDirectory() == null && tmpDirectory != null)
+        if (webApp.getTempDirectory() == null && tmpDirectory != null)
         {
             if (!tmpDirectory.exists())
                 tmpDirectory.mkdirs();
             
-            webAppConfig.setTempDirectory(tmpDirectory);
+            webApp.setTempDirectory(tmpDirectory);
         }
       
-        getLog().info("Context path = " + webAppConfig.getContextPath());
-        getLog().info("Tmp directory = "+ (webAppConfig.getTempDirectory()== null? " determined at runtime": webAppConfig.getTempDirectory()));
-        getLog().info("Web defaults = "+(webAppConfig.getDefaultsDescriptor()==null?" jetty default":webAppConfig.getDefaultsDescriptor()));
-        getLog().info("Web overrides = "+(webAppConfig.getOverrideDescriptor()==null?" none":webAppConfig.getOverrideDescriptor()));
+        getLog().info("Context path = " + webApp.getContextPath());
+        getLog().info("Tmp directory = "+ (webApp.getTempDirectory()== null? " determined at runtime": webApp.getTempDirectory()));
+        getLog().info("Web defaults = "+(webApp.getDefaultsDescriptor()==null?" jetty default":webApp.getDefaultsDescriptor()));
+        getLog().info("Web overrides = "+(webApp.getOverrideDescriptor()==null?" none":webApp.getOverrideDescriptor()));
     }
 
     /**
@@ -754,20 +784,20 @@ public abstract class AbstractJettyMojo extends AbstractMojo
 
     public List<File> getJettyXmlFiles()
     {
-        if ( this.jettyConfig == null )
+        if ( this.jettyXml == null )
         {
             return null;
         }
         
         List<File> jettyXmlFiles = new ArrayList<File>();
         
-        if ( this.jettyConfig.indexOf(',') == -1 )
+        if ( this.jettyXml.indexOf(',') == -1 )
         {
-            jettyXmlFiles.add( new File( this.jettyConfig ) );
+            jettyXmlFiles.add( new File( this.jettyXml ) );
         }
         else
         {
-            String[] files = this.jettyConfig.split(",");
+            String[] files = this.jettyXml.split(",");
             
             for ( String file : files )
             {
@@ -813,12 +843,12 @@ public abstract class AbstractJettyMojo extends AbstractMojo
 
     public JettyWebAppContext getWebAppConfig()
     {
-        return webAppConfig;
+        return webApp;
     }
 
     public void setWebAppConfig(JettyWebAppContext webAppConfig)
     {
-        this.webAppConfig = webAppConfig;
+        this.webApp = webAppConfig;
     }
 
     public RequestLog getRequestLog()
@@ -873,22 +903,22 @@ public abstract class AbstractJettyMojo extends AbstractMojo
 
     public String getJettyConfig()
     {
-        return jettyConfig;
+        return jettyXml;
     }
 
     public void setJettyConfig(String jettyConfig)
     {
-        this.jettyConfig = jettyConfig;
+        this.jettyXml = jettyConfig;
     }
 
     public String getWebAppXml()
     {
-        return webAppXml;
+        return contextXml;
     }
 
     public void setWebAppXml(String webAppXml)
     {
-        this.webAppXml = webAppXml;
+        this.contextXml = webAppXml;
     }
 
     public boolean isSkip()
