@@ -23,7 +23,7 @@
           </rpm>      
           <packages>
             <package>
-              <id>default</id>
+              <id>jetty-hightide-server</id>
               <name>Jetty ${project.version} Hightide Distribution</name>
               <description>Jetty provides an Web server and
                 javax.servlet container, plus support for Web Sockets,
@@ -46,6 +46,7 @@
               </assembly>
             </package>
             <package>
+              <id>jetty-hightide-javadoc</id>
               <classifier>javadoc</classifier>
               <name>Core Jetty ${project.version} Hightide Javadocs</name>
               <description>Javadocs for Jetty.</description>

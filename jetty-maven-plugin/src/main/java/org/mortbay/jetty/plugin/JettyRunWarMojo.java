@@ -18,7 +18,9 @@ package org.mortbay.jetty.plugin;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.eclipse.jetty.util.Scanner;
@@ -44,7 +46,7 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  *  </p>
  * 
  * @goal run-war
- * @requiresDependencyResolution runtime
+ * @requiresDependencyResolution compile+runtime
  * @execute phase="package"
  * @description Runs jetty on a war file
  *
@@ -54,10 +56,10 @@ public class JettyRunWarMojo extends AbstractJettyMojo
 
     /**
      * The location of the war file.
-     * @parameter expression="${project.build.directory}/${project.build.finalName}.war"
+     * @parameter alias="webApp" expression="${project.build.directory}/${project.build.finalName}.war"
      * @required
      */
-    private File webApp;
+    private File war;
 
 
     
@@ -75,7 +77,7 @@ public class JettyRunWarMojo extends AbstractJettyMojo
     {
         super.configureWebApplication();
         
-        webAppConfig.setWar(webApp.getCanonicalPath());
+        webApp.setWar(war.getCanonicalPath());
     }
  
 
@@ -97,7 +99,7 @@ public class JettyRunWarMojo extends AbstractJettyMojo
     {
         final ArrayList scanList = new ArrayList();
         scanList.add(getProject().getFile());
-        scanList.add(webApp);
+        scanList.add(war);
         setScanList(scanList);
         
         ArrayList listeners = new ArrayList();
@@ -116,18 +118,15 @@ public class JettyRunWarMojo extends AbstractJettyMojo
                 }
             }
         });
-        setScannerListeners(listeners);
-        
+        setScannerListeners(listeners);        
     }
 
-    
-    
 
     public void restartWebApp(boolean reconfigureScanner) throws Exception 
     {
         getLog().info("Restarting webapp ...");
         getLog().debug("Stopping webapp ...");
-        webAppConfig.stop();
+        webApp.stop();
         getLog().debug("Reconfiguring webapp ...");
 
         checkPomConfiguration();
@@ -140,42 +139,14 @@ public class JettyRunWarMojo extends AbstractJettyMojo
             ArrayList scanList = getScanList();
             scanList.clear();
             scanList.add(getProject().getFile());
-            scanList.add(webApp);
+            scanList.add(war);
             setScanList(scanList);
             getScanner().setScanDirs(scanList);
         }
 
         getLog().debug("Restarting webapp ...");
-        webAppConfig.start();
+        webApp.start();
         getLog().info("Restart completed.");
     }
 
-
-    /**
-     * @see org.mortbay.jetty.plugin.AbstractJettyMojo#finishConfigurationBeforeStart()
-     */
-    public void finishConfigurationBeforeStart()
-    {
-        return;
-    }
-    
-
-    
-    
-    public void applyJettyXml() throws Exception
-    {
-        if (getJettyXmlFiles() == null)
-            return;
-        
-        for ( File xmlFile : getJettyXmlFiles() )
-        {
-            getLog().info( "Configuring Jetty from xml configuration file = " + xmlFile.getCanonicalPath() );        
-            XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(xmlFile));
-            xmlConfiguration.configure(this.server);
-        }
-    }
-
-  
-
-    
 }
