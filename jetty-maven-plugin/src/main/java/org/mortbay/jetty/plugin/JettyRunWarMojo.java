@@ -56,10 +56,10 @@ public class JettyRunWarMojo extends AbstractJettyMojo
 
     /**
      * The location of the war file.
-     * @parameter expression="${project.build.directory}/${project.build.finalName}.war"
+     * @parameter alias="webApp" expression="${project.build.directory}/${project.build.finalName}.war"
      * @required
      */
-    private File webApp;
+    private File war;
 
 
     
@@ -77,7 +77,7 @@ public class JettyRunWarMojo extends AbstractJettyMojo
     {
         super.configureWebApplication();
         
-        webAppConfig.setWar(webApp.getCanonicalPath());
+        webApp.setWar(war.getCanonicalPath());
     }
  
 
@@ -99,7 +99,7 @@ public class JettyRunWarMojo extends AbstractJettyMojo
     {
         final ArrayList scanList = new ArrayList();
         scanList.add(getProject().getFile());
-        scanList.add(webApp);
+        scanList.add(war);
         setScanList(scanList);
         
         ArrayList listeners = new ArrayList();
@@ -126,7 +126,7 @@ public class JettyRunWarMojo extends AbstractJettyMojo
     {
         getLog().info("Restarting webapp ...");
         getLog().debug("Stopping webapp ...");
-        webAppConfig.stop();
+        webApp.stop();
         getLog().debug("Reconfiguring webapp ...");
 
         checkPomConfiguration();
@@ -139,13 +139,13 @@ public class JettyRunWarMojo extends AbstractJettyMojo
             ArrayList scanList = getScanList();
             scanList.clear();
             scanList.add(getProject().getFile());
-            scanList.add(webApp);
+            scanList.add(war);
             setScanList(scanList);
             getScanner().setScanDirs(scanList);
         }
 
         getLog().debug("Restarting webapp ...");
-        webAppConfig.start();
+        webApp.start();
         getLog().info("Restart completed.");
     }
 

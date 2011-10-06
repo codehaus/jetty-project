@@ -82,9 +82,9 @@ public class JettyRunForkedMojo extends AbstractMojo
     /**
      * Whether or not to include dependencies on the plugin's classpath with &lt;scope&gt;provided&lt;/scope&gt;
      * Use WITH CAUTION as you may wind up with duplicate jars/classes.
-     * @parameter alias="useProvidedScope" default-value="false"
+     * @parameter  default-value="false"
      */
-    protected boolean useProvided;
+    protected boolean useProvidedScope;
     
     
     /**
@@ -102,14 +102,14 @@ public class JettyRunForkedMojo extends AbstractMojo
      * If true, the &lt;testOutputDirectory&gt;
      * and the dependencies of &lt;scope&gt;test&lt;scope&gt;
      * will be put first on the runtime classpath.
-     * @parameter default-value="false"
+     * @parameter alias="useTestClasspath" default-value="false"
      */
-    private boolean useTestClasspath;
+    private boolean useTestScope;
     
     
     /**
      * The default location of the web.xml file. Will be used
-     * if <webAppConfig><descriptor> is not set.
+     * if &lt;webAppConfig&gt;&lt;descriptor&gt; is not set.
      * 
      * @parameter expression="${basedir}/src/main/webapp/WEB-INF/web.xml"
      * @readonly
@@ -212,6 +212,15 @@ public class JettyRunForkedMojo extends AbstractMojo
      */
     protected String stopKey;
 
+    
+    /**
+     * Arbitrary jvm args to pass to the forked process
+     * @parameter
+     */
+    private String jvmArgs;
+
+    
+    
     /**
      * @parameter expression="${plugin.artifacts}"
      * @readonly
@@ -225,12 +234,6 @@ public class JettyRunForkedMojo extends AbstractMojo
      */
     private PluginDescriptor plugin;
     
-    
-    /**
-     * Arbitrary jvm args to pass to the forked process
-     * @parameter
-     */
-    private String jvmArgs;
 
     
     private Process forkedProcess;
@@ -275,7 +278,7 @@ public class JettyRunForkedMojo extends AbstractMojo
         //(which mimics being on jetty's classpath vs being on the webapp's classpath), we first
         //try and filter out ones that will clash with jars that are plugin dependencies, then
         //create a new classloader that we setup in the parent chain.
-        if (useProvided)
+        if (useProvidedScope)
         {
             
                 List<String> provided = new ArrayList<String>();        
@@ -347,7 +350,7 @@ public class JettyRunForkedMojo extends AbstractMojo
                 props.put("classes.dir", classesDirectory.getAbsolutePath());
             }
             
-            if (useTestClasspath && testClassesDirectory != null)
+            if (useTestScope && testClassesDirectory != null)
             {
                 props.put("testClasses.dir", testClassesDirectory.getAbsolutePath());
             }
@@ -391,7 +394,7 @@ public class JettyRunForkedMojo extends AbstractMojo
         
         //if using the test classes, make sure they are first
         //on the list
-        if (useTestClasspath && (testClassesDirectory != null))
+        if (useTestScope && (testClassesDirectory != null))
             classesDirs.add(testClassesDirectory);
         
         if (classesDirectory != null)
@@ -439,7 +442,7 @@ public class JettyRunForkedMojo extends AbstractMojo
             
             if (((!Artifact.SCOPE_PROVIDED.equals(artifact.getScope())) && (!Artifact.SCOPE_TEST.equals( artifact.getScope()))) 
                     ||
-                (useTestClasspath && Artifact.SCOPE_TEST.equals( artifact.getScope())))
+                (useTestScope && Artifact.SCOPE_TEST.equals( artifact.getScope())))
             {
                 dependencyFiles.add(artifact.getFile());
                 getLog().debug( "Adding artifact " + artifact.getFile().getName() + " for WEB-INF/lib " );   

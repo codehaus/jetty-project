@@ -64,14 +64,15 @@ public class JettyRunMojo extends AbstractJettyMojo
      * If true, the &lt;testOutputDirectory&gt;
      * and the dependencies of &lt;scope&gt;test&lt;scope&gt;
      * will be put first on the runtime classpath.
-     * @parameter alias="useTestScope" default-value="false"
+     * 
+     * @parameter alias="useTestClasspath" default-value="false"
      */
-    private boolean useTestClasspath;
+    private boolean useTestScope;
     
   
     /**
      * The default location of the web.xml file. Will be used
-     * if <webAppConfig><descriptor> is not set.
+     * if &lt;webApp&gt;&lt;descriptor&gt; is not set.
      * 
      * @parameter expression="${maven.war.webxml}"
      * @readonly
@@ -255,21 +256,21 @@ public class JettyRunMojo extends AbstractJettyMojo
        //after any unpacking. With this mojo, you are running an unpacked, unassembled webapp,
        //so the two locations should be equal.
        Resource webAppSourceDirectoryResource = Resource.newResource(webAppSourceDirectory.getCanonicalPath());
-       if (webAppConfig.getWar() == null)
-           webAppConfig.setWar(webAppSourceDirectoryResource.toString());
+       if (webApp.getWar() == null)
+           webApp.setWar(webAppSourceDirectoryResource.toString());
        
-       if (webAppConfig.getBaseResource() == null)
-               webAppConfig.setBaseResource(webAppSourceDirectoryResource);
+       if (webApp.getBaseResource() == null)
+               webApp.setBaseResource(webAppSourceDirectoryResource);
 
        if (getClassesDirectory() != null)
-           webAppConfig.setClasses (getClassesDirectory());
-       if (useTestClasspath && (testClassesDirectory != null))
-           webAppConfig.setTestClasses (testClassesDirectory);
-       webAppConfig.setWebInfLib (getDependencyFiles());
+           webApp.setClasses (getClassesDirectory());
+       if (useTestScope && (testClassesDirectory != null))
+           webApp.setTestClasses (testClassesDirectory);
+       webApp.setWebInfLib (getDependencyFiles());
 
         
         //if we have not already set web.xml location, need to set one up
-        if (webAppConfig.getDescriptor() == null)
+        if (webApp.getDescriptor() == null)
         {
             //Has an explicit web.xml file been configured to use?
             if (webXml != null)
@@ -277,31 +278,31 @@ public class JettyRunMojo extends AbstractJettyMojo
                 Resource r = Resource.newResource(webXml);
                 if (r.exists() && !r.isDirectory())
                 {
-                    webAppConfig.setDescriptor(r.toString());
+                    webApp.setDescriptor(r.toString());
                 }
             }
             
             //Still don't have a web.xml file: try the resourceBase of the webapp, if it is set
-            if (webAppConfig.getDescriptor() == null && webAppConfig.getBaseResource() != null)
+            if (webApp.getDescriptor() == null && webApp.getBaseResource() != null)
             {
-                Resource r = webAppConfig.getBaseResource().addPath("WEB-INF/web.xml");
+                Resource r = webApp.getBaseResource().addPath("WEB-INF/web.xml");
                 if (r.exists() && !r.isDirectory())
                 {
-                    webAppConfig.setDescriptor(r.toString());
+                    webApp.setDescriptor(r.toString());
                 }
             }
             
             //Still don't have a web.xml file: finally try the configured static resource directory if there is one
-            if (webAppConfig.getDescriptor() == null && (webAppSourceDirectory != null))
+            if (webApp.getDescriptor() == null && (webAppSourceDirectory != null))
             {
                 File f = new File (new File (webAppSourceDirectory, "WEB-INF"), "web.xml");
                 if (f.exists() && f.isFile())
                 {
-                   webAppConfig.setDescriptor(f.getCanonicalPath());
+                   webApp.setDescriptor(f.getCanonicalPath());
                 }
             }
         }
-        getLog().info( "web.xml file = "+webAppConfig.getDescriptor());       
+        getLog().info( "web.xml file = "+webApp.getDescriptor());       
         getLog().info("Webapp directory = " + getWebAppSourceDirectory().getCanonicalPath());
     }
     
@@ -310,11 +311,11 @@ public class JettyRunMojo extends AbstractJettyMojo
     {
         // start the scanner thread (if necessary) on the main webapp
         final ArrayList<File> scanList = new ArrayList<File>();
-        if (webAppConfig.getDescriptor() != null)
+        if (webApp.getDescriptor() != null)
         {
             try
             {
-                Resource r = Resource.newResource(webAppConfig.getDescriptor());
+                Resource r = Resource.newResource(webApp.getDescriptor());
                 scanList.add(r.getFile());
             }
             catch (IOException e)
@@ -323,11 +324,11 @@ public class JettyRunMojo extends AbstractJettyMojo
             }
         }
 
-        if (webAppConfig.getJettyEnvXml() != null)
+        if (webApp.getJettyEnvXml() != null)
         {
             try
             {
-                Resource r = Resource.newResource(webAppConfig.getJettyEnvXml());
+                Resource r = Resource.newResource(webApp.getJettyEnvXml());
                 scanList.add(r.getFile());
             }
             catch (IOException e)
@@ -336,13 +337,13 @@ public class JettyRunMojo extends AbstractJettyMojo
             }
         }
 
-        if (webAppConfig.getDefaultsDescriptor() != null)
+        if (webApp.getDefaultsDescriptor() != null)
         {
             try
             {
-                if (!WebAppContext.WEB_DEFAULTS_XML.equals(webAppConfig.getDefaultsDescriptor()))
+                if (!WebAppContext.WEB_DEFAULTS_XML.equals(webApp.getDefaultsDescriptor()))
                 {
-                    Resource r = Resource.newResource(webAppConfig.getDefaultsDescriptor());
+                    Resource r = Resource.newResource(webApp.getDefaultsDescriptor());
                     scanList.add(r.getFile());
                 }
             }
@@ -352,11 +353,11 @@ public class JettyRunMojo extends AbstractJettyMojo
             }
         }
         
-        if (webAppConfig.getOverrideDescriptor() != null)
+        if (webApp.getOverrideDescriptor() != null)
         {
             try
             {
-                Resource r = Resource.newResource(webAppConfig.getOverrideDescriptor());
+                Resource r = Resource.newResource(webApp.getOverrideDescriptor());
                 scanList.add(r.getFile());
             }
             catch (IOException e)
@@ -371,11 +372,11 @@ public class JettyRunMojo extends AbstractJettyMojo
             scanList.add(jettyWebXmlFile);
         scanList.addAll(getExtraScanTargets());
         scanList.add(getProject().getFile());
-        if (webAppConfig.getTestClasses() != null)
-            scanList.add(webAppConfig.getTestClasses());
-        if (webAppConfig.getClasses() != null)
-        scanList.add(webAppConfig.getClasses());
-        scanList.addAll(webAppConfig.getWebInfLib());
+        if (webApp.getTestClasses() != null)
+            scanList.add(webApp.getTestClasses());
+        if (webApp.getClasses() != null)
+        scanList.add(webApp.getClasses());
+        scanList.addAll(webApp.getWebInfLib());
         setScanList(scanList);
         ArrayList<Scanner.BulkListener> listeners = new ArrayList<Scanner.BulkListener>();
         listeners.add(new Scanner.BulkListener()
@@ -398,9 +399,9 @@ public class JettyRunMojo extends AbstractJettyMojo
 
     public void restartWebApp(boolean reconfigureScanner) throws Exception 
     {
-        getLog().info("restarting "+webAppConfig);
+        getLog().info("restarting "+webApp);
         getLog().debug("Stopping webapp ...");
-        webAppConfig.stop();
+        webApp.stop();
         getLog().debug("Reconfiguring webapp ...");
  
         checkPomConfiguration();
@@ -412,21 +413,21 @@ public class JettyRunMojo extends AbstractJettyMojo
         {
             getLog().info("Reconfiguring scanner after change to pom.xml ...");
             scanList.clear();
-            scanList.add(new File(webAppConfig.getDescriptor()));
-            if (webAppConfig.getJettyEnvXml() != null)
-                scanList.add(new File(webAppConfig.getJettyEnvXml()));
+            scanList.add(new File(webApp.getDescriptor()));
+            if (webApp.getJettyEnvXml() != null)
+                scanList.add(new File(webApp.getJettyEnvXml()));
             scanList.addAll(getExtraScanTargets());
             scanList.add(getProject().getFile());
-            if (webAppConfig.getTestClasses() != null)
-                scanList.add(webAppConfig.getTestClasses());
-            if (webAppConfig.getClasses() != null)
-            scanList.add(webAppConfig.getClasses());
-            scanList.addAll(webAppConfig.getWebInfLib());
+            if (webApp.getTestClasses() != null)
+                scanList.add(webApp.getTestClasses());
+            if (webApp.getClasses() != null)
+            scanList.add(webApp.getClasses());
+            scanList.addAll(webApp.getWebInfLib());
             getScanner().setScanDirs(scanList);
         }
 
         getLog().debug("Restarting webapp ...");
-        webAppConfig.start();
+        webApp.start();
         getLog().info("Restart completed at "+new Date().toString());
     }
     
@@ -454,14 +455,14 @@ public class JettyRunMojo extends AbstractJettyMojo
             }
             if (((!Artifact.SCOPE_PROVIDED.equals(artifact.getScope())) && (!Artifact.SCOPE_TEST.equals( artifact.getScope()))) 
                     ||
-                (useTestClasspath && Artifact.SCOPE_TEST.equals( artifact.getScope())))
+                (useTestScope && Artifact.SCOPE_TEST.equals( artifact.getScope())))
             {
                 dependencyFiles.add(artifact.getFile());
                 getLog().debug( "Adding artifact " + artifact.getFile().getName() + " for WEB-INF/lib " );   
             }
         }
         
-        webAppConfig.setOverlays(overlays);
+        webApp.setOverlays(overlays);
               
         return dependencyFiles; 
     }
@@ -494,7 +495,7 @@ public class JettyRunMojo extends AbstractJettyMojo
         
         //if using the test classes, make sure they are first
         //on the list
-        if (useTestClasspath && (testClassesDirectory != null))
+        if (useTestScope && (testClassesDirectory != null))
             classesDirs.add(testClassesDirectory);
         
         if (getClassesDirectory() != null)
@@ -554,12 +555,12 @@ public class JettyRunMojo extends AbstractJettyMojo
 
     public boolean isUseTestClasspath()
     {
-        return useTestClasspath;
+        return useTestScope;
     }
 
     public void setUseTestClasspath(boolean useTestClasspath)
     {
-        this.useTestClasspath = useTestClasspath;
+        this.useTestScope = useTestClasspath;
     }
 
     public File getTestClassesDirectory()
