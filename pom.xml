@@ -167,7 +167,6 @@
     <module>jetty-runner</module>
     <module>jetty-blazeds</module>
     <module>jetty-pkcs12</module>
-    <module>jetty-j2sehttp-spi</module>
     <module>jetty-setuid</module>
     <module>jetty-reverse-http</module>
     <module>jetty-spring</module>
