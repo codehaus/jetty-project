@@ -1,3 +1,5 @@
+jetty@codehaus-7.5.3-SNAPSHOT
+
 jetty@codehaus-7.5.2.v20111006 - 06 October 2011
  + 353157 Pass jvm args to forked jetty
  + 358319 update appassembler archetype
