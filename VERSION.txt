@@ -1,4 +1,5 @@
-jetty@codehaus-8.0.3-SNAPSHOT
+jetty@codehaus-8.0.3.v20111011 - 11 October 2011
+ + JETTY-1440 jstl-1.2-rev-1 contains duplicate servlet 2.5 api classes
 
 jetty@codehaus-8.0.2.v20111006 - 06 October 2011
  + 353157 Pass jvm args to forked jetty
