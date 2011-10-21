@@ -6,8 +6,7 @@
 <!-- Configure the Jetty SetUIDServer                                 -->
 <!-- This configuration file *must* be specified first in the list of -->
 <!-- configuration files and should be used in combination with other -->
-<!-- configuration files, e.g.                                        -->
-<!--    java -jar start.jar --ini etc/jetty-setuid.xml etc/jetty.xml  -->
+<!-- configuration files eg jetty.xml                                 -->
 <!-- ================================================================ -->
 <Configure id="Server" class="org.mortbay.setuid.SetUIDServer">
   <Set name="startServerAsPrivileged">false</Set>
@@ -26,4 +25,3 @@
   </Call>
 -->
 </Configure>
-
