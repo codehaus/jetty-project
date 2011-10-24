@@ -1,3 +1,5 @@
+jetty@codehaus-8.0.5-SNAPSHOT
+
 jetty@codehaus-8.0.4.v20111024 - 24 October 2011
  + JETTY-1443 Corrected property names in jetty-setuid.xml
  + JETTY-1446 jetty-setuid is not unpacked to jetty-hightide
