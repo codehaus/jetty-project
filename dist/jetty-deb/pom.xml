@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.mortbay.jetty.dist</groupId>
     <artifactId>dist-parent</artifactId>
-    <version>7.5.4-SNAPSHOT</version>
+    <version>7.5.4.v20111024</version>
   </parent>
   <artifactId>jetty-deb</artifactId>
   <name>Jetty :: Unix Distributions :: Debian</name>
