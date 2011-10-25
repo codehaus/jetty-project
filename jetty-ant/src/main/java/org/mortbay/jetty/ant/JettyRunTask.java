@@ -63,6 +63,12 @@ public class JettyRunTask extends Task
     /** Port Jetty will use for the default connector */
     private int jettyPort = 8080;
 
+
+    public JettyRunTask()
+    {
+        TaskLog.setTask(this);
+    }
+
     /**
      * Creates a new <code>WebApp</code> Ant object.
      *
@@ -94,16 +100,13 @@ public class JettyRunTask extends Task
     }
 
     public void addLoginServices(LoginServices services)
-    {
-        TaskLog.log("Setting <loginServices> via Ant is currently not supported.");
-        /*
+    {        
         if (this.loginServices != null )
         {
             throw new BuildException("Only one <loginServices> tag is allowed!");
         }
         
-        this.loginServices = services;
-        */
+        this.loginServices = services;  
     }
 
     public void addSystemProperties(SystemProperties systemProperties)
@@ -184,7 +187,7 @@ public class JettyRunTask extends Task
      */
     public void execute() throws BuildException
     {
-        TaskLog.setTask(this);
+
         TaskLog.log("Configuring Jetty for project: " + getProject().getName());
         WebApplicationProxyImpl.setBaseTempDirectory(tempDirectory);
         setSystemProperties();

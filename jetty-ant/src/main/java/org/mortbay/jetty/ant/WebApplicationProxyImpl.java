@@ -20,7 +20,10 @@ import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.List;
 
+
+import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
+import org.eclipse.jetty.plus.webapp.PlusConfiguration;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.util.resource.Resource;
@@ -32,6 +35,7 @@ import org.eclipse.jetty.webapp.TagLibConfiguration;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebInfConfiguration;
+import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.mortbay.jetty.ant.types.Attribute;
 import org.mortbay.jetty.ant.types.FileMatchingConfiguration;
 import org.mortbay.jetty.ant.utils.TaskLog;
@@ -97,13 +101,14 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
         TaskLog.log("\nConfiguring Jetty for web application: " + name);
 
         this.configurations = new Configuration[] 
-                                                { new WebInfConfiguration(),
-                                                  new JettyWebAppConfiguration(), 
+                                                { new AntWebInfConfiguration(),
+                                                  new AntWebXmlConfiguration(), 
                                                   new MetaInfConfiguration(),
                                                   new FragmentConfiguration(),
-                                                  new JettyWebXmlConfiguration(), 
                                                   new EnvConfiguration(), 
-                                                  new org.eclipse.jetty.plus.webapp.PlusConfiguration(),
+                                                  new PlusConfiguration(),
+                                                  new AnnotationConfiguration(),
+                                                  new JettyWebXmlConfiguration(), 
                                                   new TagLibConfiguration() };
     }
 
@@ -346,12 +351,12 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
                     throw new RuntimeException(e);
                 }
             }
-            else if (configurations[i] instanceof JettyWebAppConfiguration)
+            else if (configurations[i] instanceof AntWebXmlConfiguration)
             {
-                ((JettyWebAppConfiguration) configurations[i]).setClassPathFiles(classPathFiles);
-                ((JettyWebAppConfiguration) configurations[i]).setWebAppBaseDir(warFile);
-                ((JettyWebAppConfiguration) configurations[i]).setWebXmlFile(webXmlFile);
-                ((JettyWebAppConfiguration) configurations[i]).setWebDefaultXmlFile(webDefaultXmlFile);
+                ((AntWebXmlConfiguration) configurations[i]).setClassPathFiles(classPathFiles);
+                ((AntWebXmlConfiguration) configurations[i]).setWebAppBaseDir(warFile);
+                ((AntWebXmlConfiguration) configurations[i]).setWebXmlFile(webXmlFile);
+                ((AntWebXmlConfiguration) configurations[i]).setWebDefaultXmlFile(webDefaultXmlFile);
             }
         }
 
