@@ -591,7 +591,7 @@ public class JettyRunForkedMojo extends AbstractMojo
             {
                 if (classPath.length() > 0)
                 {
-                    classPath.append(':');
+                    classPath.append(File.pathSeparator);
                 }
                 classPath.append(artifact.getFile().getAbsolutePath());
 
@@ -602,7 +602,7 @@ public class JettyRunForkedMojo extends AbstractMojo
         Set<Artifact> extraJars = getExtraJars();
         for (Artifact a:extraJars)
         { 
-            classPath.append(':');
+            classPath.append(File.pathSeparator);
             classPath.append(a.getFile().getAbsolutePath());
         }
         
@@ -613,13 +613,13 @@ public class JettyRunForkedMojo extends AbstractMojo
         {
             for (String jar:providedJars)
             {
-                classPath.append(':');
+                classPath.append(File.pathSeparator);
                 classPath.append(jar);
                 if (getLog().isDebugEnabled()) getLog().debug("Adding provided jar: "+jar);
             }
         }
         
-        return pathSeparators(classPath.toString());
+        return classPath.toString();
     }
 
     private String getJavaBin()
