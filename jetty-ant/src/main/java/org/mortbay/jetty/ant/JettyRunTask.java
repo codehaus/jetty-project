@@ -190,46 +190,45 @@ public class JettyRunTask extends Task
         setSystemProperties();
 
         List connectorsList = null;
-        
+
         if (connectors != null)
         {
             connectorsList = connectors.getConnectors();
         }
         else
         {
-            connectorsList = new Connectors(jettyPort, 30000).getDefaultConnectors();
+            connectorsList = new Connectors(jettyPort,30000).getDefaultConnectors();
         }
 
-        List loginServicesList = (loginServices != null ? loginServices.getLoginServices() : new ArrayList());
-        ServerProxy server = new ServerProxyImpl(connectorsList, loginServicesList, requestLog,
-                jettyXml);
+        List loginServicesList = (loginServices != null?loginServices.getLoginServices():new ArrayList());
+        ServerProxy server = new ServerProxyImpl(connectorsList,loginServicesList,requestLog,jettyXml);
 
-				try 
-				{
-	        Iterator iterator = webapps.iterator();
-	        while (iterator.hasNext())
-	        {
-	            WebApp webAppConfiguration = (WebApp) iterator.next();
-	            WebApplicationProxyImpl webApp = new WebApplicationProxyImpl(webAppConfiguration
-	                    .getName());
-	            webApp.setSourceDirectory(webAppConfiguration.getWarFile());
-	            webApp.setContextPath(webAppConfiguration.getContextPath());
-	            webApp.setWebXml(webAppConfiguration.getWebXmlFile());
-	            webApp.setJettyEnvXml(webAppConfiguration.getJettyEnvXml());
-	            webApp.setClassPathFiles(webAppConfiguration.getClassPathFiles());
-	            webApp.setLibrariesConfiguration(webAppConfiguration.getLibrariesConfiguration());
-	            webApp.setExtraScanTargetsConfiguration(webAppConfiguration
-	                    .getScanTargetsConfiguration());
-	            webApp.setContextHandlers(webAppConfiguration.getContextHandlers());
-	            webApp.setWebDefaultXmlFile(webAppConfiguration.getWebDefaultXmlFile());
+        try
+        {
+            Iterator iterator = webapps.iterator();
+            while (iterator.hasNext())
+            {
+                WebApp webAppConfiguration = (WebApp)iterator.next();
+                WebApplicationProxyImpl webApp = new WebApplicationProxyImpl(webAppConfiguration.getName());
+                webApp.setSourceDirectory(webAppConfiguration.getWarFile());
+                webApp.setContextPath(webAppConfiguration.getContextPath());
+                webApp.setWebXml(webAppConfiguration.getWebXmlFile());
+                webApp.setJettyEnvXml(webAppConfiguration.getJettyEnvXml());
+                webApp.setClassPathFiles(webAppConfiguration.getClassPathFiles());
+                webApp.setLibrariesConfiguration(webAppConfiguration.getLibrariesConfiguration());
+                webApp.setExtraScanTargetsConfiguration(webAppConfiguration.getScanTargetsConfiguration());
+                webApp.setContextHandlers(webAppConfiguration.getContextHandlers());
+                webApp.setAttributes(webAppConfiguration.getAttributes());
+                webApp.setWebDefaultXmlFile(webAppConfiguration.getWebDefaultXmlFile());
 
-	            server.addWebApplication(webApp, webAppConfiguration.getScanIntervalSeconds());
-	        }
-				} 
-				catch (Exception e) {
-					throw new BuildException(e);
-				}
-				
+                server.addWebApplication(webApp,webAppConfiguration.getScanIntervalSeconds());
+            }
+        }
+        catch (Exception e)
+        {
+            throw new BuildException(e);
+        }
+
         server.start();
     }
 

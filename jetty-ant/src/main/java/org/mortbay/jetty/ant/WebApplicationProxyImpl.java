@@ -32,6 +32,7 @@ import org.eclipse.jetty.webapp.TagLibConfiguration;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebInfConfiguration;
+import org.mortbay.jetty.ant.types.Attribute;
 import org.mortbay.jetty.ant.types.FileMatchingConfiguration;
 import org.mortbay.jetty.ant.utils.TaskLog;
 import org.mortbay.jetty.ant.utils.WebApplicationProxy;
@@ -74,6 +75,8 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
     /** Extra context handlers. */
     private List contextHandlers;
 
+    private List attributes;
+    
     Configuration[] configurations;
 
     private FileMatchingConfiguration librariesConfiguration;
@@ -197,6 +200,11 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
         this.extraScanTargetsConfiguration = extraScanTargetsConfiguration;
         TaskLog.log("Extra scan targets = " + extraScanTargetsConfiguration.getBaseDirectories());
     }
+    
+    public void setAttributes(List attributes)
+    {
+        this.attributes = attributes;
+    }
 
     public List getExtraScanTargets()
     {
@@ -269,8 +277,19 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
         webAppContext.setDisplayName(name);
 
         configurePaths();
+        
+        if ( !attributes.isEmpty() )
+        {
+            for ( Iterator i = attributes.iterator(); i.hasNext(); )
+            {
+                Attribute attr = (Attribute) i.next();
+                
+                webAppContext.setAttribute(attr.getName(),attr.getValue());
+            }
+        }
+        
         configureHandlers(contexts);
-
+        
         applyConfiguration();
     }
 
