@@ -4,6 +4,10 @@ jetty@codehaus-8.0.4.v20111024 - 24 October 2011
  + JETTY-1443 Corrected property names in jetty-setuid.xml
  + JETTY-1446 jetty-setuid is not unpacked to jetty-hightide
 
+jetty@codehaus-7.5.4.v20111024 - 24 October 2011
+ + JETTY-1443 Corrected property names in jetty-setuid.xml
+ + JETTY-1446 jetty-setuid is not unpacked to jetty-hightide
+
 jetty@codehaus-8.0.3.v20111011 - 11 October 2011
  + JETTY-1440 jstl-1.2-rev-1 contains duplicate servlet 2.5 api classes
 
