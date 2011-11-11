@@ -30,7 +30,7 @@ import java.util.Random;
 
 import javax.transaction.UserTransaction;
 
-import org.eclipse.jetty.http.security.Constraint;
+import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.plus.jndi.Transaction;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
