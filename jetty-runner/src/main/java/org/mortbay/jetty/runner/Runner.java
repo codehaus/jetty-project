@@ -71,6 +71,7 @@ public class Runner
             org.eclipse.jetty.webapp.FragmentConfiguration.class.getCanonicalName(),
             org.eclipse.jetty.plus.webapp.EnvConfiguration.class.getCanonicalName(),
             org.eclipse.jetty.plus.webapp.PlusConfiguration.class.getCanonicalName(),
+            org.eclipse.jetty.annotations.AnnotationConfiguration.class.getCanonicalName(),
             org.eclipse.jetty.webapp.JettyWebXmlConfiguration.class.getCanonicalName(),
             org.eclipse.jetty.webapp.TagLibConfiguration.class.getCanonicalName() 
             };
@@ -163,7 +164,7 @@ public class Runner
 
         try
         {
-            if (Thread.currentThread().getContextClassLoader().loadClass("com.atomikos.jdbc.SimpleDataSourceBean")!=null)
+            if (Thread.currentThread().getContextClassLoader().loadClass("com.atomikos.icatch.jta.UserTransactionImp")!=null)
                 _isTxServiceAvailable=true;
         }
         catch (ClassNotFoundException e)
@@ -365,6 +366,8 @@ public class Runner
                     _contexts.addHandler(handler);
                     if (contextPathSet)
                         handler.setContextPath(contextPath);
+                    handler.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
+                                         ".*/.*jsp-api-[^/]*\\.jar$|.*/.*jsp-[^/]*\\.jar$|.*/.*taglibs[^/]*\\.jar$"); 
                 }
                 else
                 {
@@ -375,7 +378,8 @@ public class Runner
                     LOG.info("Deploying "+ctx.toString()+" @ "+contextPath);
                     WebAppContext webapp = new WebAppContext(_contexts,ctx.toString(),contextPath);
                     webapp.setConfigurationClasses(__plusConfigurationClasses);
-                    
+                    webapp.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
+                                        ".*/.*jsp-api-[^/]*\\.jar$|.*/.*jsp-[^/]*\\.jar$|.*/.*taglibs[^/]*\\.jar$"); 
                     System.err.println(Arrays.asList(_contexts.getHandlers()));
                 }
             }
@@ -576,45 +580,27 @@ public class Runner
             _utId = Integer.toHexString(_random.nextInt());
             if (_txMgrPropertiesFile == null)
             {
+                //Use system properties to config atomikos
                 System.setProperty("com.atomikos.icatch.no_file", "true");
-                System.setProperty("com.atomikos.icatch.service", "com.atomikos.icatch.standalone.UserTransactionServiceFactory");
+                //create a directory for the tx mgr log and console files to go into that will be unique
+                File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+                tmpDir = new File(tmpDir, _utId);
+                tmpDir.mkdir();
+                LOG.debug("Made " + tmpDir.getAbsolutePath());
+                System.setProperty("com.atomikos.icatch.log_base_dir ", tmpDir.getCanonicalPath());
+                System.setProperty("com.atomikos.icatch.console_file_name", "tm-debug.log");
+                System.setProperty("com.atomikos.icatch.output_dir", tmpDir.getCanonicalPath());
+                System.setProperty("com.atomikos.icatch.tm_unique_name", _utId);
             }
             else
             {
                 System.setProperty("com.atomikos.icatch.file", _txMgrPropertiesFile);
             }
 
-            Properties txprops = new Properties();
-            if (_txMgrPropertiesFile == null)
-            {
-                //create a directory for the tx mgr log and console files to go into that will be unique
-                File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-                tmpDir = new File(tmpDir, _utId);
-                tmpDir.mkdir();
-                LOG.debug("Made " + tmpDir.getAbsolutePath());
-                txprops.put("com.atomikos.icatch.service", "com.atomikos.icatch.standalone.UserTransactionServiceFactory");
-                Class infoClass = Thread.currentThread().getContextClassLoader().loadClass("com.atomikos.icatch.config.TSInitInfo");
-                txprops.put(infoClass.getField("LOG_BASE_DIR_PROPERTY_NAME").get(null).toString(), tmpDir.getCanonicalPath());
-                txprops.put(infoClass.getField("CONSOLE_FILE_NAME_PROPERTY_NAME").get(null).toString(), "tm-debug.log");
-                txprops.put(infoClass.getField("OUTPUT_DIR_PROPERTY_NAME").get(null).toString(), "tm-tx-log");
-                txprops.put(infoClass.getField("OUTPUT_DIR_PROPERTY_NAME").get(null).toString(), tmpDir.getCanonicalPath());
-                txprops.put(infoClass.getField("TM_UNIQUE_NAME_PROPERTY_NAME").get(null).toString(), _utId);
-            }
-            else
-            {
-                txprops.load(new FileInputStream(_txMgrPropertiesFile));
-            }
-
-            Class utsClass = Thread.currentThread().getContextClassLoader().loadClass("com.atomikos.icatch.config.UserTransactionServiceImp");
-            Class tsInitInfoClass = Thread.currentThread().getContextClassLoader().loadClass("com.atomikos.icatch.config.TSInitInfo");
-            Object uts = utsClass.getConstructor(new Class[]{Properties.class}).newInstance(txprops);
-            Object tsInfo = utsClass.getMethod("createTSInitInfo", new Class[]{}).invoke(uts, new Object[]{});
-            utsClass.getMethod("init", new Class[]{tsInitInfoClass}).invoke(uts, new Object[]{tsInfo});
-
             //create UserTransaction
-            _ut = (UserTransaction) utsClass.getMethod("getUserTransaction", new Class[]{}).invoke(uts, new Object[]{});
+            Class utsClass = Thread.currentThread().getContextClassLoader().loadClass("com.atomikos.icatch.jta.UserTransactionImp");
             //register in JNDI
-            Transaction txMgrResource = new Transaction(_ut);
+            Transaction txMgrResource = new Transaction((UserTransaction)utsClass.newInstance());
         }
     }
 

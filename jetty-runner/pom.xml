@@ -9,6 +9,26 @@
   <artifactId>jetty-runner</artifactId>
   <name>Jetty :: Runner</name>
 
+ <properties>
+    <javax-activation-version>1.1</javax-activation-version>
+    <javax-mail-version>1.4.1</javax-mail-version>
+    <jetty-orbit-url>http://download.eclipse.org/jetty/orbit</jetty-orbit-url>
+    <assembly-directory>target/distribution</assembly-directory>
+    <eclipse-ecj-version>3.6</eclipse-ecj-version>
+    <orbit-javax-activation-version>${javax-activation-version}.0.v201005080500</orbit-javax-activation-version>
+    <orbit-javax-annotation-version>1.0.0.v20100513-0750</orbit-javax-annotation-version>
+    <orbit-javax-el-version>2.1.0.v201004190952</orbit-javax-el-version>
+    <orbit-javax-mail-glassfish-version>${javax-mail-version}.v201005082020</orbit-javax-mail-glassfish-version>
+    <orbit-javax-servlet-version>2.5.0.v200910301333</orbit-javax-servlet-version>
+    <orbit-javax-servlet-jsp-version>2.1.0.v201004190952</orbit-javax-servlet-jsp-version>
+    <orbit-javax-servlet-jsp-jstl-version>1.2.0.v201004190952</orbit-javax-servlet-jsp-jstl-version>
+    <orbit-com-sun-el-version>1.0.0.v201004190952</orbit-com-sun-el-version>
+    <orbit-org-apache-jasper-version>2.1.0.v201110031002</orbit-org-apache-jasper-version>
+    <orbit-org-apache-taglibs-standard-version>1.2.0.v201004190952</orbit-org-apache-taglibs-standard-version>
+    <orbit-org-objectweb-asm-version>3.1.0.v200803061910</orbit-org-objectweb-asm-version>
+    <orbit-javax-transaction-version>1.1.1.v201004190952</orbit-javax-transaction-version>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -19,6 +39,70 @@
           <target>1.5</target>
           <verbose>false</verbose>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>fetch-orbit</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <!-- This is the Orbit Downloads Process -->
+
+                <!-- Step 1: download orbit artifacts into orbit-cache (if not present) -->
+                <property name="orbit-cache" value="${user.home}/.m2/eclipse-orbit" />
+
+                <mkdir dir="${orbit-cache}" />
+                <get dest="${orbit-cache}" verbose="true" skipexisting="true">
+                  <url url="${jetty-orbit-url}/javax.servlet_${orbit-javax-servlet-version}.jar" />
+                  <url url="${jetty-orbit-url}/javax.activation_${orbit-javax-activation-version}.jar" />
+                  <url url="${jetty-orbit-url}/javax.annotation_${orbit-javax-annotation-version}.jar" />
+                  <url url="${jetty-orbit-url}/javax.mail.glassfish_${orbit-javax-mail-glassfish-version}.jar" />
+                  <url url="${jetty-orbit-url}/javax.el_${orbit-javax-el-version}.jar" />
+                  <url url="${jetty-orbit-url}/javax.servlet.jsp_${orbit-javax-servlet-jsp-version}.jar" />
+                  <url url="${jetty-orbit-url}/javax.servlet.jsp.jstl_${orbit-javax-servlet-jsp-jstl-version}.jar" />
+                  <url url="${jetty-orbit-url}/com.sun.el_${orbit-com-sun-el-version}.jar" />
+                  <url url="${jetty-orbit-url}/org.apache.jasper.glassfish_${orbit-org-apache-jasper-version}.jar" />
+                  <!-- Don't copy the jstl jar into the runner jar, as jasper insists on looking for it as a separate jar -->
+                  <!-- url url="${jetty-orbit-url}/org.apache.taglibs.standard.glassfish_${orbit-org-apache-taglibs-standard-version}.jar" / -->
+                  <url url="${jetty-orbit-url}/org.objectweb.asm_${orbit-org-objectweb-asm-version}.jar" />
+                  <url url="${jetty-orbit-url}/javax.transaction_${orbit-javax-transaction-version}.jar" />
+                  <url url="${jetty-orbit-url}/ecj-${eclipse-ecj-version}.jar" />
+                </get>
+
+                <!-- Step 2: unpack -->
+                <unzip dest="${project.build.directory}/classes">
+                  <patternset>
+                    <exclude name="**/MANIFEST.MF"/>
+                    <exclude name="**/META-INF/ECLIPSEF.RSA"/>
+                    <exclude name="**/META-INF/ECLIPSEF.SF"/>
+                  </patternset>
+                  <fileset dir="${orbit-cache}">
+                    <include name="javax.servlet_${orbit-javax-servlet-version}.jar" />
+                    <include name="javax.activation_${orbit-javax-activation-version}.jar" />
+                    <include name="javax.annotation_${orbit-javax-annotation-version}.jar" />
+                    <include name="javax.mail.glassfish_${orbit-javax-mail-glassfish-version}.jar" />
+                    <include name="javax.el_${orbit-javax-el-version}.jar" />
+                    <include name="javax.servlet.jsp_${orbit-javax-servlet-jsp-version}.jar" />
+                    <include name="javax.servlet.jsp.jstl_${orbit-javax-servlet-jsp-jstl-version}.jar" />
+                    <include name="com.sun.el_${orbit-com-sun-el-version}.jar" />
+                    <include name="org.apache.jasper.glassfish_${orbit-org-apache-jasper-version}.jar" />
+                    <!-- include name="org.apache.taglibs.standard.glassfish_${orbit-org-apache-taglibs-standard-version}.jar" / -->
+                    <include name="org.objectweb.asm_${orbit-org-objectweb-asm-version}.jar" />
+                    <include name="javax.transaction_${orbit-javax-transaction-version}.jar" />
+                    <include name="ecj-${eclipse-ecj-version}.jar" />
+                  </fileset>
+                </unzip>
+
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -78,21 +162,38 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-plus</artifactId>
       <version>${jetty-version}</version>
+      <exclusions>
+        <exclusion>
+         <groupId>org.apache.geronimo.specs</groupId>
+         <artifactId>geronimo-jta_1.1_spec</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-annotations</artifactId>
+      <version>${jetty-version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jndi</artifactId>
       <version>${jetty-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jsp-2.1-glassfish</artifactId>
-      <version>2.1.v20100127</version>
+      <exclusions>
+       <exclusion>
+         <groupId>javax.mail</groupId>
+         <artifactId>mail</artifactId>
+       </exclusion>
+       <exclusion>
+         <groupId>javax.transaction</groupId>
+         <artifactId>jta</artifactId>
+       </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
       <version>1.1</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>
