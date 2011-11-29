@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jetty.security.LoginService;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.RequestLog;
@@ -119,15 +120,13 @@ public class ServerProxyImpl implements ServerProxy
             server.addConnector(jettyConnector);
         }
 
-        /* server.addLoginService() not implemented
         // Configures login services
         Iterator servicesIterator = loginServices.iterator();
         while (servicesIterator.hasNext())
         {
             LoginService service = (LoginService) servicesIterator.next();
-            server.addLoginService(service);
+            server.addBean(service);
         }
-        */
 
         // Does not cache resources, to prevent Windows from locking files
         Resource.setDefaultUseCaches(false);

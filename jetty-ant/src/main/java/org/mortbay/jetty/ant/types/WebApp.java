@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -61,6 +62,9 @@ public class WebApp
     /** List of extra scan targets for this web application. */
     private FileSet scanTargets;
 
+    /** List of the attributes to set to webapp context */
+    private Attributes attributes;
+    
     /** List of optional context handlers. */
     private ContextHandlers contextHandlers;
 
@@ -245,6 +249,16 @@ public class WebApp
         this.contextHandlers = contextHandlers;
     }
 
+    public void addAttributes(Attributes attributes)
+    {
+        if (this.attributes != null)
+        {
+            throw new BuildException("Only one <attributes> tag is allowed!");
+        }
+
+        this.attributes = attributes;
+    }
+    
     public int getScanIntervalSeconds()
     {
         return scanIntervalSeconds;
@@ -268,5 +282,10 @@ public class WebApp
     public List getContextHandlers()
     {
         return (contextHandlers != null ? contextHandlers.getContextHandlers() : new ArrayList());
+    }
+    
+    public List getAttributes()
+    {
+        return (attributes != null ? attributes.getAttributes() : new ArrayList());
     }
 }

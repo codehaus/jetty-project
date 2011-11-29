@@ -16,7 +16,7 @@ package org.mortbay.jetty.integration.jaas;
 
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.apacheds.ApacheDs;
-import org.eclipse.jetty.http.security.Credential;
+import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.plus.jaas.JAASRole;
 import org.eclipse.jetty.plus.jaas.callback.DefaultCallbackHandler;
 import org.eclipse.jetty.plus.jaas.spi.LdapLoginModule;
