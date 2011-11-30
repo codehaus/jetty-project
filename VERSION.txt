@@ -1,4 +1,7 @@
-jetty@codehaus-8.1.0-SNAPSHOT
+jetty@codehaus-8.1.0.RC0 - 01 December 2011
+ + 353285 ServletSecurity annotation ignored
+ + 357209 JSP tag listeners not called
+ + JETTY-1440 jstl-1.2-rev-1 contains duplicate servlet 2.5 api classes
 
 jetty@codehaus-7.6.0.RC0 - 30 November 2011
  + JETTY-1448 support setting attributes on webapp context for jetty-ant
