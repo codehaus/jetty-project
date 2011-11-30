@@ -24,8 +24,8 @@ import org.eclipse.jetty.io.ByteArrayEndPoint;
 import org.eclipse.jetty.io.Connection;
 import org.eclipse.jetty.io.EndPoint;
 import org.eclipse.jetty.server.AbstractConnector;
+import org.eclipse.jetty.server.AbstractHttpConnection;
 import org.eclipse.jetty.server.BlockingHttpConnection;
-import org.eclipse.jetty.server.HttpConnection;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
@@ -141,7 +141,7 @@ public class ReverseHTTPConnector extends AbstractConnector implements RHTTPList
             ByteArrayEndPoint endPoint = new ByteArrayEndPoint(requestBytes, 1024);
             endPoint.setGrowOutput(true);
 
-            HttpConnection connection = new BlockingHttpConnection(ReverseHTTPConnector.this, endPoint, getServer());
+            AbstractHttpConnection connection = new BlockingHttpConnection(ReverseHTTPConnector.this, endPoint, getServer());
             
             connectionOpened(connection);
             try

@@ -3,17 +3,16 @@
 	<parent>
 		<artifactId>archetype-parent</artifactId>
 		<groupId>org.mortbay.jetty.archetype</groupId>
-		<version>8.0.5-SNAPSHOT</version>
+		<version>8.1.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.mortbay.jetty.archetype</groupId>
   <artifactId>jetty-archetype-assembler</artifactId>
   <packaging>maven-archetype</packaging>
   <name>Jetty :: Archetype :: App Assembler</name>
 
 	<properties>
-	<jetty-version>8.0.2-SNAPSHOT</jetty-version>
+	<jetty-version>8.1.0-SNAPSHOT</jetty-version>
 	</properties>
 
   <build>

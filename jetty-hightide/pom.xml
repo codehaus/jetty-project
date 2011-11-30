@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-integration-project</artifactId>
-    <version>8.0.5-SNAPSHOT</version>
+    <version>8.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>jetty-hightide</artifactId>
   <name>Jetty :: Hightide Distribution</name>
@@ -14,7 +14,7 @@
     <root-dist-directory>target/jetty-distribution</root-dist-directory>
     <atomikos-version>3.7.0</atomikos-version>
     <derby-version>10.6.1.0</derby-version>
-    <org-cometd-version>2.2.0.RC0</org-cometd-version>
+    <org-cometd-version>2.4.0.RC1</org-cometd-version>
   </properties>
   <build>
     <plugins>

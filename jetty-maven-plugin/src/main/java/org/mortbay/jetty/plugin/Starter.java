@@ -126,7 +126,7 @@ public class Starter
             List<Resource> overlays = new ArrayList<Resource>();
             String[] names = str.split(",");
             for (int j=0; names != null && j < names.length; j++)
-                overlays.add(Resource.newResource(names[j].trim()));
+                overlays.add(Resource.newResource("jar:"+Resource.toURL(new File(names[j].trim())).toString()+"!/"));
             webApp.setOverlays(overlays);
         }
 

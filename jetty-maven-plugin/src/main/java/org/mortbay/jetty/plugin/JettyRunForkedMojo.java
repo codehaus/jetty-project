@@ -368,12 +368,12 @@ public class JettyRunForkedMojo extends AbstractMojo
             props.put("lib.jars", strbuff.toString());
 
             //any overlays
-            List<Resource> overlays = getOverlays();
+            List<File> overlays = getOverlays();
             strbuff.setLength(0);
             for (int i=0; i<overlays.size(); i++)
             {
-                Resource r = overlays.get(i);
-                strbuff.append(r.getFile().getAbsolutePath());
+                File f = overlays.get(i);
+                strbuff.append(f.getAbsolutePath());
                 if (i < overlays.size()-1)
                     strbuff.append(",");
             }
@@ -405,28 +405,18 @@ public class JettyRunForkedMojo extends AbstractMojo
   
     
     
-    private List<Resource> getOverlays()
+    private List<File> getOverlays()
+    throws MalformedURLException, IOException
     {
-        List<Resource> overlays = new ArrayList<Resource>();
+        List<File> overlays = new ArrayList<File>();
         for ( Iterator<Artifact> iter = project.getArtifacts().iterator(); iter.hasNext(); )
         {
             Artifact artifact = (Artifact) iter.next();  
-            // Include runtime and compile time libraries, and possibly test libs too
-            if(artifact.getType().equals("war"))
-            {
-                try
-                {
-                    Resource r=Resource.newResource("jar:"+Resource.toURL(artifact.getFile()).toString()+"!/");
-                    overlays.add(r);
-                }
-                catch(Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
-                continue;
-            }
+            
+            if (artifact.getType().equals("war"))
+                overlays.add(artifact.getFile());
         }
-        
+
         return overlays;
     }
     
@@ -591,7 +581,7 @@ public class JettyRunForkedMojo extends AbstractMojo
             {
                 if (classPath.length() > 0)
                 {
-                    classPath.append(':');
+                    classPath.append(File.pathSeparator);
                 }
                 classPath.append(artifact.getFile().getAbsolutePath());
 
@@ -602,7 +592,7 @@ public class JettyRunForkedMojo extends AbstractMojo
         Set<Artifact> extraJars = getExtraJars();
         for (Artifact a:extraJars)
         { 
-            classPath.append(':');
+            classPath.append(File.pathSeparator);
             classPath.append(a.getFile().getAbsolutePath());
         }
         
@@ -613,13 +603,13 @@ public class JettyRunForkedMojo extends AbstractMojo
         {
             for (String jar:providedJars)
             {
-                classPath.append(':');
+                classPath.append(File.pathSeparator);
                 classPath.append(jar);
                 if (getLog().isDebugEnabled()) getLog().debug("Adding provided jar: "+jar);
             }
         }
         
-        return pathSeparators(classPath.toString());
+        return classPath.toString();
     }
 
     private String getJavaBin()
