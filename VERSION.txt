@@ -1,4 +1,11 @@
-jetty@codehaus-7.5.5-SNAPSHOT
+jetty@codehaus-7.6.0-SNAPSHOT
+
+jetty@codehaus-7.6.0.RC0 - 30 November 2011
+ + JETTY-1448 support setting attributes on webapp context for jetty-ant
+ + JETTY-1449 Unable to execute "run-forked" goal with overlays
+ + JETTY-1450 Unable to execute "run-forked" goal under Windows
+ + JETTY-1451 Update version of cometd to 2.4.0.RC1 for hightide
+ + JETTY-1456 jetty-runner in jetty-7 uses different jsp to jetty-7 distro
 
 jetty@codehaus-7.5.4.v20111024 - 24 October 2011
  + JETTY-1443 Corrected property names in jetty-setuid.xml

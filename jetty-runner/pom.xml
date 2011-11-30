@@ -78,9 +78,9 @@
                 <!-- Step 2: unpack -->
                 <unzip dest="${project.build.directory}/classes">
                   <patternset>
-                    <exclude name="**/MANIFEST.MF"/>
-                    <exclude name="**/META-INF/ECLIPSEF.RSA"/>
-                    <exclude name="**/META-INF/ECLIPSEF.SF"/>
+                    <exclude name="**/MANIFEST.MF" />
+                    <exclude name="**/META-INF/ECLIPSEF.RSA" />
+                    <exclude name="**/META-INF/ECLIPSEF.SF" />
                   </patternset>
                   <fileset dir="${orbit-cache}">
                     <include name="javax.servlet_${orbit-javax-servlet-version}.jar" />
