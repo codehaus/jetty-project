@@ -1,4 +1,4 @@
-jetty@codehaus-7.6.0-SNAPSHOT
+jetty@codehaus-7.6.0.RC1 - 04 December 2011
 
 jetty@codehaus-7.6.0.RC0 - 30 November 2011
  + JETTY-1448 support setting attributes on webapp context for jetty-ant
