@@ -1,4 +1,4 @@
-jetty@codehaus-8.1.0-SNAPSHOT
+jetty@codehaus-8.1.0.RC1 - 06 December 2011
 
 jetty@codehaus-8.1.0.RC0 - 01 December 2011
  + 353285 ServletSecurity annotation ignored
