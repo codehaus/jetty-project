@@ -1,4 +1,6 @@
-jetty@codehaus-7.6.0-SNAPSHOT
+jetty@codehaus-7.6.0.RC2 - 22 December 2011
+ + JETTY-1405 create jetty maven plugin "start" goal for use with execution
+   bindings
 
 jetty@codehaus-7.6.0.RC1 - 04 December 2011
 
