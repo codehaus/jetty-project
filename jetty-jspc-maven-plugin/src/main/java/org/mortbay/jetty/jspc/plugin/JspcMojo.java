@@ -83,6 +83,17 @@ public class JspcMojo extends AbstractMojo
      */
     private MavenProject project;
 
+    
+
+    /**
+     * The artifacts for the plugin itself.
+     * 
+     * @parameter expression="${plugin.artifacts}"
+     * @readonly
+     */
+    private List pluginArtifacts;
+    
+    
     /**
      * File into which to generate the &lt;servlet&gt; and
      * &lt;servlet-mapping&gt; tags for the compiled jsps
@@ -259,11 +270,15 @@ public class JspcMojo extends AbstractMojo
 
     public void compile() throws Exception
     {
-        ClassLoader currentClassLoader = Thread.currentThread()
-        .getContextClassLoader();
+        ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
 
-        ArrayList urls = new ArrayList();
-        setUpClassPath(urls);
+        //set up the classpath of the webapp
+        List<URL> urls = setUpWebAppClassPath();
+        
+        //set up the classpath of the container (ie jetty and jsp jars)
+        String sysClassPath = setUpSysClassPath();
+      
+        //use the classpaths as the classloader
         URLClassLoader ucl = new URLClassLoader((URL[]) urls.toArray(new URL[0]), currentClassLoader);
         StringBuffer classpathStr = new StringBuffer();
 
@@ -273,9 +288,9 @@ public class JspcMojo extends AbstractMojo
                 getLog().debug("webappclassloader contains: " + urls.get(i));
             classpathStr.append(((URL) urls.get(i)).getFile());
             if (getLog().isDebugEnabled())
-                getLog().debug(
-                        "added to classpath: " + ((URL) urls.get(i)).getFile());
-            classpathStr.append(System.getProperty("path.separator"));
+                getLog().debug("added to classpath: " + ((URL) urls.get(i)).getFile());
+            if (i+1<urls.size())
+                classpathStr.append(System.getProperty("path.separator"));
         }
 
         Thread.currentThread().setContextClassLoader(ucl);
@@ -292,13 +307,14 @@ public class JspcMojo extends AbstractMojo
         jspc.setSmapDumped(!suppressSmap);
         jspc.setJavaEncoding(javaEncoding);
         jspc.setTrimSpaces(trimSpaces);
+        jspc.setSystemClassPath(sysClassPath);
 
         // JspC#setExtensions() does not exist, so 
         // always set concrete list of files that will be processed.
         String jspFiles = getJspFiles(webAppSourceDirectory);
-        System.err.println("Compiling "+jspFiles);
-        System.err.println("Includes="+includes);
-        System.err.println("Excludes="+excludes);
+        getLog().info("Compiling "+jspFiles);
+        getLog().info("Includes="+includes);
+        getLog().info("Excludes="+excludes);
         jspc.setJspFiles(jspFiles);
         if (verbose)
         {
@@ -471,34 +487,53 @@ public class JspcMojo extends AbstractMojo
      * Put everything in the classesDirectory and all of the dependencies on the
      * classpath.
      * 
-     * @param urls a list to which to add the urls of the dependencies
+     * @returns a list of the urls of the dependencies
      * @throws Exception
      */
-    private void setUpClassPath(List urls) throws Exception
+    private List<URL> setUpWebAppClassPath() throws Exception
     {
+        //add any classes from the webapp
+        List<URL> urls = new ArrayList<URL>();
         String classesDir = classesDirectory.getCanonicalPath();
-        classesDir = classesDir
-        + (classesDir.endsWith(File.pathSeparator) ? "" : File.separator);
+        classesDir = classesDir + (classesDir.endsWith(File.pathSeparator) ? "" : File.separator);
         urls.add(Resource.toURL(new File(classesDir)));
 
         if (getLog().isDebugEnabled())
             getLog().debug("Adding to classpath classes dir: " + classesDir);
 
-        for (Iterator iter = project.getArtifacts().iterator(); iter.hasNext();)
+        //add the dependencies of the webapp (which will form WEB-INF/lib)
+        for (Iterator<Artifact> iter = project.getArtifacts().iterator(); iter.hasNext();)
         {
-            Artifact artifact = (Artifact) iter.next();
+            Artifact artifact = (Artifact)iter.next();
 
             // Include runtime and compile time libraries
             if (!Artifact.SCOPE_TEST.equals(artifact.getScope()))
             {
                 String filePath = artifact.getFile().getCanonicalPath();
                 if (getLog().isDebugEnabled())
-                    getLog().debug(
-                            "Adding to classpath dependency file: " + filePath);
+                    getLog().debug("Adding to classpath dependency file: " + filePath);
 
                 urls.add(Resource.toURL(artifact.getFile()));
             }
         }
+        return urls;
+    }
+    
+    
+    private String setUpSysClassPath () throws Exception
+    {
+        StringBuffer buff = new StringBuffer();
+        
+        for (Iterator<Artifact> iter = pluginArtifacts.iterator(); iter.hasNext(); )
+        {
+            Artifact pluginArtifact = iter.next();
+            if (getLog().isDebugEnabled()) { getLog().debug("Adding plugin artifact "+pluginArtifact);}
+            buff.append(pluginArtifact.getFile().getAbsolutePath());
+            if (iter.hasNext())
+                buff.append(File.pathSeparator);
+        }
+        
+        return buff.toString();
     }
     
     private File getWebXmlFile ()
