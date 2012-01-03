@@ -12,4 +12,29 @@
     <artifactId>jetty-npn-boot</artifactId>
     <name>Jetty :: Next Protocol Negotiation :: Boot</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>org/eclipse/jetty/npn/*.java</include>
+                        <include>sun/security/ssl/NextProtocolMessage.java</include>
+                        <include>sun/security/ssl/NextProtoNegoExtension.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>org/eclipse/jetty/npn/*</include>
+                        <include>sun/security/ssl/NextProtocolMessage.class</include>
+                        <include>sun/security/ssl/NextProtoNegoExtension.class</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
