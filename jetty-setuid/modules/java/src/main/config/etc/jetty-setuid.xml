@@ -2,17 +2,17 @@
 <!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
 
 
-<!-- =============================================================== -->
+<!-- ================================================================ -->
 <!-- Configure the Jetty SetUIDServer                                 -->
-<!-- this configuration file should be used in combination with      -->
-<!-- other configuration files.  e.g.                                -->
-<!--    java -jar start.jar etc/jetty-setuid.xml etc/jetty.xml       -->
-<!-- =============================================================== -->
+<!-- This configuration file *must* be specified first in the list of -->
+<!-- configuration files and should be used in combination with other -->
+<!-- configuration files eg jetty.xml                                 -->
+<!-- ================================================================ -->
 <Configure id="Server" class="org.mortbay.setuid.SetUIDServer">
   <Set name="startServerAsPrivileged">false</Set>
   <Set name="umask">2</Set>
-  <Set name="uid">jetty</Set>
-  <Set name="gid">jetty</Set>
+  <Set name="username">jetty</Set>
+  <Set name="groupname">jetty</Set>
 <!-- uncomment to change the limits on number of open file descriptors for root -->
 <!--
     <Call name="setRLimitNoFiles">
@@ -25,4 +25,3 @@
   </Call>
 -->
 </Configure>
-

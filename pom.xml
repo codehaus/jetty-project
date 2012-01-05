@@ -20,18 +20,17 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-parent</artifactId>
-    <version>12</version>
+    <version>13</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mortbay.jetty</groupId>
   <artifactId>jetty-integration-project</artifactId>
-  <version>7.5.1-SNAPSHOT</version>
+  <version>7.6.0-SNAPSHOT</version>
   <name>Jetty :: Codehaus Integration Project</name>
   <description>Jetty integrations and distributions</description>
   <packaging>pom</packaging>
 
   <properties>
-    <jetty-version>7.5.0.v20110901</jetty-version>
+    <jetty-version>7.6.0-SNAPSHOT</jetty-version>
     <felix.bundle.version>2.0.0</felix.bundle.version>
     <jna-version>3.2.2</jna-version>
     <jsp-2-1-version>2.1.v20100127</jsp-2-1-version>
@@ -154,7 +153,7 @@
         <plugin>
           <groupId>org.eclipse.jetty.toolchain</groupId>
           <artifactId>jetty-version-maven-plugin</artifactId>
-          <version>1.0.4</version>
+          <version>1.0.7</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -168,18 +167,16 @@
     <module>jetty-runner</module>
     <module>jetty-blazeds</module>
     <module>jetty-pkcs12</module>
-    <module>jetty-j2sehttp-spi</module>
     <module>jetty-setuid</module>
     <module>jetty-reverse-http</module>
     <module>jetty-spring</module>
     <module>example-async-rest-webapp</module>
     <module>jetty-hightide</module>
-    <module>jetty-jboss</module>
+    <!--module>jetty-jboss</module-->
     <module>test-wars</module>
     <module>jetty-logback</module>
     <module>jetty-webapp-verifier</module>
     <module>jetty-webapp-logging</module>
-    <module>jetty-monitor</module>
     <module>jetty-jmx-ws</module>
     <module>archetype</module>
     <module>dist</module>
@@ -194,12 +191,13 @@
             <artifactId>jetty-version-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>gen-versiontxt</id>
+                <id>update-version-text</id>
                 <phase>generate-resources</phase>
                 <goals>
-                  <goal>gen-version-text</goal>
+                  <goal>update-version-text</goal>
                 </goals>
                 <configuration>
+                  <versionTextKey>jetty@codehaus-VERSION</versionTextKey>
                   <refreshTags>true</refreshTags>
                   <copyGenerated>true</copyGenerated>
                   <attachArtifact>false</attachArtifact>

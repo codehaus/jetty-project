@@ -1,4 +1,44 @@
-jetty@codehaus-7.5.1-SNAPSHOT
+jetty@codehaus-7.6.0-SNAPSHOT
+
+jetty@codehaus-7.6.0.RC2 - 22 December 2011
+ + JETTY-1405 create jetty maven plugin "start" goal for use with execution
+   bindings
+
+jetty@codehaus-7.6.0.RC1 - 04 December 2011
+
+jetty@codehaus-7.6.0.RC0 - 30 November 2011
+ + JETTY-1448 support setting attributes on webapp context for jetty-ant
+ + JETTY-1449 Unable to execute "run-forked" goal with overlays
+ + JETTY-1450 Unable to execute "run-forked" goal under Windows
+ + JETTY-1451 Update version of cometd to 2.4.0.RC1 for hightide
+ + JETTY-1456 jetty-runner in jetty-7 uses different jsp to jetty-7 distro
+
+jetty@codehaus-7.5.4.v20111024 - 24 October 2011
+ + JETTY-1443 Corrected property names in jetty-setuid.xml
+ + JETTY-1446 jetty-setuid is not unpacked to jetty-hightide
+
+jetty@codehaus-7.5.3.v20111011 - 11 October 2011
+
+jetty@codehaus-7.5.2.v20111006 - 06 October 2011
+ + 353157 Pass jvm args to forked jetty
+ + 358319 update appassembler archetype
+ + 358784 JSP broken on Java 1.5
+ + 360061 Deprecate jetty-maven-plugin params in favour of using <webAppConfig>
+   to configure
+ + JETTY-429 allow <scope>provided</scope> for jetty-maven-plugin
+ + JETTY-706 add <excludedGoals> to jetty-maven-plugin configuration
+ + JETTY-991 JETTY-1429
+ + JETTY-1334 maven-jetty-plugin run-exploded and ContextHandlers are not
+   working together
+ + JETTY-1419 remove jetty-monitor as it has been moved to eclipse
+ + JETTY-1427 useTestClasspath option doesn't work with frameworks like JSF
+   that scan web-inf\classes for annotated classes
+ + JETTY-1434 Update jetty-maven-plugin jsp version
+ + JETTY-1437 test-jndi-webapp is missing the injection for datasource
+
+jetty@codehaus-7.5.1.v20110908 - 08 September 2011
+ + JETTY-1419 remove jetty-monitor from codehaus side
+ + JETTY-1425 jboss-jetty sar uses old slf4j libs
 
 jetty@codehaus-7.5.0.v20110901 - 01 September 2011
  + JETTY-1218 delete example extra webapp, too much bitrot

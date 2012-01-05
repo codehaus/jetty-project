@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-integration-project</artifactId>
-    <version>7.5.1-SNAPSHOT</version>
+    <version>7.6.0-SNAPSHOT</version>
   </parent>
   <artifactId>jetty-hightide</artifactId>
   <name>Jetty :: Hightide Distribution</name>
@@ -14,7 +14,7 @@
     <root-dist-directory>target/jetty-distribution</root-dist-directory>
     <atomikos-version>3.7.0</atomikos-version>
     <derby-version>10.6.1.0</derby-version>
-    <org-cometd-version>2.2.0.RC0</org-cometd-version>
+    <org-cometd-version>2.4.0.RC1</org-cometd-version>
   </properties>
   <build>
     <plugins>
@@ -119,6 +119,16 @@
                   <overWrite>true</overWrite>
                   <includes>**</includes>
                   <outputDirectory>${assembly-directory}/webapps/test-jaas</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.mortbay.jetty</groupId>
+                  <artifactId>jetty-setuid-java</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <classifier>config</classifier>
+                  <overWrite>true</overWrite>
+                  <includes>**</includes>
+                  <outputDirectory>${assembly-directory}</outputDirectory>
                 </artifactItem>
               </artifactItems>
             </configuration>

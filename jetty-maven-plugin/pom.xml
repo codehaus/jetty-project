@@ -2,19 +2,26 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-integration-project</artifactId>
-    <version>7.5.1-SNAPSHOT</version>
+    <version>7.6.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mortbay.jetty</groupId>
   <artifactId>jetty-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>Jetty :: Jetty Maven Plugin</name>
   <properties>
-    <mavenVersion>2.0.8</mavenVersion>
-    <pluginToolsVersion>2.5.1</pluginToolsVersion>
+    <mavenVersion>3.0.3</mavenVersion>
+    <pluginToolsVersion>2.9</pluginToolsVersion>
   </properties>
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <verbose>false</verbose>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
@@ -58,11 +65,12 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
       <version>${jetty-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-project</artifactId>
-      <version>${mavenVersion}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -72,6 +80,11 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
+      <version>${mavenVersion}</version>
+    </dependency>
+     <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
       <version>${mavenVersion}</version>
     </dependency>
     <dependency>
@@ -94,16 +107,77 @@
       <artifactId>jetty-jmx</artifactId>
       <version>${jetty-version}</version>
     </dependency>
+<!-- jstl -->
+    <dependency>
+       <groupId>javax.servlet.jsp.jstl</groupId>
+       <artifactId>jstl-api</artifactId>
+       <version>1.2-rev-1</version>
+       <exclusions>
+         <exclusion>
+           <groupId>javax.servlet</groupId>
+           <artifactId>servlet-api</artifactId>
+         </exclusion>
+       </exclusions>
+    </dependency>
+    <dependency>
+       <groupId>org.glassfish.web</groupId>
+       <artifactId>jstl-impl</artifactId>
+       <version>1.2</version>
+       <exclusions>
+         <exclusion>
+           <groupId>javax.servlet</groupId>
+           <artifactId>servlet-api</artifactId>
+         </exclusion>
+       </exclusions>
+    </dependency>
+<!-- el -->
+    <dependency>
+      <groupId>javax.el</groupId>
+      <artifactId>el-api</artifactId>
+      <version>2.1.2-b05</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.web</groupId>
+      <artifactId>el-impl</artifactId>
+      <version>2.1.2-b05</version>
+    </dependency>
+ <!-- jsp -->   
+    <dependency>
+       <groupId>org.glassfish.web</groupId>
+       <artifactId>jsp-impl</artifactId>
+       <version>2.1.3-b10</version>
+       <exclusions>
+         <exclusion>
+           <groupId>javax.servlet</groupId>
+           <artifactId>servlet-api</artifactId>
+         </exclusion>
+       </exclusions>
+    </dependency>
+    <dependency>
+       <groupId>javax.servlet.jsp</groupId>
+       <artifactId>jsp-api</artifactId>
+       <version>2.1.3-b06</version>
+       <exclusions>
+         <exclusion>
+           <groupId>org.glassfish</groupId>
+           <artifactId>javax.servlet</artifactId>
+         </exclusion>
+       </exclusions>
+    </dependency>
+<!-- ecj -->
+    <dependency>
+      <groupId>org.eclipse.jdt.core.compiler</groupId>
+      <artifactId>ecj</artifactId>
+      <version>3.7</version>
+    </dependency>
+
+<!-- servlet api -->
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jsp-2.1-glassfish</artifactId>
-      <version>${jsp-2-1-version}</version>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5.20110712</version>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-jsp-2.1</artifactId>
-      <version>${jetty-version}</version>
-    </dependency>
+
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-annotations</artifactId>
@@ -113,11 +187,6 @@
        <groupId>org.eclipse.jetty</groupId>
        <artifactId>jetty-websocket</artifactId>
        <version>${jetty-version}</version>
-     </dependency>
-     <dependency>
-       <groupId>org.mortbay.jetty</groupId>
-       <artifactId>jetty-runner</artifactId>
-       <version>${project.version}</version>
      </dependency>
   </dependencies>
   <reporting>

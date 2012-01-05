@@ -63,6 +63,12 @@ public class JettyRunTask extends Task
     /** Port Jetty will use for the default connector */
     private int jettyPort = 8080;
 
+
+    public JettyRunTask()
+    {
+        TaskLog.setTask(this);
+    }
+
     /**
      * Creates a new <code>WebApp</code> Ant object.
      *
@@ -94,16 +100,13 @@ public class JettyRunTask extends Task
     }
 
     public void addLoginServices(LoginServices services)
-    {
-        TaskLog.log("Setting <loginServices> via Ant is currently not supported.");
-        /*
+    {        
         if (this.loginServices != null )
         {
             throw new BuildException("Only one <loginServices> tag is allowed!");
         }
         
-        this.loginServices = services;
-        */
+        this.loginServices = services;  
     }
 
     public void addSystemProperties(SystemProperties systemProperties)
@@ -184,52 +187,51 @@ public class JettyRunTask extends Task
      */
     public void execute() throws BuildException
     {
-        TaskLog.setTask(this);
+
         TaskLog.log("Configuring Jetty for project: " + getProject().getName());
         WebApplicationProxyImpl.setBaseTempDirectory(tempDirectory);
         setSystemProperties();
 
         List connectorsList = null;
-        
+
         if (connectors != null)
         {
             connectorsList = connectors.getConnectors();
         }
         else
         {
-            connectorsList = new Connectors(jettyPort, 30000).getDefaultConnectors();
+            connectorsList = new Connectors(jettyPort,30000).getDefaultConnectors();
         }
 
-        List loginServicesList = (loginServices != null ? loginServices.getLoginServices() : new ArrayList());
-        ServerProxy server = new ServerProxyImpl(connectorsList, loginServicesList, requestLog,
-                jettyXml);
+        List loginServicesList = (loginServices != null?loginServices.getLoginServices():new ArrayList());
+        ServerProxy server = new ServerProxyImpl(connectorsList,loginServicesList,requestLog,jettyXml);
 
-				try 
-				{
-	        Iterator iterator = webapps.iterator();
-	        while (iterator.hasNext())
-	        {
-	            WebApp webAppConfiguration = (WebApp) iterator.next();
-	            WebApplicationProxyImpl webApp = new WebApplicationProxyImpl(webAppConfiguration
-	                    .getName());
-	            webApp.setSourceDirectory(webAppConfiguration.getWarFile());
-	            webApp.setContextPath(webAppConfiguration.getContextPath());
-	            webApp.setWebXml(webAppConfiguration.getWebXmlFile());
-	            webApp.setJettyEnvXml(webAppConfiguration.getJettyEnvXml());
-	            webApp.setClassPathFiles(webAppConfiguration.getClassPathFiles());
-	            webApp.setLibrariesConfiguration(webAppConfiguration.getLibrariesConfiguration());
-	            webApp.setExtraScanTargetsConfiguration(webAppConfiguration
-	                    .getScanTargetsConfiguration());
-	            webApp.setContextHandlers(webAppConfiguration.getContextHandlers());
-	            webApp.setWebDefaultXmlFile(webAppConfiguration.getWebDefaultXmlFile());
+        try
+        {
+            Iterator iterator = webapps.iterator();
+            while (iterator.hasNext())
+            {
+                WebApp webAppConfiguration = (WebApp)iterator.next();
+                WebApplicationProxyImpl webApp = new WebApplicationProxyImpl(webAppConfiguration.getName());
+                webApp.setSourceDirectory(webAppConfiguration.getWarFile());
+                webApp.setContextPath(webAppConfiguration.getContextPath());
+                webApp.setWebXml(webAppConfiguration.getWebXmlFile());
+                webApp.setJettyEnvXml(webAppConfiguration.getJettyEnvXml());
+                webApp.setClassPathFiles(webAppConfiguration.getClassPathFiles());
+                webApp.setLibrariesConfiguration(webAppConfiguration.getLibrariesConfiguration());
+                webApp.setExtraScanTargetsConfiguration(webAppConfiguration.getScanTargetsConfiguration());
+                webApp.setContextHandlers(webAppConfiguration.getContextHandlers());
+                webApp.setAttributes(webAppConfiguration.getAttributes());
+                webApp.setWebDefaultXmlFile(webAppConfiguration.getWebDefaultXmlFile());
 
-	            server.addWebApplication(webApp, webAppConfiguration.getScanIntervalSeconds());
-	        }
-				} 
-				catch (Exception e) {
-					throw new BuildException(e);
-				}
-				
+                server.addWebApplication(webApp,webAppConfiguration.getScanIntervalSeconds());
+            }
+        }
+        catch (Exception e)
+        {
+            throw new BuildException(e);
+        }
+
         server.start();
     }
 

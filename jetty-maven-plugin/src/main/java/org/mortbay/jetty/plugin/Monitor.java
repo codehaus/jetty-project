@@ -81,15 +81,15 @@ public class Monitor extends Thread
                 String cmd = lin.readLine();
                 if ("stop".equals(cmd))
                 {
-                    try{socket.close();}catch (Exception e){PluginLog.getLog().debug(e);}
-                    try{socket.close();}catch (Exception e){PluginLog.getLog().debug(e);}
-                    try{_serverSocket.close();}catch (Exception e){PluginLog.getLog().debug(e);}
+                    try{socket.close();}catch (Exception e){e.printStackTrace();}
+                    try{socket.close();}catch (Exception e){e.printStackTrace();}
+                    try{_serverSocket.close();}catch (Exception e){e.printStackTrace();}
                 
                     _serverSocket = null;
                     
                     if (_kill)
                     {
-                        PluginLog.getLog().info("Killing Jetty");
+                        System.out.println("Killing Jetty");
                         System.exit(0);     
                     }
                     else
@@ -98,22 +98,22 @@ public class Monitor extends Thread
                         {
                             try
                             {
-                                PluginLog.getLog().info("Stopping server "+i);                             
+                                System.out.println("Stopping server "+i);                             
                                 _servers[i].stop();
                             }
                             catch (Exception e)
                             {
-                                PluginLog.getLog().error(e);
+                                e.printStackTrace();
                             }
                         }
                     }
                 }
                 else
-                    PluginLog.getLog().info("Unsupported monitor operation");
+                    System.out.println("Unsupported monitor operation");
             }
             catch (Exception e)
             {
-                PluginLog.getLog().error(e);
+               e.printStackTrace();
             }
             finally
             {
@@ -125,7 +125,7 @@ public class Monitor extends Thread
                     }
                     catch (Exception e)
                     {
-                        PluginLog.getLog().debug(e);
+                        e.printStackTrace();
                     }
                 }
                 socket = null;
