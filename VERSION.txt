@@ -1,4 +1,5 @@
-jetty@codehaus-7.6.0-SNAPSHOT
+jetty@codehaus-7.6.0.RC3 - 05 January 2012
+ + JETTY-1469 update version of jsp for jetty-jspc-maven-plugin
 
 jetty@codehaus-7.6.0.RC2 - 22 December 2011
  + JETTY-1405 create jetty maven plugin "start" goal for use with execution
