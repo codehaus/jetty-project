@@ -267,6 +267,8 @@ public class JettyWebAppContext extends WebAppContext
         if ((resource == null || !resource.exists()) && uriInContext != null && classes != null)
         {
             String uri = URIUtil.canonicalPath(uriInContext);
+            if (uri == null)
+                return null;
 
             try
             {
