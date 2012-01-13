@@ -11,6 +11,13 @@ jetty@codehaus-8.1.0.RC0 - 01 December 2011
  + 357209 JSP tag listeners not called
  + JETTY-1440 jstl-1.2-rev-1 contains duplicate servlet 2.5 api classes
 
+jetty@codehaus-7.6.0.RC3 - 05 January 2012
+ + JETTY-1469 update version of jsp for jetty-jspc-maven-plugin
+
+jetty@codehaus-7.6.0.RC2 - 22 December 2011
+ + JETTY-1405 create jetty maven plugin "start" goal for use with execution
+   bindings
+
 jetty@codehaus-7.6.0.RC1 - 04 December 2011
 
 jetty@codehaus-7.6.0.RC0 - 30 November 2011
