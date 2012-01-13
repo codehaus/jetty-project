@@ -83,15 +83,23 @@ public class JMXServiceTest
         server = new Server();
         mBeanServer = ManagementFactory.getPlatformMBeanServer();
         mBeanContainer = new MBeanContainer(mBeanServer);
-        server.addConnector(new SocketConnector());
+        mBeanContainer.start();
         server.getContainer().addEventListener(mBeanContainer);
-        server.addBean(mBeanContainer);
-        ServletContextHandler context = new ServletContextHandler(server,"/");
+        server.addBean(mBeanContainer,true);  
         
+        server.addConnector(new SocketConnector());
+        ServletContextHandler context = new ServletContextHandler(server,"/");
+                
         ServletHandler servletHandler = context.getServletHandler();
         createServlets(servletHandler);
         
         server.start();
+    }
+    
+    @After
+    public void shutdown() throws Exception
+    {
+        server.stop();
     }
 
     private ServletHandler createServlets(ServletHandler servletHandler)
