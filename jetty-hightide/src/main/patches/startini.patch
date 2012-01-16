@@ -1,6 +1,6 @@
---- ./start.ini	2011-07-11 21:17:52.206357115 +1000
-+++ ./jjj/start.ini	2011-07-11 21:19:09.356357152 +1000
-@@ -45,7 +45,7 @@
+--- start.ini		2012-01-16 15:31:26.174514891 +1100
++++ jj/start.ini	2012-01-16 15:31:51.994514903 +1100
+@@ -46,7 +46,7 @@
  # for a full listing do
  #   java -jar start.jar --list-options
  #-----------------------------------------------------------
@@ -9,7 +9,7 @@
  #-----------------------------------------------------------
  
  
-@@ -54,9 +54,9 @@
+@@ -55,9 +55,9 @@
  # For a full list of available configuration files do
  #   java -jar start.jar --help
  #-----------------------------------------------------------
@@ -21,7 +21,7 @@
  # etc/jetty-ssl.xml
  # etc/jetty-requestlog.xml
  etc/jetty-deploy.xml
-@@ -64,4 +64,5 @@
+@@ -65,4 +65,5 @@
  etc/jetty-webapps.xml
  etc/jetty-contexts.xml
  etc/jetty-testrealm.xml
