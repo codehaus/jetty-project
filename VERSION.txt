@@ -17,6 +17,9 @@ jetty@codehaus-8.1.0.RC0 - 01 December 2011
  + 357209 JSP tag listeners not called
  + JETTY-1440 jstl-1.2-rev-1 contains duplicate servlet 2.5 api classes
 
+jetty@codehaus-7.6.0.RC4 - 13 January 2012
+ + JETTY-1472 NPE in JettyWebAppContext.getResource when uri starts with ..
+
 jetty@codehaus-7.6.0.RC3 - 05 January 2012
  + JETTY-1469 update version of jsp for jetty-jspc-maven-plugin
 
