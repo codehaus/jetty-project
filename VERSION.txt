@@ -1,4 +1,5 @@
-jetty@codehaus-8.1.0-SNAPSHOT
+jetty@codehaus-8.1.0.RC5 - 20 January 2012
+ + 368633 fixed configure.dtd resource mappings
 
 jetty@codehaus-8.1.0.RC4 - 13 January 2012
  + JETTY-1469 update version of jsp for jetty-jspc-maven-plugin
