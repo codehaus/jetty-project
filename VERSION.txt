@@ -1,5 +1,8 @@
 jetty@codehaus-7.6.0-SNAPSHOT
 
+jetty@codehaus-7.6.0.RC5 - 20 January 2012
+ + 368633 fixed configure.dtd resource mappings
+
 jetty@codehaus-7.6.0.RC4 - 13 January 2012
  + JETTY-1472 NPE in JettyWebAppContext.getResource when uri starts with ..
 
