@@ -162,12 +162,6 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-plus</artifactId>
       <version>${jetty-version}</version>
-      <exclusions>
-        <exclusion>
-         <groupId>org.apache.geronimo.specs</groupId>
-         <artifactId>geronimo-jta_1.1_spec</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -178,22 +172,14 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jndi</artifactId>
       <version>${jetty-version}</version>
-      <exclusions>
-       <exclusion>
-         <groupId>javax.mail</groupId>
-         <artifactId>mail</artifactId>
-       </exclusion>
-       <exclusion>
-         <groupId>javax.transaction</groupId>
-         <artifactId>jta</artifactId>
-       </exclusion>
-      </exclusions>
     </dependency>
+<!--
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
       <version>1.1</version>
       <scope>provided</scope>
     </dependency>
+-->
   </dependencies>
 </project>

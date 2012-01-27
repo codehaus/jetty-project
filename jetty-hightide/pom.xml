@@ -9,7 +9,6 @@
   <name>Jetty :: Hightide Distribution</name>
   <packaging>pom</packaging>
   <properties>
-    <asm-version>3.1</asm-version>
     <assembly-directory>target/hightide</assembly-directory>
     <root-dist-directory>target/jetty-distribution</root-dist-directory>
     <atomikos-version>3.7.0</atomikos-version>
@@ -179,27 +178,15 @@
                   <outputDirectory>${assembly-directory}/lib</outputDirectory>
                 </artifactItem>
                <artifactItem>
-                  <groupId>org.apache.geronimo.specs</groupId>
-                  <artifactId>geronimo-annotation_1.0_spec</artifactId>
-                  <version>1.1.1</version>
+                  <groupId>org.eclipse.jetty.orbit</groupId>
+                  <artifactId>javax.annotation</artifactId>
+                  <version>1.1.0.v201108011116</version>
                   <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
               </artifactItem>
                 <artifactItem>
-                  <groupId>asm</groupId>
-                  <artifactId>asm-commons</artifactId>
-                  <version>${asm-version}</version>
-                  <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>asm</groupId>
-                  <artifactId>asm</artifactId>
-                  <version>${asm-version}</version>
-                  <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>asm</groupId>
-                  <artifactId>asm-tree</artifactId>
-                  <version>${asm-version}</version>
+                  <groupId>org.eclipse.jetty.orbit</groupId>
+                  <artifactId>org.objectweb.asm</artifactId>
+                  <version>3.1.0.v200803061910</version>
                   <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -363,8 +350,8 @@
             <dependencySourceExclude>asm:*</dependencySourceExclude>
             <dependencySourceExclude>com.sun.mail:*</dependencySourceExclude>
             <dependencySourceExclude>javax.mail:*</dependencySourceExclude>
-            <dependencySourceExclude>org.mortbay.jetty:jsp-api-2.1-glassfish</dependencySourceExclude>
-            <dependencySourceExclude>org.mortbay.jetty:jsp-2.1-glassfish</dependencySourceExclude>            
+            <dependencySourceExclude>org.eclipse.jetty.orbit:javax.servlet.jsp</dependencySourceExclude>
+            <dependencySourceExclude>org.eclipse.jetty.orbit:org.apache.jasper.glassfish</dependencySourceExclude>            
             <dependencySourceExclude>org.mortbay.jetty:jetty-setuid-java</dependencySourceExclude>            
             <dependencySourceExclude>org.mortbay.jetty:jetty-spring</dependencySourceExclude>            
           </dependencySourceExcludes>
