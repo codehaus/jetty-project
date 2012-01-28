@@ -9,6 +9,8 @@ import javax.net.ssl.SSLSocket;
 
 public class NextProtoNego
 {
+    public static boolean debug = false;
+
     private static Map<Object, Provider> objects = Collections.synchronizedMap(new WeakHashMap<Object, Provider>());
 
     private NextProtoNego()
@@ -52,9 +54,12 @@ public class NextProtoNego
         /**
          * <p>Callback invoked to let the application select a protocol
          * among the ones sent by the server.</p>
-         * <p>This callback is invoked only if the server sent a NPN extension.</p>
+         * <p>This callback is always invoked; the protocol list will be null
+         * if the server does not support NPN, or will contain the protocols
+         * supported by the server.</p>
          *
-         * @param protocols the protocols sent by the server
+         * @param protocols the protocols sent by the server, or null if the
+         * server does not support NPN
          * @return the protocol selected by the application, or null if the
          * NextProtocol SSL message should not be sent to the server
          */
