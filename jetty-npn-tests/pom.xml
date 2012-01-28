@@ -27,9 +27,6 @@
                         -Xbootclasspath/a:${basedir}/../${boot-artifactId}/target/${boot-artifactId}-${project.version}.jar
                         -javaagent:${basedir}/../${agent-artifactId}/target/${agent-artifactId}-${project.version}.jar
                     </argLine>
-                    <!--<argLine>-->
-                        <!---Xbootclasspath/p:${basedir}/../${boot-artifactId}/target/${boot-artifactId}-${project.version}.jar-->
-                    <!--</argLine>-->
                 </configuration>
             </plugin>
         </plugins>
@@ -47,18 +44,6 @@
             <artifactId>jetty-npn-boot</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-npn-agent</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm-all</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
