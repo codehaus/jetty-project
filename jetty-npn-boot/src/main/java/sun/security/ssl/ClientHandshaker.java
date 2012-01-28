@@ -596,7 +596,7 @@ final class ClientHandshaker extends Handshaker {
             if ((type != ExtensionType.EXT_ELLIPTIC_CURVES)
                     && (type != ExtensionType.EXT_EC_POINT_FORMATS)
                     && (type != ExtensionType.EXT_SERVER_NAME)
-                    && (type != ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION)
+//                    && (type != ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION)
                     && (type != ExtensionType.EXT_RENEGOTIATION_INFO)) {
                 fatalSE(Alerts.alert_unsupported_extension,
                     "Server sent an unsupported extension: " + type);
@@ -612,9 +612,20 @@ final class ClientHandshaker extends Handshaker {
             System.out.println("** " + cipherSuite);
         }
 
-        NextProtoNegoExtension npnExt = (NextProtoNegoExtension)mesg.extensions.get(ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION);
+        if (NextProtoNego.debug)
+            System.err.println(new StringBuilder("NPN protocols sent by server? for ").append(conn != null ? conn : engine));
+        NextProtoNegoExtension npnExt = (NextProtoNegoExtension)mesg.extensions.get(/*ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION*/null);
         if (npnExt != null)
-            this.protocols = npnExt.getProtocols();
+        {
+            protocols = npnExt.getProtocols();
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN protocols ").append(protocols).append(" sent by server for ").append(conn != null ? conn : engine));
+        }
+        else
+        {
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN protocols not sent by server for ").append(conn != null ? conn : engine));
+        }
     }
 
     /*
@@ -1131,9 +1142,13 @@ final class ClientHandshaker extends Handshaker {
 
     void sendNextProtocol(NextProtoNego.Provider provider) throws IOException
     {
-        if (provider != null && protocols != null)
+        if (provider != null)
         {
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN selecting from ").append(protocols).append(" for ").append(conn != null ? conn : engine));
             String protocol = ((NextProtoNego.ClientProvider)provider).selectProtocol(protocols);
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN selected ").append(protocol).append(" for ").append(conn != null ? conn : engine));
             if (protocol != null)
             {
                 NextProtocolMessage nextProtocol = new NextProtocolMessage(protocol);
@@ -1323,11 +1338,30 @@ final class ClientHandshaker extends Handshaker {
             clientHelloMessage.addRenegotiationInfoExtension(clientVerifyData);
         }
 
+        if (NextProtoNego.debug)
+            System.err.println(new StringBuilder("NPN present? for ").append(conn != null ? conn : engine));
         NextProtoNego.ClientProvider provider = conn != null ?
             (NextProtoNego.ClientProvider)NextProtoNego.get(conn) :
             (NextProtoNego.ClientProvider)NextProtoNego.get(engine);
-        if (provider != null && provider.supports())
-            clientHelloMessage.extensions.add(new NextProtoNegoExtension());
+        if (provider != null)
+        {
+            if (provider.supports())
+            {
+                if (NextProtoNego.debug)
+                    System.err.println(new StringBuilder("NPN supported for ").append(conn != null ? conn : engine));
+                clientHelloMessage.extensions.add(new NextProtoNegoExtension());
+            }
+            else
+            {
+                if (NextProtoNego.debug)
+                    System.err.println(new StringBuilder("NPN not supported for ").append(conn != null ? conn : engine));
+            }
+        }
+        else
+        {
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN not present for ").append(conn != null ? conn : engine));
+        }
 
         return clientHelloMessage;
     }

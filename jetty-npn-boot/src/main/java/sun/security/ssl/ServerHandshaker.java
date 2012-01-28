@@ -303,7 +303,12 @@ final class ServerHandshaker extends Handshaker {
                 (NextProtoNego.ServerProvider)NextProtoNego.get(conn) :
                 (NextProtoNego.ServerProvider)NextProtoNego.get(engine);
         if (provider != null)
-            provider.protocolSelected(message.getProtocol());
+        {
+            String protocol = message.getProtocol();
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN next protocol '").append(protocol).append("' sent by client for ").append(conn != null ? conn : engine));
+            provider.protocolSelected(protocol);
+        }
     }
 
     /*
@@ -704,17 +709,33 @@ final class ServerHandshaker extends Handshaker {
             System.out.println("Cipher suite:  " + session.getSuite());
         }
 
-        if (mesg.extensions.get(ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION) != null)
+        if (NextProtoNego.debug)
+            System.err.println(new StringBuilder("NPN received? for ").append(conn != null ? conn : engine));
+        if (mesg.extensions.get(/*ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION*/null) != null)
         {
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN received for ").append(conn != null ? conn : engine));
             NextProtoNego.ServerProvider provider = conn != null ?
                     (NextProtoNego.ServerProvider)NextProtoNego.get(conn) :
                     (NextProtoNego.ServerProvider)NextProtoNego.get(engine);
             if (provider != null)
             {
                 List<String> protocols = provider.protocols();
+                if (NextProtoNego.debug)
+                    System.err.println(new StringBuilder("NPN protocols ").append(protocols).append(" sent to client for ").append(conn != null ? conn : engine));
                 if (protocols != null)
                     m1.extensions.add(new NextProtoNegoExtension(protocols));
             }
+            else
+            {
+                if (NextProtoNego.debug)
+                    System.err.println(new StringBuilder("NPN not supported for ").append(conn != null ? conn : engine));
+            }
+        }
+        else
+        {
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN not received for ").append(conn != null ? conn : engine));
         }
 
         m1.write(output);
