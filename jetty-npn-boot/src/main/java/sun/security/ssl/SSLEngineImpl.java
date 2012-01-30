@@ -1026,10 +1026,11 @@ final public class SSLEngineImpl extends SSLEngine {
                      * a finished message.
                      */
                     handshaker.process_record(inputRecord, expectingFinished);
-                    expectingFinished = false;
+//                    expectingFinished = false;
 
                     if (handshaker.invalidated) {
                         handshaker = null;
+                        expectingFinished = false;
                         // if state is cs_RENEGOTIATE, revert it to cs_DATA
                         if (connectionState == cs_RENEGOTIATE) {
                             connectionState = cs_DATA;
@@ -1047,6 +1048,7 @@ final public class SSLEngineImpl extends SSLEngine {
                             hsStatus = HandshakeStatus.FINISHED;
                         }
                         handshaker = null;
+                        expectingFinished = false;
                         connectionState = cs_DATA;
 
                         // No handshakeListeners here.  That's a
