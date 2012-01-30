@@ -7,7 +7,6 @@ import org.objectweb.asm.Opcodes;
 
 public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
 {
-
     private static final int NEXT_PROTOCOL_MESSAGE_ID = 67;
 
     public ServerHandshakerTransformer(ClassVisitor visitor)
