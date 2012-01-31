@@ -107,13 +107,6 @@
       <artifactId>jetty-jmx</artifactId>
       <version>${jetty-version}</version>
     </dependency>
-<!-- jsp dependencies -->
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-jsp</artifactId>
-      <version>${jetty-version}</version>
-      <type>pom</type>
-    </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-annotations</artifactId>
@@ -125,6 +118,16 @@
        <version>${jetty-version}</version>
      </dependency>
   </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-jsp</artifactId>
+        <version>${jetty-version}</version>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <reporting>
   <plugins>
     <plugin>
