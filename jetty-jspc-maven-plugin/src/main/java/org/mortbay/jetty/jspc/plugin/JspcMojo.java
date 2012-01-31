@@ -277,6 +277,8 @@ public class JspcMojo extends AbstractMojo
         
         //set up the classpath of the container (ie jetty and jsp jars)
         String sysClassPath = setUpSysClassPath();
+        if (getLog().isDebugEnabled())
+            getLog().debug("sysClassPath="+sysClassPath);
       
         //use the classpaths as the classloader
         URLClassLoader ucl = new URLClassLoader((URL[]) urls.toArray(new URL[0]), currentClassLoader);
