@@ -350,7 +350,9 @@
             <dependencySourceExclude>org.eclipse.jetty.orbit:*</dependencySourceExclude>
             <dependencySourceExclude>org.mortbay.jetty:jetty-setuid-java</dependencySourceExclude>            
             <dependencySourceExclude>org.mortbay.jetty:jetty-spring</dependencySourceExclude>            
-          </dependencySourceExcludes>
+            <dependencySourceExclude>asm:asm-commons:*</dependencySourceExclude>
+            <dependencySourceExclude>asm:asm-tree:*</dependencySourceExclude>
+         </dependencySourceExcludes>
           <reportOutputDirectory>${assembly-directory}</reportOutputDirectory>
           <destDir>javadoc</destDir>
         </configuration>
