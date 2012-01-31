@@ -300,21 +300,21 @@ public class JspcMojo extends AbstractMojo
 
       
         //use the classpaths as the classloader
-        URLClassLoader ucl = new URLClassLoader((URL[]) urls.toArray(new URL[0]), currentClassLoader);
-        StringBuffer classpathStr = new StringBuffer();
+        URLClassLoader webAppClassLoader = new URLClassLoader((URL[]) webAppUrls.toArray(new URL[0]), currentClassLoader);
+        StringBuffer webAppClassPath = new StringBuffer();
 
-        for (int i = 0; i < urls.size(); i++)
+        for (int i = 0; i < webAppUrls.size(); i++)
         {
             if (getLog().isDebugEnabled())
-                getLog().debug("webappclassloader contains: " + urls.get(i));
-            classpathStr.append(((URL) urls.get(i)).getFile());
+                getLog().debug("webappclassloader contains: " + webAppUrls.get(i));
+            webAppClassPath.append(((URL) webAppUrls.get(i)).getFile());
             if (getLog().isDebugEnabled())
-                getLog().debug("added to classpath: " + ((URL) urls.get(i)).getFile());
-            if (i+1<urls.size())
-                classpathStr.append(System.getProperty("path.separator"));
+                getLog().debug("added to classpath: " + ((URL) webAppUrls.get(i)).getFile());
+            if (i+1<webAppUrls.size())
+                webAppClassPath.append(System.getProperty("path.separator"));
         }
 
-        Thread.currentThread().setContextClassLoader(ucl);
+        Thread.currentThread().setContextClassLoader(webAppClassLoader);
 
         JspC jspc = new JspC();
         jspc.setWebXmlFragment(webXmlFragment);
@@ -322,7 +322,7 @@ public class JspcMojo extends AbstractMojo
         jspc.setPackage(packageRoot);
         jspc.setOutputDir(generatedClasses);
         jspc.setValidateXml(validateXml);
-        jspc.setClassPath(classpathStr.toString());
+        jspc.setClassPath(webAppClassPath.toString());
         jspc.setCompile(true);
         jspc.setSmapSuppressed(suppressSmap);
         jspc.setSmapDumped(!suppressSmap);
@@ -550,10 +550,13 @@ public class JspcMojo extends AbstractMojo
         for (Iterator<Artifact> iter = pluginArtifacts.iterator(); iter.hasNext(); )
         {
             Artifact pluginArtifact = iter.next();
-            if (getLog().isDebugEnabled()) { getLog().debug("Adding plugin artifact "+pluginArtifact);}
-            buff.append(pluginArtifact.getFile().getAbsolutePath());
-            if (iter.hasNext())
-                buff.append(File.pathSeparator);
+            if ("jar".equalsIgnoreCase(pluginArtifact.getType()))
+            {
+                if (getLog().isDebugEnabled()) { getLog().debug("Adding plugin artifact "+pluginArtifact);}
+                buff.append(pluginArtifact.getFile().getAbsolutePath());
+                if (iter.hasNext())
+                    buff.append(File.pathSeparator);
+            }
         }
         
         return buff.toString();

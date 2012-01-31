@@ -124,9 +124,9 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-jta_1.1_spec</artifactId>
-      <version>1.1.1</version>
+      <groupId>org.eclipse.jetty.orbit</groupId>
+      <artifactId>javax.transaction</artifactId>
+      <version>1.1.1.v201105210645</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -136,21 +136,21 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.4</version>
+      <groupId>org.eclipse.jetty.orbit</groupId>
+      <artifactId>javax.mail.glassfish</artifactId>
+      <version>1.4.1.v201005082020</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
+      <groupId>org.eclipse.jetty.orbit</groupId>
+      <artifactId>javax.servlet</artifactId>
+      <version>2.5.0.v201103041518</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-annotation_1.0_spec</artifactId>
-      <version>1.1.1</version>
+      <groupId>org.eclipse.jetty.orbit</groupId>
+      <artifactId>javax.annotation</artifactId>
+      <version>1.1.0.v201108011116</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
