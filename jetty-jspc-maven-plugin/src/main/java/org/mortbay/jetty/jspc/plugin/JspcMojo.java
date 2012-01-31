@@ -283,7 +283,7 @@ public class JspcMojo extends AbstractMojo
         ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
 
         //set up the classpath of the webapp
-        List<URL> urls = setUpWebAppClassPath();
+        List<URL> webAppUrls = setUpWebAppClassPath();
         
         //set up the classpath of the container (ie jetty and jsp jars)
         String sysClassPath = setUpSysClassPath();
@@ -295,7 +295,7 @@ public class JspcMojo extends AbstractMojo
         {
             if (getLog().isDebugEnabled())
                 getLog().debug(" sys jar with tlds: "+u);
-            urls.add(u);
+            webAppUrls.add(u);
         }
 
       
