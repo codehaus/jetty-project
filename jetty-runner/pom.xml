@@ -10,23 +10,7 @@
   <name>Jetty :: Runner</name>
 
  <properties>
-    <javax-activation-version>1.1</javax-activation-version>
-    <javax-mail-version>1.4.1</javax-mail-version>
-    <jetty-orbit-url>http://download.eclipse.org/jetty/orbit</jetty-orbit-url>
     <assembly-directory>target/distribution</assembly-directory>
-    <eclipse-ecj-version>3.6</eclipse-ecj-version>
-    <orbit-javax-activation-version>${javax-activation-version}.0.v201005080500</orbit-javax-activation-version>
-    <orbit-javax-annotation-version>1.0.0.v20100513-0750</orbit-javax-annotation-version>
-    <orbit-javax-el-version>2.1.0.v201004190952</orbit-javax-el-version>
-    <orbit-javax-mail-glassfish-version>${javax-mail-version}.v201005082020</orbit-javax-mail-glassfish-version>
-    <orbit-javax-servlet-version>2.5.0.v200910301333</orbit-javax-servlet-version>
-    <orbit-javax-servlet-jsp-version>2.1.0.v201004190952</orbit-javax-servlet-jsp-version>
-    <orbit-javax-servlet-jsp-jstl-version>1.2.0.v201004190952</orbit-javax-servlet-jsp-jstl-version>
-    <orbit-com-sun-el-version>1.0.0.v201004190952</orbit-com-sun-el-version>
-    <orbit-org-apache-jasper-version>2.1.0.v201110031002</orbit-org-apache-jasper-version>
-    <orbit-org-apache-taglibs-standard-version>1.2.0.v201004190952</orbit-org-apache-taglibs-standard-version>
-    <orbit-org-objectweb-asm-version>3.1.0.v200803061910</orbit-org-objectweb-asm-version>
-    <orbit-javax-transaction-version>1.1.1.v201004190952</orbit-javax-transaction-version>
   </properties>
 
   <build>
@@ -53,6 +37,8 @@
             <configuration>
               <includes>**</includes>
               <excludes>**/MANIFEST.MF</excludes>
+              <excludes>**/ECLIPSEF.RSA</excludes>
+              <excludes>**/ECLIPSEF.SF</excludes>
               <outputDirectory>${project.build.directory}/classes</outputDirectory>
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>true</overWriteSnapshots>
@@ -109,53 +95,19 @@
       <artifactId>jetty-jndi</artifactId>
       <version>${jetty-version}</version>
     </dependency>
-<!-- jsp dependencies -->
-    <!-- jstl -->
-    <dependency>
-       <groupId>org.eclipse.jetty.orbit</groupId>
-       <artifactId>javax.servlet.jsp.jstl</artifactId>
-       <version>1.2.0.v201105211821</version>
-    </dependency>
-<!-- el -->
-    <dependency>
-      <groupId>org.eclipse.jetty.orbit</groupId>
-      <artifactId>javax.el</artifactId>
-      <version>2.1.0.v201105211819</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty.orbit</groupId>
-      <artifactId>com.sun.el</artifactId>
-      <version>1.0.0.v201105211818</version>
-    </dependency>
- <!-- jsp -->
-    <dependency>
-       <groupId>org.eclipse.jetty.orbit</groupId>
-       <artifactId>org.apache.jasper.glassfish</artifactId>
-       <version>2.1.0.v201110031002</version>
-    </dependency>
-<!-- ecj -->
-    <dependency>
-      <groupId>org.eclipse.jetty.orbit</groupId>
-      <artifactId>org.eclipse.jdt.core</artifactId>
-      <version>3.7.1</version>
-    </dependency>
-  </dependencies>
-  <dependencyManagement>
-    <dependencies>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-jsp</artifactId>
         <version>${jetty-version}</version>
-        <scope>import</scope>
         <exclusions>
+          <!-- tlds must be found in jar on path, not inside runner jar -->
           <exclusion>
-            <groupId>org.eclipse.jetty.orbit</groupId>
-            <artifactId>org.apache.taglibs.standard.glassfish</artifactId>
+             <groupId>org.eclipse.jetty.orbit</groupId>
+             <artifactId>org.apache.taglibs.standard.glassfish</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
-    </dependencies>
-  </dependencyManagement>
+  </dependencies>
   <profiles>
     <profile>
       <id>below-jdk1.6</id>

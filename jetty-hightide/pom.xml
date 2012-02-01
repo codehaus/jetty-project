@@ -177,6 +177,7 @@
                   <includes>**</includes>
                   <outputDirectory>${assembly-directory}/lib</outputDirectory>
                 </artifactItem>
+<!--
                <artifactItem>
                   <groupId>org.eclipse.jetty.orbit</groupId>
                   <artifactId>javax.annotation</artifactId>
@@ -189,6 +190,7 @@
                   <version>3.1.0.v200803061910</version>
                   <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
                 </artifactItem>
+-->
                 <artifactItem>
                   <groupId>com.atomikos</groupId>
                   <artifactId>atomikos-util</artifactId>
