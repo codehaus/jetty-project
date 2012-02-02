@@ -175,14 +175,15 @@
     <module>jetty-logback</module>
     <module>jetty-webapp-logging</module>
     <module>jetty-jmx-ws</module>
-    <module>jetty-hightide</module>
-    <module>archetype</module>
-    <module>dist</module>
     <module>test-wars/test-jndi-webapp</module>
     <module>test-wars/test-jaas-webapp</module>
     <module>test-wars/test-annotation-webapp</module>
     <module>test-wars/test-war-dump</module>
-  </modules>
+
+    <module>jetty-hightide</module>
+    <module>archetype</module>
+    <module>dist</module>
+  </modules>    
   <profiles>
     <profile>
       <id>update-version</id>
