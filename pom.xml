@@ -173,11 +173,14 @@
     <module>jetty-spring</module>
     <module>example-async-rest-webapp</module>
     <!--module>jetty-jboss</module-->
-    <module>test-wars</module>
     <module>jetty-logback</module>
-    <module>jetty-webapp-verifier</module>
     <module>jetty-webapp-logging</module>
     <module>jetty-jmx-ws</module>
+    <module>test-wars/test-jndi-webapp</module>
+    <module>test-wars/test-jaas-webapp</module>
+    <module>test-wars/test-annotation-webapp</module>
+    <module>test-wars/test-war-dump</module>
+
     <module>jetty-hightide</module>
     <module>archetype</module>
     <module>dist</module>
