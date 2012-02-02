@@ -24,6 +24,7 @@
     <version>7.6.1-SNAPSHOT</version>
     <relativePath>../..</relativePath>
   </parent>
+  <groupId>org.mortbay.jetty.testwars</groupId>
   <artifactId>test-war-dump</artifactId>
   <packaging>war</packaging>
   <name>Jetty :: Test Wars :: Dump</name>
