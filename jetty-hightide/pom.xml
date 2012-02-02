@@ -61,6 +61,7 @@
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -70,6 +71,7 @@
                   <type>war</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}/webapps/test-jndi</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -79,6 +81,7 @@
                   <type>war</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}/webapps/async-rest</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -89,6 +92,7 @@
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -98,6 +102,7 @@
                   <type>war</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}/webapps/test-annotations</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -108,6 +113,7 @@
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -127,6 +133,7 @@
                   <classifier>config</classifier>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}</outputDirectory>
                 </artifactItem>
               </artifactItems>
