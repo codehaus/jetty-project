@@ -9,12 +9,11 @@
   <name>Jetty :: Hightide Distribution</name>
   <packaging>pom</packaging>
   <properties>
-    <asm-version>3.1</asm-version>
     <assembly-directory>target/hightide</assembly-directory>
     <root-dist-directory>target/jetty-distribution</root-dist-directory>
     <atomikos-version>3.7.0</atomikos-version>
     <derby-version>10.6.1.0</derby-version>
-    <org-cometd-version>2.4.0.RC1</org-cometd-version>
+    <org-cometd-version>2.4.0.RC3</org-cometd-version>
   </properties>
   <build>
     <plugins>
@@ -62,6 +61,7 @@
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -71,6 +71,7 @@
                   <type>war</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}/webapps/test-jndi</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -80,6 +81,7 @@
                   <type>war</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}/webapps/async-rest</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -90,6 +92,7 @@
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -99,6 +102,7 @@
                   <type>war</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}/webapps/test-annotations</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -109,6 +113,7 @@
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}</outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -128,6 +133,7 @@
                   <classifier>config</classifier>
                   <overWrite>true</overWrite>
                   <includes>**</includes>
+                  <excludes>META-INF/**</excludes>
                   <outputDirectory>${assembly-directory}</outputDirectory>
                 </artifactItem>
               </artifactItems>
@@ -178,30 +184,20 @@
                   <includes>**</includes>
                   <outputDirectory>${assembly-directory}/lib</outputDirectory>
                 </artifactItem>
+<!--
                <artifactItem>
-                  <groupId>org.apache.geronimo.specs</groupId>
-                  <artifactId>geronimo-annotation_1.0_spec</artifactId>
-                  <version>1.1.1</version>
+                  <groupId>org.eclipse.jetty.orbit</groupId>
+                  <artifactId>javax.annotation</artifactId>
+                  <version>1.1.0.v201108011116</version>
                   <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
               </artifactItem>
                 <artifactItem>
-                  <groupId>asm</groupId>
-                  <artifactId>asm-commons</artifactId>
-                  <version>${asm-version}</version>
+                  <groupId>org.eclipse.jetty.orbit</groupId>
+                  <artifactId>org.objectweb.asm</artifactId>
+                  <version>3.1.0.v200803061910</version>
                   <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
                 </artifactItem>
-                <artifactItem>
-                  <groupId>asm</groupId>
-                  <artifactId>asm</artifactId>
-                  <version>${asm-version}</version>
-                  <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>asm</groupId>
-                  <artifactId>asm-tree</artifactId>
-                  <version>${asm-version}</version>
-                  <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
-                </artifactItem>
+-->
                 <artifactItem>
                   <groupId>com.atomikos</groupId>
                   <artifactId>atomikos-util</artifactId>
@@ -353,56 +349,9 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <includeDependencySources>true</includeDependencySources>
-          <additionalJOption>-J-Xmx256m</additionalJOption>
-          <dependencySourceExcludes>
-            <dependencySourceExclude>asm:*</dependencySourceExclude>
-            <dependencySourceExclude>com.sun.mail:*</dependencySourceExclude>
-            <dependencySourceExclude>javax.mail:*</dependencySourceExclude>
-            <dependencySourceExclude>org.mortbay.jetty:jsp-api-2.1-glassfish</dependencySourceExclude>
-            <dependencySourceExclude>org.mortbay.jetty:jsp-2.1-glassfish</dependencySourceExclude>            
-            <dependencySourceExclude>org.mortbay.jetty:jetty-setuid-java</dependencySourceExclude>            
-            <dependencySourceExclude>org.mortbay.jetty:jetty-spring</dependencySourceExclude>            
-          </dependencySourceExcludes>
-          <reportOutputDirectory>${assembly-directory}</reportOutputDirectory>
-          <destDir>javadoc</destDir>
-        </configuration>
-        <executions>
-          <execution>
-            <id>distribution-docs</id>
-            <goals>
-              <goal>javadoc</goal>
-            </goals>
-            <phase>process-sources</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- 
-       export the jetty directory which is then bundled via the jetty-src.xml assembly descriptor
-       -->
-      <!--plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-scm-plugin</artifactId>
-        <version>1.4</version>
-        <configuration>
-          <connectionUrl>${project.parent.scm.connection}</connectionUrl>
-        </configuration>
-        <executions>
-          <execution>
-            <id>distribution-source</id>
-            <goals>
-              <goal>export</goal>
-            </goals>
-            <phase>process-sources</phase>
-          </execution>
-        </executions>
-      </plugin-->
     </plugins>
   </build>
+<!--
   <dependencies>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -515,6 +464,7 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+-->
   <profiles>
     <profile>
       <id>default</id>

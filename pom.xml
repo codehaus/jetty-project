@@ -31,13 +31,9 @@
   <packaging>pom</packaging>
 
   <properties>
-    <jetty-version>8.1.0-SNAPSHOT</jetty-version>
+    <jetty-version>8.1.1-SNAPSHOT</jetty-version>
     <felix.bundle.version>2.0.0</felix.bundle.version>
     <jna-version>3.2.2</jna-version>
-    <jsp-version>2.2</jsp-version>
-    <servlet.spec.groupId>org.mortbay.jetty</servlet.spec.groupId>
-    <servlet.spec.artifactId>servlet-api</servlet.spec.artifactId>
-    <servlet.spec.version>3.0.20100224</servlet.spec.version>
     <junit-version>3.8.2</junit-version>
     <junit4-version>4.8.1</junit4-version>
     <jetty-test-helper-version>1.6</jetty-test-helper-version>
@@ -176,12 +172,13 @@
     <module>jetty-reverse-http</module>
     <module>jetty-spring</module>
     <module>example-async-rest-webapp</module>
-    <module>jetty-hightide</module>
+    <!--module>jetty-jboss</module-->
     <module>test-wars</module>
     <module>jetty-logback</module>
     <module>jetty-webapp-verifier</module>
     <module>jetty-webapp-logging</module>
     <module>jetty-jmx-ws</module>
+    <module>jetty-hightide</module>
     <module>archetype</module>
     <module>dist</module>
   </modules>
