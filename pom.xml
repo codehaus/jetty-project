@@ -179,6 +179,12 @@
     </pluginManagement>
   </build>
   <modules>
+    <module>test-wars/test-jndi-webapp</module>
+    <module>test-wars/test-jaas-webapp</module>
+    <module>test-wars/test-annotation-webapp</module>
+    <module>test-wars/test-war-dump</module>
+    <module>test-wars/test-container-initializer</module>
+    <module>test-wars/test-fragment</module>
     <module>jetty-atomikos</module>
     <module>jetty-maven-plugin</module>
     <module>jetty-jspc-maven-plugin</module>
@@ -194,14 +200,8 @@
     <module>example-async-rest-webapp</module>
     <!--module>jetty-jboss</module-->
     <module>jetty-logback</module>
-    <module>jetty-webapp-logging</module>
+    <!--module>jetty-webapp-logging</module-->
     <module>jetty-jmx-ws</module>
-    <module>test-wars/test-jndi-webapp</module>
-    <module>test-wars/test-jaas-webapp</module>
-    <module>test-wars/test-annotation-webapp</module>
-    <module>test-wars/test-war-dump</module>
-    <module>test-wars/test-container-initializer</module>
-    <module>test-wars/test-fragment</module>
     <module>jetty-hightide</module>
     <module>archetype</module>
     <module>dist</module>
