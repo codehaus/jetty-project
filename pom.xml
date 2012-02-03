@@ -200,7 +200,8 @@
     <module>test-wars/test-jaas-webapp</module>
     <module>test-wars/test-annotation-webapp</module>
     <module>test-wars/test-war-dump</module>
-
+    <module>test-wars/test-container-initializer</module>
+    <module>test-wars/test-fragment</module>
     <module>jetty-hightide</module>
     <module>archetype</module>
     <module>dist</module>
