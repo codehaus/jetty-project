@@ -38,7 +38,7 @@
   </licenses>
   <properties>
     <slf4j-version>1.6.1</slf4j-version>
-    <jetty-test-wars-version>7.6.0.v20120127</jetty-test-wars-version>
+    <jetty-test-wars-version>9.0.0.v20120203</jetty-test-wars-version>
     <test-wars-dir>${project.build.directory}/test-wars</test-wars-dir>
     <test-configs-dir>${project.build.directory}/test-configs</test-configs-dir>
     <test-libs-dir>${project.build.directory}/test-libs</test-libs-dir>
