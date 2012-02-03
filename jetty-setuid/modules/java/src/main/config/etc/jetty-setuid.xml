@@ -8,7 +8,7 @@
 <!-- configuration files and should be used in combination with other -->
 <!-- configuration files eg jetty.xml                                 -->
 <!-- ================================================================ -->
-<Configure id="Server" class="org.mortbay.setuid.SetUIDServer">
+<Configure id="org.eclipse.jetty.server.Server" class="org.mortbay.setuid.SetUIDServer">
   <Set name="startServerAsPrivileged">false</Set>
   <Set name="umask">2</Set>
   <Set name="username">jetty</Set>
