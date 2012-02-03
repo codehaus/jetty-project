@@ -200,7 +200,7 @@
     <module>example-async-rest-webapp</module>
     <!--module>jetty-jboss</module-->
     <module>jetty-logback</module>
-    <!--module>jetty-webapp-logging</module-->
+    <module>jetty-webapp-logging</module>
     <module>jetty-jmx-ws</module>
     <module>jetty-hightide</module>
     <module>archetype</module>
