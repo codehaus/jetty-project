@@ -11,7 +11,7 @@
   <properties>
     <assembly-directory>target/hightide</assembly-directory>
     <root-dist-directory>target/jetty-distribution</root-dist-directory>
-    <atomikos-version>3.7.0</atomikos-version>
+    <!-- atomikos-version>3.7.0</atomikos-version -->
     <derby-version>10.6.1.0</derby-version>
     <org-cometd-version>2.4.0.RC3</org-cometd-version>
   </properties>
@@ -198,6 +198,7 @@
                   <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
                 </artifactItem>
 -->
+<!--
                 <artifactItem>
                   <groupId>com.atomikos</groupId>
                   <artifactId>atomikos-util</artifactId>
@@ -228,6 +229,7 @@
                   <version>${atomikos-version}</version>
                   <outputDirectory>${assembly-directory}/lib/jta/atomikos</outputDirectory>
                 </artifactItem>
+-->
                 <artifactItem>
                   <groupId>org.apache.derby</groupId>
                   <artifactId>derby</artifactId>
@@ -247,6 +249,17 @@
                   <outputDirectory>${assembly-directory}/lib/setuid</outputDirectory>
                </artifactItem>
               </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-atomikos-deps</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>com.atomikos</includeGroupIds>
+              <outputDirectory>${assembly-directory}/lib/jta/atomikos</outputDirectory>
             </configuration>
           </execution>
         </executions>
@@ -351,6 +364,13 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-atomikos</artifactId>
+      <version>${project.version}</version>
+     </dependency>
+  </dependencies>
   <profiles>
     <profile>
       <id>default</id>
