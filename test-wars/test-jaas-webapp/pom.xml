@@ -7,7 +7,6 @@
     <version>8.1.1-SNAPSHOT</version>
     <relativePath>../..</relativePath>
   </parent>
-  <groupId>org.mortbay.jetty.testwars</groupId>
   <artifactId>test-jaas-webapp</artifactId>
   <packaging>war</packaging>
   <name>Jetty :: JAAS Test Webapp</name>
