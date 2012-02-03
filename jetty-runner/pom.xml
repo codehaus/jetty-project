@@ -11,31 +11,15 @@
 
  <properties>
     <assembly-directory>target/distribution</assembly-directory>
-<!--
-    <eclipse-ecj-version>3.6</eclipse-ecj-version>
-    <orbit-javax-activation-version>${javax-activation-version}.0.v201005080500</orbit-javax-activation-version>
-    <orbit-javax-annotation-version>1.1.0.v201105051105</orbit-javax-annotation-version>
-    <orbit-javax-el-version>2.2.0.v201105051105</orbit-javax-el-version>
-    <orbit-javax-mail-glassfish-version>${javax-mail-version}.v201005082020</orbit-javax-mail-glassfish-version>
-    <orbit-javax-servlet-version>3.0.0.v201103241727</orbit-javax-servlet-version>
-    <orbit-javax-servlet-jsp-version>2.2.0.v201103241009</orbit-javax-servlet-jsp-version>
-    <orbit-javax-servlet-jsp-jstl-version>1.2.0.v201004190952</orbit-javax-servlet-jsp-jstl-version>
-    <orbit-com-sun-el-version>2.2.0.v201105051105</orbit-com-sun-el-version>
-    <orbit-org-apache-jasper-version>2.2.2.v201108011116</orbit-org-apache-jasper-version>
-    <orbit-org-apache-taglibs-standard-version>1.2.0.v201004190952</orbit-org-apache-taglibs-standard-version>
-    <orbit-org-objectweb-asm-version>3.3.1.v201101071600</orbit-org-objectweb-asm-version>
-    <orbit-javax-transaction-version>1.1.1.v201004190952</orbit-javax-transaction-version>
--->
   </properties>
 
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin
-        </artifactId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.6</source>
+          <target>1.6</target>
           <verbose>false</verbose>
         </configuration>
       </plugin>
@@ -123,20 +107,4 @@
         </exclusions>
       </dependency>
   </dependencies>
-  <profiles>
-    <profile>
-      <id>below-jdk1.6</id>
-      <activation>
-       <jdk>(,1.6)</jdk>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.eclipse.jetty.orbit</groupId>
-          <artifactId>javax.activation</artifactId>
-          <version>1.1.0.v201005080500</version>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
-
 </project>
