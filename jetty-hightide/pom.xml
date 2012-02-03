@@ -11,7 +11,6 @@
   <properties>
     <assembly-directory>target/hightide</assembly-directory>
     <root-dist-directory>target/jetty-distribution</root-dist-directory>
-    <!-- atomikos-version>3.7.0</atomikos-version -->
     <derby-version>10.6.1.0</derby-version>
     <org-cometd-version>2.4.0.RC3</org-cometd-version>
   </properties>
@@ -184,52 +183,6 @@
                   <includes>**</includes>
                   <outputDirectory>${assembly-directory}/lib</outputDirectory>
                 </artifactItem>
-<!--
-               <artifactItem>
-                  <groupId>org.eclipse.jetty.orbit</groupId>
-                  <artifactId>javax.annotation</artifactId>
-                  <version>1.1.0.v201108011116</version>
-                  <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
-              </artifactItem>
-                <artifactItem>
-                  <groupId>org.eclipse.jetty.orbit</groupId>
-                  <artifactId>org.objectweb.asm</artifactId>
-                  <version>3.1.0.v200803061910</version>
-                  <outputDirectory>${assembly-directory}/lib/annotations</outputDirectory>
-                </artifactItem>
--->
-<!--
-                <artifactItem>
-                  <groupId>com.atomikos</groupId>
-                  <artifactId>atomikos-util</artifactId>
-                  <version>${atomikos-version}</version>
-                  <outputDirectory>${assembly-directory}/lib/jta/atomikos</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>com.atomikos</groupId>
-                  <artifactId>transactions-api</artifactId>
-                  <version>${atomikos-version}</version>
-                  <outputDirectory>${assembly-directory}/lib/jta/atomikos</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>com.atomikos</groupId>
-                  <artifactId>transactions</artifactId>
-                  <version>${atomikos-version}</version>
-                  <outputDirectory>${assembly-directory}/lib/jta/atomikos</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>com.atomikos</groupId>
-                  <artifactId>transactions-jdbc</artifactId>
-                  <version>${atomikos-version}</version>
-                  <outputDirectory>${assembly-directory}/lib/jta/atomikos</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>com.atomikos</groupId>
-                  <artifactId>transactions-jta</artifactId>
-                  <version>${atomikos-version}</version>
-                  <outputDirectory>${assembly-directory}/lib/jta/atomikos</outputDirectory>
-                </artifactItem>
--->
                 <artifactItem>
                   <groupId>org.apache.derby</groupId>
                   <artifactId>derby</artifactId>
