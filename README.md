@@ -4,5 +4,5 @@ This implementation uses bytecode transformation to modify relevant
 JDK classes in order to implement the Next Protocol Negotiation
 specification, as defined in:
 
-http://tools.ietf.org/html/draft-agl-tls-nextprotoneg-02
+http://technotes.googlecode.com/git/nextprotoneg.html
 
