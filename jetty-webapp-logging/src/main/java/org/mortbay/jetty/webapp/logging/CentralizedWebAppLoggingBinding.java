@@ -8,14 +8,12 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class CentralizedWebAppLoggingBinding implements AppLifeCycle.Binding
 {
-    @Override
     public String[] getBindingTargets()
     {
         return new String[]
         { "deploying" };
     }
 
-    @Override
     public void processBinding(Node node, App app) throws Exception
     {
         ContextHandler handler = app.getContextHandler();
