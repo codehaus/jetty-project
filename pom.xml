@@ -174,7 +174,6 @@
     <!--module>jetty-jboss</module-->
     <module>jetty-logback</module>
     <module>jetty-webapp-logging</module>
-    <module>jetty-jmx-ws</module>
     <module>test-wars/test-jndi-webapp</module>
     <module>test-wars/test-jaas-webapp</module>
     <module>test-wars/test-annotation-webapp</module>
@@ -183,8 +182,18 @@
     <module>jetty-hightide</module>
     <module>archetype</module>
     <module>dist</module>
-  </modules>    
+  </modules>
   <profiles>
+    <profile>
+      <!-- Modules that are only for JDK6+ builds -->
+      <id>JDK6-plus-modules</id>
+      <activation>
+        <jdk>[1.6,)</jdk>
+      </activation>
+      <modules>
+        <module>jetty-jmx-ws</module>
+      </modules>
+    </profile>
     <profile>
       <id>update-version</id>
       <build>
