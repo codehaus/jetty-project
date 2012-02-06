@@ -29,6 +29,15 @@ import javax.sql.DataSource;
 public class MockDataSource implements DataSource
 {
 
+    /**
+     * NOTE: JDK7+ new feature
+     */
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /** 
      * @see javax.sql.DataSource#getConnection()
      */
