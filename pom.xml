@@ -218,6 +218,16 @@
 
   <profiles>
     <profile>
+      <!-- Modules that are only for JDK6+ builds -->
+      <id>JDK6-plus-modules</id>
+      <activation>
+        <jdk>[1.6,)</jdk>
+      </activation>
+      <modules>
+        <module>jetty-jmx-ws</module>
+      </modules>
+    </profile>
+    <profile>
       <id>update-version</id>
       <build>
         <plugins>
