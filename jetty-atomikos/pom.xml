@@ -7,31 +7,11 @@
   </parent>
   <artifactId>jetty-atomikos</artifactId>
   <name>Jetty :: Atomikos Dependencies</name>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
   <properties>
     <atomikos-version>3.7.0</atomikos-version>
   </properties>
   <dependencies>
-    <dependency>
-      <groupId>com.atomikos</groupId>
-      <artifactId>atomikos-util</artifactId>
-      <version>${atomikos-version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.jms</groupId>
-          <artifactId>jms</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.hibernate</groupId>
-          <artifactId>hibernate</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.atomikos</groupId>
-      <artifactId>transactions-api</artifactId>
-      <version>${atomikos-version}</version>
-    </dependency>
     <dependency>
       <groupId>com.atomikos</groupId>
       <artifactId>transactions</artifactId>
@@ -40,11 +20,6 @@
     <dependency>
       <groupId>com.atomikos</groupId>
       <artifactId>transactions-jdbc</artifactId>
-      <version>${atomikos-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.atomikos</groupId>
-      <artifactId>transactions-jta</artifactId>
       <version>${atomikos-version}</version>
     </dependency>
   </dependencies>

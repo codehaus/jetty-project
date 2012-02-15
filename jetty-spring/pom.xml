@@ -13,9 +13,10 @@
     <dependencies>target/dependencies</dependencies>
   </properties>
 
-  <build>  
+  <build>
     <defaultGoal>install</defaultGoal>
     <plugins>
+      <!-- Jetty 7 builds are JDK5+ 
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -24,6 +25,7 @@
           <verbose>false</verbose>
         </configuration>
       </plugin>
+       -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>

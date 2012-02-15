@@ -18,6 +18,7 @@ package com.acme;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -28,6 +29,15 @@ import javax.sql.DataSource;
  */
 public class MockDataSource implements DataSource
 {
+
+    /**
+     * NOTE: JDK7+ new feature
+     */
+    public Logger getParentLogger() 
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     /** 
      * @see javax.sql.DataSource#getConnection()
