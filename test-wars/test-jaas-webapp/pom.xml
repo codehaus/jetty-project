@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-integration-project</artifactId>
-    <version>7.6.1-SNAPSHOT</version>
+    <version>7.6.1.v20120215</version>
     <relativePath>../..</relativePath>
   </parent>
   <artifactId>test-jaas-webapp</artifactId>
