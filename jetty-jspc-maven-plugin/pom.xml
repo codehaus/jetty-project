@@ -72,7 +72,7 @@
       <version>2.0.3</version>
     </dependency>
 
-<!-- jsp -->
+<!--
     <dependency>
       <groupId>org.glassfish.web</groupId>
       <artifactId>jsp-impl</artifactId>
@@ -83,7 +83,6 @@
       <artifactId>jsp-api</artifactId>
       <version>2.2</version>
     </dependency>
-<!-- jstl -->
     <dependency>
       <groupId>javax.servlet.jsp.jstl</groupId>
       <artifactId>jstl-api</artifactId>
@@ -106,7 +105,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-<!-- el -->
     <dependency>
       <groupId>javax.el</groupId>
       <artifactId>el-api</artifactId>
@@ -118,7 +116,6 @@
       <version>2.2</version>
     </dependency>
 
-<!-- servlet api -->
     <dependency>
       <groupId>${servlet.spec.groupId}</groupId>
       <artifactId>${servlet.spec.artifactId}</artifactId>
@@ -126,6 +123,13 @@
     </dependency>
 
   </dependencies>
+-->
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-jsp</artifactId>
+        <version>${jetty-version}</version>
+      </dependency>
+    </dependencies>
   <reporting>
   <plugins>
     <plugin>

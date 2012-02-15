@@ -22,11 +22,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.jasper.JspC;
 import org.apache.maven.artifact.Artifact;
@@ -37,6 +39,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.jetty.util.IO;
+import org.eclipse.jetty.util.PatternMatcher;
 import org.eclipse.jetty.util.resource.Resource;
 
 /**
@@ -225,6 +228,13 @@ public class JspcMojo extends AbstractMojo
      * @parameter
      */
     private String schemaResourcePrefix;
+    
+    /**
+     * Patterns of jars on the system path that contain tlds. Use | to separate each pattern.
+     * 
+     * @parameter default-value=".*taglibs[^/]*\.jar|.*jstl-impl[^/]*\.jar$
+     */
+    private String tldJarNamePatterns;
 
 
 
@@ -273,27 +283,38 @@ public class JspcMojo extends AbstractMojo
         ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
 
         //set up the classpath of the webapp
-        List<URL> urls = setUpWebAppClassPath();
+        List<URL> webAppUrls = setUpWebAppClassPath();
         
         //set up the classpath of the container (ie jetty and jsp jars)
         String sysClassPath = setUpSysClassPath();
-      
-        //use the classpaths as the classloader
-        URLClassLoader ucl = new URLClassLoader((URL[]) urls.toArray(new URL[0]), currentClassLoader);
-        StringBuffer classpathStr = new StringBuffer();
-
-        for (int i = 0; i < urls.size(); i++)
+        
+        //get the list of system classpath jars that contain tlds
+        List<URL> tldJarUrls = getSystemJarsWithTlds();
+        
+        for (URL u:tldJarUrls)
         {
             if (getLog().isDebugEnabled())
-                getLog().debug("webappclassloader contains: " + urls.get(i));
-            classpathStr.append(((URL) urls.get(i)).getFile());
-            if (getLog().isDebugEnabled())
-                getLog().debug("added to classpath: " + ((URL) urls.get(i)).getFile());
-            if (i+1<urls.size())
-                classpathStr.append(System.getProperty("path.separator"));
+                getLog().debug(" sys jar with tlds: "+u);
+            webAppUrls.add(u);
         }
 
-        Thread.currentThread().setContextClassLoader(ucl);
+      
+        //use the classpaths as the classloader
+        URLClassLoader webAppClassLoader = new URLClassLoader((URL[]) webAppUrls.toArray(new URL[0]), currentClassLoader);
+        StringBuffer webAppClassPath = new StringBuffer();
+
+        for (int i = 0; i < webAppUrls.size(); i++)
+        {
+            if (getLog().isDebugEnabled())
+                getLog().debug("webappclassloader contains: " + webAppUrls.get(i));
+            webAppClassPath.append(((URL) webAppUrls.get(i)).getFile());
+            if (getLog().isDebugEnabled())
+                getLog().debug("added to classpath: " + ((URL) webAppUrls.get(i)).getFile());
+            if (i+1<webAppUrls.size())
+                webAppClassPath.append(System.getProperty("path.separator"));
+        }
+
+        Thread.currentThread().setContextClassLoader(webAppClassLoader);
 
         JspC jspc = new JspC();
         jspc.setWebXmlFragment(webXmlFragment);
@@ -301,13 +322,15 @@ public class JspcMojo extends AbstractMojo
         jspc.setPackage(packageRoot);
         jspc.setOutputDir(generatedClasses);
         jspc.setValidateXml(validateXml);
-        jspc.setClassPath(classpathStr.toString());
+        jspc.setClassPath(webAppClassPath.toString());
         jspc.setCompile(true);
         jspc.setSmapSuppressed(suppressSmap);
         jspc.setSmapDumped(!suppressSmap);
         jspc.setJavaEncoding(javaEncoding);
         jspc.setTrimSpaces(trimSpaces);
         jspc.setSystemClassPath(sysClassPath);
+        
+        
 
         // JspC#setExtensions() does not exist, so 
         // always set concrete list of files that will be processed.
@@ -507,7 +530,7 @@ public class JspcMojo extends AbstractMojo
             Artifact artifact = (Artifact)iter.next();
 
             // Include runtime and compile time libraries
-            if (!Artifact.SCOPE_TEST.equals(artifact.getScope()))
+            if (!Artifact.SCOPE_TEST.equals(artifact.getScope()) && !Artifact.SCOPE_PROVIDED.equals(artifact.getScope()))
             {
                 String filePath = artifact.getFile().getCanonicalPath();
                 if (getLog().isDebugEnabled())
@@ -527,13 +550,50 @@ public class JspcMojo extends AbstractMojo
         for (Iterator<Artifact> iter = pluginArtifacts.iterator(); iter.hasNext(); )
         {
             Artifact pluginArtifact = iter.next();
-            if (getLog().isDebugEnabled()) { getLog().debug("Adding plugin artifact "+pluginArtifact);}
-            buff.append(pluginArtifact.getFile().getAbsolutePath());
-            if (iter.hasNext())
-                buff.append(File.pathSeparator);
+            if ("jar".equalsIgnoreCase(pluginArtifact.getType()))
+            {
+                if (getLog().isDebugEnabled()) { getLog().debug("Adding plugin artifact "+pluginArtifact);}
+                buff.append(pluginArtifact.getFile().getAbsolutePath());
+                if (iter.hasNext())
+                    buff.append(File.pathSeparator);
+            }
         }
         
         return buff.toString();
+    }
+
+    
+    /**
+     * Glassfish jsp requires that we set up the list of system jars that have
+     * tlds in them.
+     * 
+     * This method is a little fragile, as it relies on knowing that the jstl jars
+     * are the only ones in the system path that contain tlds.
+     * @return
+     * @throws Exception
+     */
+    private List<URL> getSystemJarsWithTlds() throws Exception
+    {
+        final List<URL> list = new ArrayList<URL>();
+        List<URI> artifactUris = new ArrayList<URI>();
+        Pattern pattern = Pattern.compile(tldJarNamePatterns);
+        for (Iterator<Artifact> iter = pluginArtifacts.iterator(); iter.hasNext(); )
+        {
+            Artifact pluginArtifact = iter.next();
+            artifactUris.add(Resource.newResource(pluginArtifact.getFile()).getURI());
+        }
+        
+        PatternMatcher matcher = new PatternMatcher()
+        {
+            public void matched(URI uri) throws Exception
+            {
+                //uri of system artifact matches pattern defining list of jars known to contain tlds
+                list.add(uri.toURL());
+            }
+        };
+        matcher.match(pattern, artifactUris.toArray(new URI[artifactUris.size()]), false);
+        
+        return list;
     }
     
     private File getWebXmlFile ()

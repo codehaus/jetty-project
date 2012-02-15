@@ -34,10 +34,6 @@
     <jetty-version>8.1.1-SNAPSHOT</jetty-version>
     <felix.bundle.version>2.0.0</felix.bundle.version>
     <jna-version>3.2.2</jna-version>
-    <jsp-version>2.2</jsp-version>
-    <servlet.spec.groupId>org.mortbay.jetty</servlet.spec.groupId>
-    <servlet.spec.artifactId>servlet-api</servlet.spec.artifactId>
-    <servlet.spec.version>3.0.20100224</servlet.spec.version>
     <junit-version>3.8.2</junit-version>
     <junit4-version>4.8.1</junit4-version>
     <jetty-test-helper-version>1.6</jetty-test-helper-version>
@@ -58,6 +54,26 @@
           <target>1.6</target>
           <verbose>false</verbose>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.0.1</version>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>[1.6,)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
@@ -163,6 +179,12 @@
     </pluginManagement>
   </build>
   <modules>
+    <module>test-wars/test-jndi-webapp</module>
+    <module>test-wars/test-jaas-webapp</module>
+    <module>test-wars/test-annotation-webapp</module>
+    <module>test-wars/test-war-dump</module>
+    <module>test-wars/test-container-initializer</module>
+    <module>test-wars/test-fragment</module>
     <module>jetty-atomikos</module>
     <module>jetty-maven-plugin</module>
     <module>jetty-jspc-maven-plugin</module>
@@ -176,16 +198,35 @@
     <module>jetty-reverse-http</module>
     <module>jetty-spring</module>
     <module>example-async-rest-webapp</module>
-    <module>jetty-hightide</module>
-    <module>test-wars</module>
+    <!--module>jetty-jboss</module-->
     <module>jetty-logback</module>
-    <module>jetty-webapp-verifier</module>
     <module>jetty-webapp-logging</module>
     <module>jetty-jmx-ws</module>
+    <module>jetty-hightide</module>
     <module>archetype</module>
     <module>dist</module>
   </modules>
+ <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.eclipse.jetty.orbit</groupId>
+        <artifactId>javax.servlet</artifactId>
+        <version>3.0.0.v201112011016</version>
+      </dependency>
+    </dependencies>
+ </dependencyManagement>
+
   <profiles>
+    <profile>
+      <!-- Modules that are only for JDK6+ builds -->
+      <id>JDK6-plus-modules</id>
+      <activation>
+        <jdk>[1.6,)</jdk>
+      </activation>
+      <modules>
+        <module>jetty-jmx-ws</module>
+      </modules>
+    </profile>
     <profile>
       <id>update-version</id>
       <build>
