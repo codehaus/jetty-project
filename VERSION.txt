@@ -1,3 +1,5 @@
+jetty@codehaus-7.6.2-SNAPSHOT
+
 jetty@codehaus-7.6.1.v20120215 - 15 February 2012
  + 370386 Remove META-INF from hightide distro
  + JETTY-1480 jspc-maven-plugin does not find jstl tags
