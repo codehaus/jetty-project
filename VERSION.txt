@@ -1,4 +1,11 @@
-jetty@codehaus-7.6.1-SNAPSHOT
+jetty@codehaus-7.6.2-SNAPSHOT
+
+jetty@codehaus-7.6.1.v20120215 - 15 February 2012
+ + 370386 Remove META-INF from hightide distro
+ + JETTY-1480 jspc-maven-plugin does not find jstl tags
+ + JETTY-1481 Change jetty-atomikos to be type jar so its dependencies can be
+   used in jetty-hightide
+ + JETTY-1482 fix path in setuid configuration
 
 jetty@codehaus-7.6.0.v20120127 - 27 January 2012
 
