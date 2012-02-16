@@ -79,6 +79,7 @@ public class HelloExtensionsTransformer extends ClassVisitor
                 super.visitVarInsn(ASTORE, 6);
                 super.visitJumpInsn(GOTO, ifElseExit);
                 super.visitLabel(l8);
+                super.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
             }
             super.visitTypeInsn(opcode, type);
         }

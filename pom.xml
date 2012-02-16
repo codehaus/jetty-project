@@ -17,6 +17,7 @@
         <module>jetty-npn-boot</module>
         <module>jetty-npn-agent</module>
         <module>jetty-npn-tests</module>
+        <module>jetty-npn-jdk</module>
     </modules>
 
     <build>

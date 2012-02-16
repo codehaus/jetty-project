@@ -37,6 +37,8 @@ public class SSLEngineNextProtoNegoTest
     @Test
     public void testSSLEngine() throws Exception
     {
+        NextProtoNego.debug = true;
+
         final SSLContext context = SSLSupport.newSSLContext();
 
         final String data = "data";

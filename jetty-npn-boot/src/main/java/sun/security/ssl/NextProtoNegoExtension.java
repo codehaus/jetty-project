@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.net.ssl.SSLProtocolException;
 
+// TODO: change license to GPL like JDK ?
 public class NextProtoNegoExtension extends HelloExtension
 {
     private static final int ID = 0x3374;

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 
+// TODO: change license to GPL like JDK ?
 public class NextProtocolMessage extends HandshakeMessage
 {
     public static final int ID = 67;

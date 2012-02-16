@@ -35,6 +35,10 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
     {
         super.visit(version, access, name, signature, superName, interfaces);
 
+        super.visitInnerClass("org/eclipse/jetty/npn/NextProtoNego$ServerProvider", "org/eclipse/jetty/npn/NextProtoNego", "ServerProvider", ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE);
+
+        super.visitInnerClass("org/eclipse/jetty/npn/NextProtoNego$Provider", "org/eclipse/jetty/npn/NextProtoNego", "Provider", ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE);
+
         // Add a nextProtocol() method to process the NextProtocolMessage sent by the client
         /**
          * NextProtoNego.ServerProvider provider = conn != null ?
@@ -56,11 +60,13 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
         Label l1 = new Label();
         nextProtocol.visitJumpInsn(GOTO, l1);
         nextProtocol.visitLabel(l0);
+        nextProtocol.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
         nextProtocol.visitVarInsn(ALOAD, 0);
         nextProtocol.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "engine", "Lsun/security/ssl/SSLEngineImpl;");
         nextProtocol.visitMethodInsn(INVOKESTATIC, "org/eclipse/jetty/npn/NextProtoNego", "get", "(Ljavax/net/ssl/SSLEngine;)Lorg/eclipse/jetty/npn/NextProtoNego$Provider;");
         nextProtocol.visitTypeInsn(CHECKCAST, "org/eclipse/jetty/npn/NextProtoNego$ServerProvider");
         nextProtocol.visitLabel(l1);
+        nextProtocol.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {"org/eclipse/jetty/npn/NextProtoNego$ServerProvider"});
         nextProtocol.visitVarInsn(ASTORE, 2);
         nextProtocol.visitVarInsn(ALOAD, 2);
         Label l2 = new Label();
@@ -89,17 +95,22 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
         Label l5 = new Label();
         nextProtocol.visitJumpInsn(GOTO, l5);
         nextProtocol.visitLabel(l4);
+        nextProtocol.visitFrame(Opcodes.F_FULL, 4, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/NextProtocolMessage", "org/eclipse/jetty/npn/NextProtoNego$ServerProvider", "java/lang/String"}, 2, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder"});
         nextProtocol.visitVarInsn(ALOAD, 0);
         nextProtocol.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "engine", "Lsun/security/ssl/SSLEngineImpl;");
         nextProtocol.visitLabel(l5);
+        nextProtocol.visitFrame(Opcodes.F_FULL, 4, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/NextProtocolMessage", "org/eclipse/jetty/npn/NextProtoNego$ServerProvider", "java/lang/String"}, 3, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder", "java/lang/Object"});
         nextProtocol.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;");
         nextProtocol.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V");
         nextProtocol.visitLabel(l3);
+        nextProtocol.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
         nextProtocol.visitVarInsn(ALOAD, 2);
         nextProtocol.visitVarInsn(ALOAD, 3);
         nextProtocol.visitMethodInsn(INVOKEINTERFACE, "org/eclipse/jetty/npn/NextProtoNego$ServerProvider", "protocolSelected", "(Ljava/lang/String;)V");
         nextProtocol.visitLabel(l2);
+        nextProtocol.visitFrame(Opcodes.F_CHOP,1, null, 0, null);
         nextProtocol.visitInsn(RETURN);
+        nextProtocol.visitMaxs(4, 4);
         nextProtocol.visitEnd();
     }
 
@@ -167,12 +178,15 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
                 Label l60 = new Label();
                 super.visitJumpInsn(GOTO, l60);
                 super.visitLabel(l59);
+                super.visitFrame(Opcodes.F_FULL, 7, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion"}, 2, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder"});
                 super.visitVarInsn(ALOAD, 0);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "engine", "Lsun/security/ssl/SSLEngineImpl;");
                 super.visitLabel(l60);
+                super.visitFrame(Opcodes.F_FULL, 7, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion"}, 3, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder", "java/lang/Object"});
                 super.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;");
                 super.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V");
                 super.visitLabel(l58);
+                super.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
                 super.visitVarInsn(ALOAD, 1);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/HandshakeMessage$ClientHello", "extensions", "Lsun/security/ssl/HelloExtensions;");
                 super.visitFieldInsn(GETSTATIC, "sun/security/ssl/ExtensionType", "EXT_NEXT_PROTOCOL_NEGOTIATION", "Lsun/security/ssl/ExtensionType;");
@@ -196,12 +210,15 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
                 Label l64 = new Label();
                 super.visitJumpInsn(GOTO, l64);
                 super.visitLabel(l63);
+                super.visitFrame(Opcodes.F_FULL, 7, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion"}, 2, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder"});
                 super.visitVarInsn(ALOAD, 0);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "engine", "Lsun/security/ssl/SSLEngineImpl;");
                 super.visitLabel(l64);
+                super.visitFrame(Opcodes.F_FULL, 7, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion"}, 3, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder", "java/lang/Object"});
                 super.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;");
                 super.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V");
                 super.visitLabel(l62);
+                super.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
                 super.visitVarInsn(ALOAD, 0);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "conn", "Lsun/security/ssl/SSLSocketImpl;");
                 Label l65 = new Label();
@@ -213,11 +230,13 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
                 Label l66 = new Label();
                 super.visitJumpInsn(GOTO, l66);
                 super.visitLabel(l65);
+                super.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
                 super.visitVarInsn(ALOAD, 0);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "engine", "Lsun/security/ssl/SSLEngineImpl;");
                 super.visitMethodInsn(INVOKESTATIC, "org/eclipse/jetty/npn/NextProtoNego", "get", "(Ljavax/net/ssl/SSLEngine;)Lorg/eclipse/jetty/npn/NextProtoNego$Provider;");
                 super.visitTypeInsn(CHECKCAST, "org/eclipse/jetty/npn/NextProtoNego$ServerProvider");
                 super.visitLabel(l66);
+                super.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {"org/eclipse/jetty/npn/NextProtoNego$ServerProvider"});
                 super.visitVarInsn(ASTORE, 7);
                 super.visitVarInsn(ALOAD, 7);
                 Label l67 = new Label();
@@ -225,9 +244,12 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
                 super.visitVarInsn(ALOAD, 7);
                 super.visitMethodInsn(INVOKEINTERFACE, "org/eclipse/jetty/npn/NextProtoNego$ServerProvider", "protocols", "()Ljava/util/List;");
                 super.visitVarInsn(ASTORE, 8);
-                super.visitFieldInsn(GETSTATIC, "org/eclipse/jetty/npn/NextProtoNego", "debug", "Z");
+                super.visitVarInsn(ALOAD, 8);
                 Label l68 = new Label();
-                super.visitJumpInsn(IFEQ, l68);
+                super.visitJumpInsn(IFNULL, l68);
+                super.visitFieldInsn(GETSTATIC, "org/eclipse/jetty/npn/NextProtoNego", "debug", "Z");
+                Label l69 = new Label();
+                super.visitJumpInsn(IFEQ, l69);
                 super.visitFieldInsn(GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
                 super.visitTypeInsn(NEW, "java/lang/StringBuilder");
                 super.visitInsn(DUP);
@@ -239,22 +261,22 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
                 super.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
                 super.visitVarInsn(ALOAD, 0);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "conn", "Lsun/security/ssl/SSLSocketImpl;");
-                Label l69 = new Label();
-                super.visitJumpInsn(IFNULL, l69);
+                Label l70 = new Label();
+                super.visitJumpInsn(IFNULL, l70);
                 super.visitVarInsn(ALOAD, 0);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "conn", "Lsun/security/ssl/SSLSocketImpl;");
-                Label l70 = new Label();
-                super.visitJumpInsn(GOTO, l70);
-                super.visitLabel(l69);
+                Label l71 = new Label();
+                super.visitJumpInsn(GOTO, l71);
+                super.visitLabel(l70);
+                super.visitFrame(Opcodes.F_FULL, 9, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion", "org/eclipse/jetty/npn/NextProtoNego$ServerProvider", "java/util/List"}, 2, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder"});
                 super.visitVarInsn(ALOAD, 0);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "engine", "Lsun/security/ssl/SSLEngineImpl;");
-                super.visitLabel(l70);
+                super.visitLabel(l71);
+                super.visitFrame(Opcodes.F_FULL, 9, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion", "org/eclipse/jetty/npn/NextProtoNego$ServerProvider", "java/util/List"}, 3, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder", "java/lang/Object"});
                 super.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;");
                 super.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V");
-                super.visitLabel(l68);
-                super.visitVarInsn(ALOAD, 8);
-                Label l71 = new Label();
-                super.visitJumpInsn(IFNULL, l71);
+                super.visitLabel(l69);
+                super.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
                 super.visitVarInsn(ALOAD, 5);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/HandshakeMessage$ServerHello", "extensions", "Lsun/security/ssl/HelloExtensions;");
                 super.visitTypeInsn(NEW, "sun/security/ssl/NextProtoNegoExtension");
@@ -262,16 +284,16 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
                 super.visitVarInsn(ALOAD, 8);
                 super.visitMethodInsn(INVOKESPECIAL, "sun/security/ssl/NextProtoNegoExtension", "<init>", "(Ljava/util/List;)V");
                 super.visitMethodInsn(INVOKEVIRTUAL, "sun/security/ssl/HelloExtensions", "add", "(Lsun/security/ssl/HelloExtension;)V");
-                super.visitLabel(l71);
                 Label l72 = new Label();
                 super.visitJumpInsn(GOTO, l72);
-                super.visitLabel(l67);
+                super.visitLabel(l68);
+                super.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
                 super.visitFieldInsn(GETSTATIC, "org/eclipse/jetty/npn/NextProtoNego", "debug", "Z");
                 super.visitJumpInsn(IFEQ, l72);
                 super.visitFieldInsn(GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
                 super.visitTypeInsn(NEW, "java/lang/StringBuilder");
                 super.visitInsn(DUP);
-                super.visitLdcInsn("NPN not supported for ");
+                super.visitLdcInsn("NPN protocols missing for ");
                 super.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
                 super.visitVarInsn(ALOAD, 0);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "conn", "Lsun/security/ssl/SSLSocketImpl;");
@@ -282,21 +304,25 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
                 Label l74 = new Label();
                 super.visitJumpInsn(GOTO, l74);
                 super.visitLabel(l73);
+                super.visitFrame(Opcodes.F_FULL, 9, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion", "org/eclipse/jetty/npn/NextProtoNego$ServerProvider", "java/util/List"}, 2, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder"});
                 super.visitVarInsn(ALOAD, 0);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "engine", "Lsun/security/ssl/SSLEngineImpl;");
                 super.visitLabel(l74);
+                super.visitFrame(Opcodes.F_FULL, 9, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion", "org/eclipse/jetty/npn/NextProtoNego$ServerProvider", "java/util/List"}, 3, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder", "java/lang/Object"});
                 super.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;");
                 super.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V");
                 super.visitLabel(l72);
+                super.visitFrame(Opcodes.F_CHOP,1, null, 0, null);
                 Label l75 = new Label();
                 super.visitJumpInsn(GOTO, l75);
-                super.visitLabel(l61);
+                super.visitLabel(l67);
+                super.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
                 super.visitFieldInsn(GETSTATIC, "org/eclipse/jetty/npn/NextProtoNego", "debug", "Z");
                 super.visitJumpInsn(IFEQ, l75);
                 super.visitFieldInsn(GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
                 super.visitTypeInsn(NEW, "java/lang/StringBuilder");
                 super.visitInsn(DUP);
-                super.visitLdcInsn("NPN not received for ");
+                super.visitLdcInsn("NPN not supported for ");
                 super.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
                 super.visitVarInsn(ALOAD, 0);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "conn", "Lsun/security/ssl/SSLSocketImpl;");
@@ -307,12 +333,44 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
                 Label l77 = new Label();
                 super.visitJumpInsn(GOTO, l77);
                 super.visitLabel(l76);
+                super.visitFrame(Opcodes.F_FULL, 8, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion", "org/eclipse/jetty/npn/NextProtoNego$ServerProvider"}, 2, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder"});
                 super.visitVarInsn(ALOAD, 0);
                 super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "engine", "Lsun/security/ssl/SSLEngineImpl;");
                 super.visitLabel(l77);
+                super.visitFrame(Opcodes.F_FULL, 8, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion", "org/eclipse/jetty/npn/NextProtoNego$ServerProvider"}, 3, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder", "java/lang/Object"});
                 super.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;");
                 super.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V");
                 super.visitLabel(l75);
+                super.visitFrame(Opcodes.F_CHOP,1, null, 0, null);
+                Label l78 = new Label();
+                super.visitJumpInsn(GOTO, l78);
+                super.visitLabel(l61);
+                super.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+                super.visitFieldInsn(GETSTATIC, "org/eclipse/jetty/npn/NextProtoNego", "debug", "Z");
+                super.visitJumpInsn(IFEQ, l78);
+                super.visitFieldInsn(GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
+                super.visitTypeInsn(NEW, "java/lang/StringBuilder");
+                super.visitInsn(DUP);
+                super.visitLdcInsn("NPN not received for ");
+                super.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
+                super.visitVarInsn(ALOAD, 0);
+                super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "conn", "Lsun/security/ssl/SSLSocketImpl;");
+                Label l79 = new Label();
+                super.visitJumpInsn(IFNULL, l79);
+                super.visitVarInsn(ALOAD, 0);
+                super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "conn", "Lsun/security/ssl/SSLSocketImpl;");
+                Label l80 = new Label();
+                super.visitJumpInsn(GOTO, l80);
+                super.visitLabel(l79);
+                super.visitFrame(Opcodes.F_FULL, 7, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion"}, 2, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder"});
+                super.visitVarInsn(ALOAD, 0);
+                super.visitFieldInsn(GETFIELD, "sun/security/ssl/ServerHandshaker", "engine", "Lsun/security/ssl/SSLEngineImpl;");
+                super.visitLabel(l80);
+                super.visitFrame(Opcodes.F_FULL, 7, new Object[] {"sun/security/ssl/ServerHandshaker", "sun/security/ssl/HandshakeMessage$ClientHello", Opcodes.INTEGER, "sun/security/ssl/CipherSuiteList", "sun/security/ssl/RenegotiationInfoExtension", "sun/security/ssl/HandshakeMessage$ServerHello", "sun/security/ssl/ProtocolVersion"}, 3, new Object[] {"java/io/PrintStream", "java/lang/StringBuilder", "java/lang/Object"});
+                super.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;");
+                super.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V");
+                super.visitLabel(l78);
+                super.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 
                 // Re-add the target and the parameter of the call
                 super.visitVarInsn(ALOAD, 5);
@@ -338,7 +396,7 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
         @Override
         public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels)
         {
-            // We need to add one more case
+            // We need to add one more case block, so we need one more label
             int[] newKeys = new int[keys.length + 1];
             System.arraycopy(keys, 0, newKeys, 0, keys.length);
             newKeys[keys.length] = NEXT_PROTOCOL_MESSAGE_ID;
@@ -369,6 +427,7 @@ public class ServerHandshakerTransformer extends ClassVisitor implements Opcodes
                  *     break;
                  */
                 super.visitLabel(this.label);
+                super.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
                 super.visitVarInsn(ALOAD, 0);
                 super.visitTypeInsn(NEW, "sun/security/ssl/NextProtocolMessage");
                 super.visitInsn(DUP);

@@ -32,17 +32,21 @@ public class HandshakerTransformer extends ClassVisitor implements Opcodes
     {
         super.visit(version, access, name, signature, superName, interfaces);
 
+        super.visitInnerClass("org/eclipse/jetty/npn/NextProtoNego$Provider", "org/eclipse/jetty/npn/NextProtoNego", "Provider", ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE);
+
         // Creates an empty sendNextProtocol() method, overridden only by ClientHandshaker
-        MethodVisitor visitor = super.visitMethod(0, "sendNextProtocol", "(Lorg/eclipse/jetty/npn/NextProtoNego$Provider;)V", null, new String[]{"java/io/IOException"});
-        visitor.visitCode();
-        visitor.visitInsn(RETURN);
-        visitor.visitEnd();
+        MethodVisitor mv = super.visitMethod(0, "sendNextProtocol", "(Lorg/eclipse/jetty/npn/NextProtoNego$Provider;)V", null, new String[]{"java/io/IOException"});
+        mv.visitCode();
+        mv.visitInsn(RETURN);
+        mv.visitMaxs(0, 2);
+        mv.visitEnd();
 
         // Creates an empty updateFinished() method, overridden only by ClientHandshaker
-        MethodVisitor mv = super.visitMethod(0, "updateFinished", "(Lsun/security/ssl/HandshakeMessage$Finished;)Lsun/security/ssl/HandshakeMessage$Finished;", null, null);
+        mv = super.visitMethod(0, "updateFinished", "(Lsun/security/ssl/HandshakeMessage$Finished;)Lsun/security/ssl/HandshakeMessage$Finished;", null, null);
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 1);
         mv.visitInsn(ARETURN);
+        mv.visitMaxs(1, 2);
         mv.visitEnd();
     }
 

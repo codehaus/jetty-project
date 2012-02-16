@@ -39,9 +39,9 @@ public class SSLEngineImplTransformer extends ClassVisitor implements Opcodes
     /**
      * The SSLEngineImpl state machine assumes that after a ChangeCipherSpec there will be
      * a FinishedMessage, but with NPN there is a NextProtocol message and the state machine
-     * is messed up. This transformer modifies method readRecord():1102 by removing the
+     * is messed up. This transformer modifies method readRecord():1020 by removing the
      * assignment "expectingFinished=false" that is done just after "handshaker.process_record()"
-     * and by adding it back where the "handshaker" field is nulled out.
+     * and by adding it back where the "handshaker" field is nulled out few lines below.
      */
     private class ReadRecordTransformer extends MethodVisitor implements Opcodes
     {
