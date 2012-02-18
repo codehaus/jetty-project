@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-npn-project</artifactId>
+        <artifactId>npn-project</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jetty-npn-agent</artifactId>
-    <name>Jetty :: Next Protocol Negotiation :: Agent</name>
+    <artifactId>npn-agent</artifactId>
+    <name>Next Protocol Negotiation :: Agent</name>
 
     <build>
         <plugins>
