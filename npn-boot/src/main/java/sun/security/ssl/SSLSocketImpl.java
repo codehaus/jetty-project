@@ -26,22 +26,38 @@
 
 package sun.security.ssl;
 
-import java.io.*;
-import java.net.*;
-import java.security.GeneralSecurityException;
-import java.security.AccessController;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.security.AccessControlContext;
-import java.security.PrivilegedAction;
+import java.security.AccessController;
 import java.security.AlgorithmConstraints;
-import java.util.*;
+import java.security.GeneralSecurityException;
+import java.security.PrivilegedAction;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-
 import javax.crypto.BadPaddingException;
-
-import javax.net.ssl.*;
-
-import com.sun.net.ssl.internal.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.HandshakeCompletedEvent;
+import javax.net.ssl.HandshakeCompletedListener;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLProtocolException;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLSession;
 
 /**
  * Implementation of an SSL socket.  This is a normal connection type

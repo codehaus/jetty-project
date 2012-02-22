@@ -76,6 +76,7 @@ public class SSLEngineNextProtoNegoTest
                     ByteBuffer decrypted = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
 
                     SocketChannel socket = server.accept();
+                    socket.socket().setSoTimeout(5000);
 
                     sslEngine.beginHandshake();
                     Assert.assertSame(SSLEngineResult.HandshakeStatus.NEED_UNWRAP, sslEngine.getHandshakeStatus());
@@ -305,6 +306,7 @@ public class SSLEngineNextProtoNegoTest
         ByteBuffer decrypted = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
 
         SocketChannel client = SocketChannel.open(server.getLocalAddress());
+        client.socket().setSoTimeout(5000);
 
         sslEngine.beginHandshake();
         Assert.assertSame(SSLEngineResult.HandshakeStatus.NEED_WRAP, sslEngine.getHandshakeStatus());

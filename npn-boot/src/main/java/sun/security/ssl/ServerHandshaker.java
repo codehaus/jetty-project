@@ -26,25 +26,58 @@
 
 package sun.security.ssl;
 
-import java.io.*;
-import java.util.*;
-import java.security.*;
-import java.security.cert.*;
-import java.security.interfaces.*;
+import java.io.IOException;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+import java.security.Principal;
+import java.security.PrivateKey;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.security.PublicKey;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECParameterSpec;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
-import javax.net.ssl.*;
-
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLProtocolException;
+import javax.net.ssl.X509ExtendedKeyManager;
+import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.security.auth.Subject;
 
-import sun.security.ssl.HandshakeMessage.*;
-import sun.security.ssl.CipherSuite.*;
-import sun.security.ssl.SignatureAndHashAlgorithm.*;
-import static sun.security.ssl.CipherSuite.*;
-import static sun.security.ssl.CipherSuite.KeyExchange.*;
+import org.eclipse.jetty.npn.NextProtoNego;
+import sun.security.ssl.CipherSuite.KeyExchange;
+import sun.security.ssl.HandshakeMessage.CertificateMsg;
+import sun.security.ssl.HandshakeMessage.CertificateRequest;
+import sun.security.ssl.HandshakeMessage.CertificateVerify;
+import sun.security.ssl.HandshakeMessage.ClientHello;
+import sun.security.ssl.HandshakeMessage.DH_ServerKeyExchange;
+import sun.security.ssl.HandshakeMessage.ECDH_ServerKeyExchange;
+import sun.security.ssl.HandshakeMessage.Finished;
+import sun.security.ssl.HandshakeMessage.HelloRequest;
+import sun.security.ssl.HandshakeMessage.RSA_ServerKeyExchange;
+import sun.security.ssl.HandshakeMessage.ServerHello;
+import sun.security.ssl.HandshakeMessage.ServerHelloDone;
+import sun.security.ssl.HandshakeMessage.ServerKeyExchange;
+import sun.security.ssl.SignatureAndHashAlgorithm.HashAlgorithm;
+import sun.security.ssl.SignatureAndHashAlgorithm.SignatureAlgorithm;
+
+import static sun.security.ssl.CipherSuite.KeyExchange.K_DH_ANON;
+import static sun.security.ssl.CipherSuite.KeyExchange.K_ECDH_ANON;
+import static sun.security.ssl.CipherSuite.KeyExchange.K_KRB5;
+import static sun.security.ssl.CipherSuite.KeyExchange.K_KRB5_EXPORT;
 
 /**
  * ServerHandshaker does the protocol handshaking from the point
@@ -673,7 +706,7 @@ final class ServerHandshaker extends Handshaker {
         {
             if (NextProtoNego.debug)
                 System.err.println(new StringBuilder("NPN received? for ").append(conn != null ? conn : engine));
-            if (mesg.extensions.get(null/*ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION*/) != null)
+            if (mesg.extensions.get(ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION) != null)
             {
                 if (NextProtoNego.debug)
                     System.err.println(new StringBuilder("NPN received for ").append(conn != null ? conn : engine));

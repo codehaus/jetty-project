@@ -26,29 +26,43 @@
 
 package sun.security.ssl;
 
-import java.io.*;
-import java.util.*;
-import java.security.*;
-import java.security.NoSuchAlgorithmException;
+import java.io.IOException;
+import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.AlgorithmConstraints;
-import java.security.AccessControlContext;
-import java.security.PrivilegedExceptionAction;
+import java.security.CryptoPrimitive;
+import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.security.ProviderException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLKeyException;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLProtocolException;
 
-import javax.crypto.*;
-import javax.crypto.spec.*;
-
-import javax.net.ssl.*;
+import org.eclipse.jetty.npn.NextProtoNego;
 import sun.misc.HexDumpEncoder;
-
-import sun.security.internal.spec.*;
 import sun.security.internal.interfaces.TlsMasterSecret;
+import sun.security.internal.spec.TlsKeyMaterialParameterSpec;
+import sun.security.internal.spec.TlsKeyMaterialSpec;
+import sun.security.internal.spec.TlsMasterSecretParameterSpec;
+import sun.security.ssl.CipherSuite.BulkCipher;
+import sun.security.ssl.CipherSuite.KeyExchange;
+import sun.security.ssl.CipherSuite.MacAlg;
+import sun.security.ssl.CipherSuite.PRF;
+import sun.security.ssl.HandshakeMessage.Finished;
 
-import sun.security.ssl.HandshakeMessage.*;
-import sun.security.ssl.CipherSuite.*;
-
-import static sun.security.ssl.CipherSuite.PRF.*;
+import static sun.security.ssl.CipherSuite.PRF.P_NONE;
 
 /**
  * Handshaker ... processes handshake records from an SSL V3.0

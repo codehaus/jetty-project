@@ -621,7 +621,7 @@ final class ClientHandshaker extends Handshaker {
         {
             if (NextProtoNego.debug)
                 System.err.println(new StringBuilder("NPN protocols sent by server? for ").append(conn != null ? conn : engine));
-            NextProtoNegoExtension extension = (NextProtoNegoExtension)mesg.extensions.get(null/*ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION*/);
+            NextProtoNegoExtension extension = (NextProtoNegoExtension)mesg.extensions.get(ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION);
             if (extension != null)
             {
                 protocols = extension.getProtocols();
