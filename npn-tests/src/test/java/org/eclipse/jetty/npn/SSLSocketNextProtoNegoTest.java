@@ -16,15 +16,14 @@
 
 package org.eclipse.jetty.npn;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.SSLContext;
@@ -32,24 +31,22 @@ import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SSLSocketNextProtoNegoTest
 {
-    // TODO: while handshake seems working, application data does not.
-    @Ignore
     @Test
     public void testSSLSocket() throws Exception
     {
         SSLContext context = SSLSupport.newSSLContext();
 
-        final CountDownLatch handshakeLatch = new CountDownLatch(2);
-
+        final int readTimeout = 5000;
         final String data = "data";
         final String protocolName = "test";
-        final CountDownLatch latch = new CountDownLatch(4);
-        final SSLServerSocket server = (SSLServerSocket)context.getServerSocketFactory().createServerSocket(0);
+        final AtomicReference<CountDownLatch> latch = new AtomicReference<>(new CountDownLatch(4));
+        final SSLServerSocket server = (SSLServerSocket)context.getServerSocketFactory().createServerSocket();
+        server.bind(new InetSocketAddress("localhost", 0));
+        final CountDownLatch handshakeLatch = new CountDownLatch(2);
         new Thread()
         {
             @Override
@@ -59,12 +56,13 @@ public class SSLSocketNextProtoNegoTest
                 {
                     SSLSocket socket = (SSLSocket)server.accept();
                     socket.setUseClientMode(false);
+                    socket.setSoTimeout(readTimeout);
                     NextProtoNego.put(socket, new NextProtoNego.ServerProvider()
                     {
                         @Override
                         public List<String> protocols()
                         {
-                            latch.countDown();
+                            latch.get().countDown();
                             return Arrays.asList(protocolName);
                         }
 
@@ -72,7 +70,7 @@ public class SSLSocketNextProtoNegoTest
                         public void protocolSelected(String protocol)
                         {
                             Assert.assertEquals(protocolName, protocol);
-                            latch.countDown();
+                            latch.get().countDown();
                         }
                     });
                     socket.addHandshakeCompletedListener(new HandshakeCompletedListener()
@@ -85,19 +83,40 @@ public class SSLSocketNextProtoNegoTest
                     });
                     socket.startHandshake();
 
-                    socket.setSoTimeout(1000);
                     InputStream serverInput = socket.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(serverInput, "UTF-8"));
-                    String line = reader.readLine();
-                    Assert.assertEquals(data, line);
+                    for (int i = 0; i < data.length(); ++i)
+                    {
+                        int read = serverInput.read();
+                        Assert.assertEquals(data.charAt(i), read);
+                    }
 
                     OutputStream serverOutput = socket.getOutputStream();
                     serverOutput.write(data.getBytes("UTF-8"));
                     serverOutput.flush();
 
+                    for (int i = 0; i < data.length(); ++i)
+                    {
+                        int read = serverInput.read();
+                        Assert.assertEquals(data.charAt(i), read);
+                    }
+
+                    serverOutput.write(data.getBytes("UTF-8"));
+                    serverOutput.flush();
+
+                    socket.startHandshake();
+
+                    for (int i = 0; i < data.length(); ++i)
+                    {
+                        int read = serverInput.read();
+                        Assert.assertEquals(data.charAt(i), read);
+                    }
+
+                    serverOutput.write(data.getBytes("UTF-8"));
+                    serverOutput.flush();
+
                     socket.close();
                 }
-                catch (IOException x)
+                catch (Exception x)
                 {
                     x.printStackTrace();
                 }
@@ -106,12 +125,13 @@ public class SSLSocketNextProtoNegoTest
 
         SSLSocket client = (SSLSocket)context.getSocketFactory().createSocket("localhost", server.getLocalPort());
         client.setUseClientMode(true);
+        client.setSoTimeout(readTimeout);
         NextProtoNego.put(client, new NextProtoNego.ClientProvider()
         {
             @Override
             public boolean supports()
             {
-                latch.countDown();
+                latch.get().countDown();
                 return true;
             }
 
@@ -121,7 +141,7 @@ public class SSLSocketNextProtoNegoTest
                 Assert.assertEquals(1, protocols.size());
                 String protocol = protocols.get(0);
                 Assert.assertEquals(protocolName, protocol);
-                latch.countDown();
+                latch.get().countDown();
                 return protocol;
             }
         });
@@ -137,7 +157,7 @@ public class SSLSocketNextProtoNegoTest
 
         client.startHandshake();
 
-        Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
+        Assert.assertTrue(latch.get().await(5, TimeUnit.SECONDS));
         Assert.assertTrue(handshakeLatch.await(5, TimeUnit.SECONDS));
 
         // Check whether we can write real data to the connection
@@ -145,13 +165,38 @@ public class SSLSocketNextProtoNegoTest
         clientOutput.write(data.getBytes("UTF-8"));
         clientOutput.flush();
 
-        client.setSoTimeout(1000);
         InputStream clientInput = client.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(clientInput, "UTF-8"));
-        String line = reader.readLine();
-        Assert.assertEquals(data, line);
-        line = reader.readLine();
-        Assert.assertNull(line);
+        for (int i = 0; i < data.length(); ++i)
+        {
+            int read = clientInput.read();
+            Assert.assertEquals(data.charAt(i), read);
+        }
+
+        // Re-handshake
+        latch.set(new CountDownLatch(4));
+        client.startHandshake();
+        Assert.assertEquals(4, latch.get().getCount());
+
+        clientOutput.write(data.getBytes("UTF-8"));
+        clientOutput.flush();
+
+        for (int i = 0; i < data.length(); ++i)
+        {
+            int read = clientInput.read();
+            Assert.assertEquals(data.charAt(i), read);
+        }
+
+        clientOutput.write(data.getBytes("UTF-8"));
+        clientOutput.flush();
+
+        for (int i = 0; i < data.length(); ++i)
+        {
+            int read = clientInput.read();
+            Assert.assertEquals(data.charAt(i), read);
+        }
+
+        int read = clientInput.read();
+        Assert.assertEquals(-1, read);
 
         client.close();
 

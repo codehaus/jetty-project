@@ -42,11 +42,12 @@ public class SSLEngineNextProtoNegoTest
 
         final SSLContext context = SSLSupport.newSSLContext();
 
+        final int readTimeout = 5000;
         final String data = "data";
         final String protocolName = "test";
         final AtomicReference<CountDownLatch> latch = new AtomicReference<>(new CountDownLatch(4));
         final ServerSocketChannel server = ServerSocketChannel.open();
-        server.bind(new InetSocketAddress("localhost", 47443)); // TODO: revert to 0
+        server.bind(new InetSocketAddress("localhost", 0));
         new Thread()
         {
             @Override
@@ -76,7 +77,7 @@ public class SSLEngineNextProtoNegoTest
                     ByteBuffer decrypted = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
 
                     SocketChannel socket = server.accept();
-                    socket.socket().setSoTimeout(5000);
+                    socket.socket().setSoTimeout(readTimeout);
 
                     sslEngine.beginHandshake();
                     Assert.assertSame(SSLEngineResult.HandshakeStatus.NEED_UNWRAP, sslEngine.getHandshakeStatus());
@@ -306,7 +307,7 @@ public class SSLEngineNextProtoNegoTest
         ByteBuffer decrypted = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
 
         SocketChannel client = SocketChannel.open(server.getLocalAddress());
-        client.socket().setSoTimeout(5000);
+        client.socket().setSoTimeout(readTimeout);
 
         sslEngine.beginHandshake();
         Assert.assertSame(SSLEngineResult.HandshakeStatus.NEED_WRAP, sslEngine.getHandshakeStatus());
@@ -505,5 +506,7 @@ public class SSLEngineNextProtoNegoTest
         Assert.assertSame(SSLEngineResult.Status.CLOSED, result.getStatus());
         Assert.assertSame(SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING, result.getHandshakeStatus());
         client.close();
+
+        server.close();
     }
 }
