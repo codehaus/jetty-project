@@ -103,6 +103,7 @@ public class SSLSocketNextProtoNegoTest
                     serverOutput.write(data.getBytes("UTF-8"));
                     serverOutput.flush();
 
+                    // Re-handshake
                     socket.startHandshake();
 
                     for (int i = 0; i < data.length(); ++i)
@@ -113,6 +114,8 @@ public class SSLSocketNextProtoNegoTest
 
                     serverOutput.write(data.getBytes("UTF-8"));
                     serverOutput.flush();
+
+                    Assert.assertEquals(4, latch.get().getCount());
 
                     socket.close();
                 }
