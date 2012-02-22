@@ -15,7 +15,6 @@
 
     <modules>
         <module>npn-boot</module>
-        <module>npn-agent</module>
         <module>npn-tests</module>
     </modules>
 
