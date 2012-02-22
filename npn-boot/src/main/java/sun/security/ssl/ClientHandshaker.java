@@ -25,30 +25,55 @@
 
 package sun.security.ssl;
 
-import java.io.*;
+import java.io.IOException;
 import java.math.BigInteger;
-import java.security.*;
-import java.util.*;
-
+import java.security.AccessController;
+import java.security.GeneralSecurityException;
+import java.security.Principal;
+import java.security.PrivateKey;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.security.PublicKey;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.ECParameterSpec;
-
-import java.security.cert.X509Certificate;
-import java.security.cert.CertificateException;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
-import javax.net.ssl.*;
-
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLProtocolException;
+import javax.net.ssl.X509ExtendedKeyManager;
+import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.security.auth.Subject;
 
-import sun.security.ssl.HandshakeMessage.*;
-import sun.security.ssl.CipherSuite.*;
-import static sun.security.ssl.CipherSuite.KeyExchange.*;
-
+import org.eclipse.jetty.npn.NextProtoNego;
 import sun.net.util.IPAddressUtil;
+import sun.security.ssl.HandshakeMessage.CertificateMsg;
+import sun.security.ssl.HandshakeMessage.CertificateRequest;
+import sun.security.ssl.HandshakeMessage.CertificateVerify;
+import sun.security.ssl.HandshakeMessage.ClientHello;
+import sun.security.ssl.HandshakeMessage.DH_ServerKeyExchange;
+import sun.security.ssl.HandshakeMessage.ECDH_ServerKeyExchange;
+import sun.security.ssl.HandshakeMessage.Finished;
+import sun.security.ssl.HandshakeMessage.HelloRequest;
+import sun.security.ssl.HandshakeMessage.RSA_ServerKeyExchange;
+import sun.security.ssl.HandshakeMessage.ServerHello;
+import sun.security.ssl.HandshakeMessage.ServerHelloDone;
+
+import static sun.security.ssl.CipherSuite.KeyExchange.K_DH_ANON;
+import static sun.security.ssl.CipherSuite.KeyExchange.K_ECDH_ANON;
+import static sun.security.ssl.CipherSuite.KeyExchange.K_KRB5;
+import static sun.security.ssl.CipherSuite.KeyExchange.K_KRB5_EXPORT;
+import static sun.security.ssl.CipherSuite.KeyExchange.K_RSA;
+import static sun.security.ssl.CipherSuite.KeyExchange.K_RSA_EXPORT;
 
 /**
  * ClientHandshaker does the protocol handshaking from the point
@@ -91,6 +116,10 @@ final class ClientHandshaker extends Handshaker {
     // To switch off the SNI extension.
     private final static boolean enableSNIExtension =
             Debug.getBooleanProperty("jsse.enableSNIExtension", true);
+
+    // NPN_CHANGES_BEGIN
+    private List<String> protocols;
+    // NPN_CHANGES_END
 
     /*
      * Constructors
@@ -569,6 +598,9 @@ final class ClientHandshaker extends Handshaker {
             if ((type != ExtensionType.EXT_ELLIPTIC_CURVES)
                     && (type != ExtensionType.EXT_EC_POINT_FORMATS)
                     && (type != ExtensionType.EXT_SERVER_NAME)
+                    // NPN_CHANGES_BEGIN
+                    && (type != ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION)
+                    // NPN_CHANGES_END
                     && (type != ExtensionType.EXT_RENEGOTIATION_INFO)) {
                 fatalSE(Alerts.alert_unsupported_extension,
                     "Server sent an unsupported extension: " + type);
@@ -583,6 +615,26 @@ final class ClientHandshaker extends Handshaker {
         if (debug != null && Debug.isOn("handshake")) {
             System.out.println("** " + cipherSuite);
         }
+
+        // NPN_CHANGES_BEGIN
+        if (isInitialHandshake)
+        {
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN protocols sent by server? for ").append(conn != null ? conn : engine));
+            NextProtoNegoExtension extension = (NextProtoNegoExtension)mesg.extensions.get(null/*ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION*/);
+            if (extension != null)
+            {
+                protocols = extension.getProtocols();
+                if (NextProtoNego.debug)
+                    System.err.println(new StringBuilder("NPN protocols ").append(protocols).append(" sent by server for ").append(conn != null ? conn : engine));
+            }
+            else
+            {
+                if (NextProtoNego.debug)
+                    System.err.println(new StringBuilder("NPN protocols not sent by server for ").append(conn != null ? conn : engine));
+            }
+        }
+        // NPN_CHANGES_END
     }
 
     /*
@@ -1273,6 +1325,36 @@ final class ClientHandshaker extends Handshaker {
             clientHelloMessage.addRenegotiationInfoExtension(clientVerifyData);
         }
 
+        // NPN_CHANGES_BEGIN
+        if (isInitialHandshake)
+        {
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN present? for ").append(conn != null ? conn : engine));
+            NextProtoNego.ClientProvider provider = conn != null ?
+                    (NextProtoNego.ClientProvider)NextProtoNego.get(conn) :
+                    (NextProtoNego.ClientProvider)NextProtoNego.get(engine);
+            if (provider != null)
+            {
+                if (provider.supports())
+                {
+                    if (NextProtoNego.debug)
+                        System.err.println(new StringBuilder("NPN supported for ").append(conn != null ? conn : engine));
+                    clientHelloMessage.extensions.add(new NextProtoNegoExtension());
+                }
+                else
+                {
+                    if (NextProtoNego.debug)
+                        System.err.println(new StringBuilder("NPN not supported for ").append(conn != null ? conn : engine));
+                }
+            }
+            else
+            {
+                if (NextProtoNego.debug)
+                    System.err.println(new StringBuilder("NPN not present for ").append(conn != null ? conn : engine));
+            }
+        }
+        // NPN_CHANGES_END
+
         return clientHelloMessage;
     }
 
@@ -1338,4 +1420,33 @@ final class ClientHandshaker extends Handshaker {
         }
         session.setPeerCertificates(peerCerts);
     }
+
+    // NPN_CHANGES_BEGIN
+    void sendNextProtocol(NextProtoNego.Provider provider) throws IOException
+    {
+        if (isInitialHandshake && provider != null)
+        {
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN selecting from ").append(protocols).append(" for ").append(conn != null ? conn : engine));
+            String protocol = ((NextProtoNego.ClientProvider)provider).selectProtocol(protocols);
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN selected '").append(protocol).append("' for ").append(conn != null ? conn : engine));
+            if (protocol != null)
+            {
+                new NextProtocolMessage(protocol).write(output);
+                output.flush();
+            }
+        }
+    }
+
+    Finished updateFinished(Finished message)
+    {
+        if (!isInitialHandshake)
+            return message;
+        Finished finished = new Finished(protocolVersion, handshakeHash, Finished.CLIENT, session.getMasterSecret(), cipherSuite);
+        byte[] source = finished.getVerifyData();
+        System.arraycopy(source, 0, message.getVerifyData(), 0, source.length);
+        return finished;
+    }
+    // NPN_CHANGES_END
 }

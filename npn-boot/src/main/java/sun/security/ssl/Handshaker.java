@@ -965,6 +965,10 @@ abstract class Handshaker {
             try {
                 conn.writeRecord(r);
                 conn.changeWriteCiphers();
+                // NPN_CHANGES_BEGIN
+                sendNextProtocol(NextProtoNego.get(conn));
+                mesg = updateFinished(mesg);
+                // NPN_CHANGES_END
                 if (debug != null && Debug.isOn("handshake")) {
                     mesg.print(System.out);
                 }
@@ -977,6 +981,10 @@ abstract class Handshaker {
             synchronized (engine.writeLock) {
                 engine.writeRecord((EngineOutputRecord)r);
                 engine.changeWriteCiphers();
+                // NPN_CHANGES_BEGIN
+                sendNextProtocol(NextProtoNego.get(engine));
+                mesg = updateFinished(mesg);
+                // NPN_CHANGES_END
                 if (debug != null && Debug.isOn("handshake")) {
                     mesg.print(System.out);
                 }
@@ -1383,4 +1391,15 @@ abstract class Handshaker {
             }
         }
     }
+
+    // NPN_CHANGES_BEGIN
+    void sendNextProtocol(NextProtoNego.Provider provider) throws IOException
+    {
+    }
+
+    Finished updateFinished(Finished message)
+    {
+        return message;
+    }
+    // NPN_CHANGES_END
 }

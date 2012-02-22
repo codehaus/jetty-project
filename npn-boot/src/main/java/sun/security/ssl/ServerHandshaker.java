@@ -167,6 +167,12 @@ final class ServerHandshaker extends Handshaker {
                 this.clientHello(ch);
                 break;
 
+            // NPN_CHANGES_BEGIN
+            case NextProtocolMessage.ID:
+                nextProtocol(new NextProtocolMessage(input));
+                break;
+            // NPN_CHANGES_END
+
             case HandshakeMessage.ht_certificate:
                 if (doClientAuth == SSLEngineImpl.clauth_none) {
                     fatalSE(Alerts.alert_unexpected_message,
@@ -255,7 +261,11 @@ final class ServerHandshaker extends Handshaker {
         // cert verify messages; not a problem so long as all of
         // them actually check out.
         //
-        if (state < type && type != HandshakeMessage.ht_certificate_verify) {
+        if (state < type && type != HandshakeMessage.ht_certificate_verify
+        // NPN_CHANGES_START
+                && type != NextProtocolMessage.ID
+        // NPN_CHANGES_END
+                ) {
             state = type;
         }
     }
@@ -658,6 +668,46 @@ final class ServerHandshaker extends Handshaker {
             m1.print(System.out);
             System.out.println("Cipher suite:  " + session.getSuite());
         }
+        // NPN_CHANGES_BEGIN
+        if (isInitialHandshake)
+        {
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN received? for ").append(conn != null ? conn : engine));
+            if (mesg.extensions.get(null/*ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION*/) != null)
+            {
+                if (NextProtoNego.debug)
+                    System.err.println(new StringBuilder("NPN received for ").append(conn != null ? conn : engine));
+                NextProtoNego.ServerProvider provider = conn != null ?
+                        (NextProtoNego.ServerProvider)NextProtoNego.get(conn) :
+                        (NextProtoNego.ServerProvider)NextProtoNego.get(engine);
+                if (provider != null)
+                {
+                    List<String> protocols = provider.protocols();
+                    if (protocols != null)
+                    {
+                        if (NextProtoNego.debug)
+                            System.err.println(new StringBuilder("NPN protocols ").append(protocols).append(" sent to client for ").append(conn != null ? conn : engine));
+                        m1.extensions.add(new NextProtoNegoExtension(protocols));
+                    }
+                    else
+                    {
+                        if (NextProtoNego.debug)
+                            System.err.println(new StringBuilder("NPN protocols missing for ").append(conn != null ? conn : engine));
+                    }
+                }
+                else
+                {
+                    if (NextProtoNego.debug)
+                        System.err.println(new StringBuilder("NPN not supported for ").append(conn != null ? conn : engine));
+                }
+            }
+            else
+            {
+                if (NextProtoNego.debug)
+                    System.err.println(new StringBuilder("NPN not received for ").append(conn != null ? conn : engine));
+            }
+        }
+        // NPN_CHANGES_END
         m1.write(output);
 
         //
@@ -1675,4 +1725,20 @@ final class ServerHandshaker extends Handshaker {
 
         session.setPeerCertificates(peerCerts);
     }
+
+    // NPN_CHANGES_BEGIN
+    private void nextProtocol(NextProtocolMessage message) throws IOException
+    {
+        NextProtoNego.ServerProvider provider = conn != null ?
+                (NextProtoNego.ServerProvider)NextProtoNego.get(conn) :
+                (NextProtoNego.ServerProvider)NextProtoNego.get(engine);
+        if (provider != null)
+        {
+            String protocol = message.getProtocol();
+            if (NextProtoNego.debug)
+                System.err.println(new StringBuilder("NPN next protocol '").append(protocol).append("' sent by client for ").append(conn != null ? conn : engine));
+            provider.protocolSelected(protocol);
+        }
+    }
+    // NPN_CHANGES_END
 }

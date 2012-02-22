@@ -14,7 +14,6 @@
 
     <properties>
         <boot-artifactId>npn-boot</boot-artifactId>
-        <agent-artifactId>npn-agent</agent-artifactId>
     </properties>
 
     <build>
@@ -24,8 +23,7 @@
                 <version>2.9</version>
                 <configuration>
                     <argLine>
-                        -Xbootclasspath/a:${basedir}/../${boot-artifactId}/target/${boot-artifactId}-${project.version}.jar
-                        -javaagent:${basedir}/../${agent-artifactId}/target/${agent-artifactId}-${project.version}.jar
+                        -Xbootclasspath/p:${basedir}/../${boot-artifactId}/target/${boot-artifactId}-${project.version}.jar
                     </argLine>
                 </configuration>
             </plugin>
