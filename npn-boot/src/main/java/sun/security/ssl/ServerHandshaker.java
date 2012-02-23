@@ -704,40 +704,40 @@ final class ServerHandshaker extends Handshaker {
         // NPN_CHANGES_BEGIN
         if (isInitialHandshake)
         {
-            if (NextProtoNego.debug)
-                System.err.println(new StringBuilder("NPN received? for ").append(conn != null ? conn : engine));
+            NextProtoNego.ServerProvider provider = conn != null ?
+                    (NextProtoNego.ServerProvider)NextProtoNego.get(conn) :
+                    (NextProtoNego.ServerProvider)NextProtoNego.get(engine);
             if (mesg.extensions.get(ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION) != null)
             {
                 if (NextProtoNego.debug)
-                    System.err.println(new StringBuilder("NPN received for ").append(conn != null ? conn : engine));
-                NextProtoNego.ServerProvider provider = conn != null ?
-                        (NextProtoNego.ServerProvider)NextProtoNego.get(conn) :
-                        (NextProtoNego.ServerProvider)NextProtoNego.get(engine);
+                    System.err.println(new StringBuilder("[S] NPN received for ").append(conn != null ? conn : engine));
                 if (provider != null)
                 {
                     List<String> protocols = provider.protocols();
                     if (protocols != null)
                     {
                         if (NextProtoNego.debug)
-                            System.err.println(new StringBuilder("NPN protocols ").append(protocols).append(" sent to client for ").append(conn != null ? conn : engine));
+                            System.err.println(new StringBuilder("[S] NPN protocols ").append(protocols).append(" sent to client for ").append(conn != null ? conn : engine));
                         m1.extensions.add(new NextProtoNegoExtension(protocols));
                     }
                     else
                     {
                         if (NextProtoNego.debug)
-                            System.err.println(new StringBuilder("NPN protocols missing for ").append(conn != null ? conn : engine));
+                            System.err.println(new StringBuilder("[S] NPN protocols missing for ").append(conn != null ? conn : engine));
                     }
                 }
                 else
                 {
                     if (NextProtoNego.debug)
-                        System.err.println(new StringBuilder("NPN not supported for ").append(conn != null ? conn : engine));
+                        System.err.println(new StringBuilder("[S] NPN server provider not present for ").append(conn != null ? conn : engine));
                 }
             }
             else
             {
                 if (NextProtoNego.debug)
-                    System.err.println(new StringBuilder("NPN not received for ").append(conn != null ? conn : engine));
+                    System.err.println(new StringBuilder("[S] NPN not received for ").append(conn != null ? conn : engine));
+                if (provider != null)
+                    provider.unsupported();
             }
         }
         // NPN_CHANGES_END
@@ -1769,7 +1769,7 @@ final class ServerHandshaker extends Handshaker {
         {
             String protocol = message.getProtocol();
             if (NextProtoNego.debug)
-                System.err.println(new StringBuilder("NPN next protocol '").append(protocol).append("' sent by client for ").append(conn != null ? conn : engine));
+                System.err.println(new StringBuilder("[S] NPN selected '").append(protocol).append("' for ").append(conn != null ? conn : engine));
             provider.protocolSelected(protocol);
         }
     }

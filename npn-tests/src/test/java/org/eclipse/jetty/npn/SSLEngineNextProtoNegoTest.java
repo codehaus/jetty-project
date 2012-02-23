@@ -60,6 +60,11 @@ public class SSLEngineNextProtoNegoTest
                     NextProtoNego.put(sslEngine, new NextProtoNego.ServerProvider()
                     {
                         @Override
+                        public void unsupported()
+                        {
+                        }
+
+                        @Override
                         public List<String> protocols()
                         {
                             latch.get().countDown();
@@ -291,6 +296,11 @@ public class SSLEngineNextProtoNegoTest
             {
                 latch.get().countDown();
                 return true;
+            }
+
+            @Override
+            public void unsupported()
+            {
             }
 
             @Override

@@ -619,19 +619,17 @@ final class ClientHandshaker extends Handshaker {
         // NPN_CHANGES_BEGIN
         if (isInitialHandshake)
         {
-            if (NextProtoNego.debug)
-                System.err.println(new StringBuilder("NPN protocols sent by server? for ").append(conn != null ? conn : engine));
             NextProtoNegoExtension extension = (NextProtoNegoExtension)mesg.extensions.get(ExtensionType.EXT_NEXT_PROTOCOL_NEGOTIATION);
             if (extension != null)
             {
                 protocols = extension.getProtocols();
                 if (NextProtoNego.debug)
-                    System.err.println(new StringBuilder("NPN protocols ").append(protocols).append(" sent by server for ").append(conn != null ? conn : engine));
+                    System.err.println(new StringBuilder("[C] NPN protocols ").append(protocols).append(" received from server for ").append(conn != null ? conn : engine));
             }
             else
             {
                 if (NextProtoNego.debug)
-                    System.err.println(new StringBuilder("NPN protocols not sent by server for ").append(conn != null ? conn : engine));
+                    System.err.println(new StringBuilder("[C] NPN protocols not sent by server for ").append(conn != null ? conn : engine));
             }
         }
         // NPN_CHANGES_END
@@ -1328,8 +1326,6 @@ final class ClientHandshaker extends Handshaker {
         // NPN_CHANGES_BEGIN
         if (isInitialHandshake)
         {
-            if (NextProtoNego.debug)
-                System.err.println(new StringBuilder("NPN present? for ").append(conn != null ? conn : engine));
             NextProtoNego.ClientProvider provider = conn != null ?
                     (NextProtoNego.ClientProvider)NextProtoNego.get(conn) :
                     (NextProtoNego.ClientProvider)NextProtoNego.get(engine);
@@ -1338,19 +1334,19 @@ final class ClientHandshaker extends Handshaker {
                 if (provider.supports())
                 {
                     if (NextProtoNego.debug)
-                        System.err.println(new StringBuilder("NPN supported for ").append(conn != null ? conn : engine));
+                        System.err.println(new StringBuilder("[C] NPN supported for ").append(conn != null ? conn : engine));
                     clientHelloMessage.extensions.add(new NextProtoNegoExtension());
                 }
                 else
                 {
                     if (NextProtoNego.debug)
-                        System.err.println(new StringBuilder("NPN not supported for ").append(conn != null ? conn : engine));
+                        System.err.println(new StringBuilder("[C] NPN not supported for ").append(conn != null ? conn : engine));
                 }
             }
             else
             {
                 if (NextProtoNego.debug)
-                    System.err.println(new StringBuilder("NPN not present for ").append(conn != null ? conn : engine));
+                    System.err.println(new StringBuilder("[C] NPN client provider not present for ").append(conn != null ? conn : engine));
             }
         }
         // NPN_CHANGES_END
@@ -1426,15 +1422,22 @@ final class ClientHandshaker extends Handshaker {
     {
         if (isInitialHandshake && provider != null)
         {
-            if (NextProtoNego.debug)
-                System.err.println(new StringBuilder("NPN selecting from ").append(protocols).append(" for ").append(conn != null ? conn : engine));
-            String protocol = ((NextProtoNego.ClientProvider)provider).selectProtocol(protocols);
-            if (NextProtoNego.debug)
-                System.err.println(new StringBuilder("NPN selected '").append(protocol).append("' for ").append(conn != null ? conn : engine));
-            if (protocol != null)
+            if (protocols == null)
             {
-                new NextProtocolMessage(protocol).write(output);
-                output.flush();
+                if (NextProtoNego.debug)
+                    System.err.println(new StringBuilder("[C] NPN not received for ").append(conn != null ? conn : engine));
+                ((NextProtoNego.ClientProvider)provider).unsupported();
+            }
+            else
+            {
+                String protocol = ((NextProtoNego.ClientProvider)provider).selectProtocol(protocols);
+                if (NextProtoNego.debug)
+                    System.err.println(new StringBuilder("[C] NPN selected '").append(protocol).append("' for ").append(conn != null ? conn : engine));
+                if (protocol != null)
+                {
+                    new NextProtocolMessage(protocol).write(output);
+                    output.flush();
+                }
             }
         }
     }

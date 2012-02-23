@@ -157,14 +157,16 @@ public class NextProtoNego
         public boolean supports();
 
         /**
+         * <p>Callback invoked to let the application know that the server does
+         * not support NPN.</p>
+         */
+        public void unsupported();
+
+        /**
          * <p>Callback invoked to let the application select a protocol
          * among the ones sent by the server.</p>
-         * <p>This callback is always invoked; the protocol list will be null
-         * if the server does not support NPN, or will contain the protocols
-         * supported by the server.</p>
          *
-         * @param protocols the protocols sent by the server, or null if the
-         * server does not support NPN
+         * @param protocols the protocols sent by the server
          * @return the protocol selected by the application, or null if the
          * NextProtocol SSL message should not be sent to the server
          */
@@ -177,6 +179,12 @@ public class NextProtoNego
      */
     public interface ServerProvider extends Provider
     {
+        /**
+         * <p>Callback invoked to let the application know that the client does not
+         * support NPN.</p>
+         */
+        public void unsupported();
+
         /**
          * <p>Callback invoked to let the implementation know the list
          * of protocols that should be added to an NPN extension in a

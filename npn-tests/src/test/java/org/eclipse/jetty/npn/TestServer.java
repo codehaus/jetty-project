@@ -41,6 +41,11 @@ public class TestServer
             NextProtoNego.put(socket, new NextProtoNego.ServerProvider()
             {
                 @Override
+                public void unsupported()
+                {
+                }
+
+                @Override
                 public List<String> protocols()
                 {
                     return Arrays.asList("spdy/2", "http/1.1");
