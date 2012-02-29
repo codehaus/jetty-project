@@ -222,6 +222,7 @@ public class JettyWebAppContext extends WebAppContext
         tmp = addPattern(tmp, ".*/.*taglibs[^/]*\\.jar$");
         tmp = addPattern(tmp, ".*/.*jstl[^/]*\\.jar$");
         tmp = addPattern(tmp, ".*/.*jsf-impl-[^/]*\\.jar$"); // add in 2 most popular jsf impls
+        tmp = addPattern(tmp, ".*/.*javax.faces-[^/]*\\.jar$");
         tmp = addPattern(tmp, ".*/.*myfaces-impl-[^/]*\\.jar$");
 
         setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", tmp);
