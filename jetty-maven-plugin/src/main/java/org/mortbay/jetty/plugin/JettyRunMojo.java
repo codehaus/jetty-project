@@ -54,7 +54,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
  * 
  * 
  * @goal run
- * @requiresDependencyResolution compile+runtime
+ * @requiresDependencyResolution test
  * @execute phase="test-compile"
  * @description Runs jetty directly from a maven project
  */
@@ -449,19 +449,21 @@ public class JettyRunMojo extends AbstractJettyMojo
                 }
                 catch(Exception e)
                 {
-                    throw new RuntimeException(e);
+               	    throw new RuntimeException(e);
                 }
                 continue;
             }
-            if (((!Artifact.SCOPE_PROVIDED.equals(artifact.getScope())) && (!Artifact.SCOPE_TEST.equals( artifact.getScope()))) 
-                    ||
-                (useTestScope && Artifact.SCOPE_TEST.equals( artifact.getScope())))
-            {
-                dependencyFiles.add(artifact.getFile());
-                getLog().debug( "Adding artifact " + artifact.getFile().getName() + " for WEB-INF/lib " );   
-            }
+
+            if (Artifact.SCOPE_PROVIDED.equals(artifact.getScope()))
+                continue; //never add dependencies of scope=provided to the webapp's classpath (see also <useProvidedScope> param)
+
+            if (Artifact.SCOPE_TEST.equals(artifact.getScope()) && !useTestScope)
+                continue; //only add dependencies of scope=test if explicitly required
+
+            dependencyFiles.add(artifact.getFile());
+            getLog().debug( "Adding artifact " + artifact.getFile().getName() + " with scope "+artifact.getScope()+" for WEB-INF/lib " );   
         }
-        
+
         webApp.setOverlays(overlays);
               
         return dependencyFiles; 

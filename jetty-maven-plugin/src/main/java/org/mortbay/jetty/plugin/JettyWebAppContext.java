@@ -215,10 +215,18 @@ public class JettyWebAppContext extends WebAppContext
     {
         //Set up the pattern that tells us where the jars are that need scanning for
         //stuff like taglibs so we can tell jasper about it (see TagLibConfiguration)
-        setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
-        ".*/.*jsp-api-[^/]*]\\.jar$|.*/.*jsp-[^/]*\\.jar$|.*/.*taglibs[^/]*\\.jar$|.*/.*jstl[^/]*\\.jar$");
-      
+        String tmp = (String)getAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern");
+       
+        tmp = addPattern(tmp, ".*/.*jsp-api-[^/]*\\.jar$");
+        tmp = addPattern(tmp, ".*/.*jsp-[^/]*\\.jar$");  
+        tmp = addPattern(tmp, ".*/.*taglibs[^/]*\\.jar$");
+        tmp = addPattern(tmp, ".*/.*jstl[^/]*\\.jar$");
+        tmp = addPattern(tmp, ".*/.*jsf-impl-[^/]*\\.jar$"); // add in 2 most popular jsf impls
+        tmp = addPattern(tmp, ".*/.*javax.faces-[^/]*\\.jar$");
+        tmp = addPattern(tmp, ".*/.*myfaces-impl-[^/]*\\.jar$");
 
+        setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", tmp);
+   
         //Set up the classes dirs that comprises the equivalent of WEB-INF/classes
         if (testClasses != null)
             webInfClasses.add(testClasses);
@@ -362,5 +370,22 @@ public class JettyWebAppContext extends WebAppContext
             }
         }
         return paths;
+    }
+    
+    public String addPattern (String s, String pattern)
+    {
+        if (s == null)
+            s = "";
+        else
+            s = s.trim();
+        
+        if (!s.contains(pattern))
+        {
+            if (s.length() != 0)
+                s = s + "|";
+            s = s + pattern;
+        }
+        
+        return s;
     }
 }

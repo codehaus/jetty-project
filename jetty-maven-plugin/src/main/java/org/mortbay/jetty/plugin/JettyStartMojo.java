@@ -28,7 +28,7 @@ package org.mortbay.jetty.plugin;
  *  </p>
  * 
  * @goal start
- * @requiresDependencyResolution compile+runtime
+ * @requiresDependencyResolution test
  * @execute phase="validate"
  * @description Runs jetty directly from a maven project from a binding to an execution in your pom
  */
