@@ -227,7 +227,7 @@ public class JettyWebAppContext extends WebAppContext
         //stuff like taglibs so we can tell jasper about it (see TagLibConfiguration)
         setAttribute(WebInfConfiguration.CONTAINER_JAR_PATTERN, containerIncludeJarPattern);
         
-
+   
         //Set up the classes dirs that comprises the equivalent of WEB-INF/classes
         if (testClasses != null)
             webInfClasses.add(testClasses);
@@ -370,5 +370,22 @@ public class JettyWebAppContext extends WebAppContext
             }
         }
         return paths;
+    }
+    
+    public String addPattern (String s, String pattern)
+    {
+        if (s == null)
+            s = "";
+        else
+            s = s.trim();
+        
+        if (!s.contains(pattern))
+        {
+            if (s.length() != 0)
+                s = s + "|";
+            s = s + pattern;
+        }
+        
+        return s;
     }
 }
