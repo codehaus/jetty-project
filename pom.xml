@@ -214,7 +214,7 @@
                 <jdk>[1.7,)</jdk>
             </activation>
             <modules>
-                <module>jetty-npn-parent</module>
+                <module>jetty-npn</module>
             </modules>
         </profile>
         <profile>
