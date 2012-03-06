@@ -9,13 +9,14 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jetty-npn-parent</artifactId>
+    <groupId>org.mortbay.jetty.npn</groupId>
+    <artifactId>npn-parent</artifactId>
     <packaging>pom</packaging>
     <name>Jetty :: Next Protocol Negotiation :: Parent</name>
 
     <modules>
-        <module>jetty-npn-boot</module>
-        <module>jetty-npn-tests</module>
+        <module>npn-boot</module>
+        <module>npn-tests</module>
     </modules>
 
     <build>

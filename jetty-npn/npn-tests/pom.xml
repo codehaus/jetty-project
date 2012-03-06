@@ -9,11 +9,11 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jetty-npn-tests</artifactId>
+    <artifactId>npn-tests</artifactId>
     <name>Jetty :: Next Protocol Negotiation :: Tests</name>
 
     <properties>
-        <boot-artifactId>jetty-npn-boot</boot-artifactId>
+        <boot-artifactId>npn-boot</boot-artifactId>
     </properties>
 
     <build>
@@ -37,8 +37,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-npn</artifactId>
+            <groupId>org.eclipse.jetty.npn</groupId>
+            <artifactId>npn-api</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

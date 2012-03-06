@@ -9,7 +9,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jetty-npn-boot</artifactId>
+    <artifactId>npn-boot</artifactId>
     <name>Jetty :: Next Protocol Negotiation :: Boot</name>
 
     <build>
@@ -25,7 +25,7 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>org.eclipse.jetty:jetty-npn</include>
+                                    <include>org.eclipse.jetty.npn:npn-api</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
@@ -37,8 +37,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-npn</artifactId>
+            <groupId>org.eclipse.jetty.npn</groupId>
+            <artifactId>npn-api</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
