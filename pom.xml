@@ -25,7 +25,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jetty-integration-project</artifactId>
-    <version>7.6.3-SNAPSHOT</version>
+    <version>7.6.2-SNAPSHOT</version>
     <name>Jetty :: Codehaus Integration Project</name>
     <description>Jetty integrations and distributions</description>
     <packaging>pom</packaging>
