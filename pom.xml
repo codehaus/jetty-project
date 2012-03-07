@@ -37,6 +37,7 @@
         <junit-version>3.8.2</junit-version>
         <junit4-version>4.8.1</junit4-version>
         <jetty-test-helper-version>1.6</jetty-test-helper-version>
+        <jetty.url>http://eclipse.org/jetty</jetty.url>
     </properties>
 
     <scm>
