@@ -86,9 +86,15 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.googlecode.jsslutils</groupId>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-test-helper</artifactId>
+      <version>1.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jsslutils</groupId>
       <artifactId>jsslutils</artifactId>
-      <version>0.3</version>
+      <version>1.0.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>
