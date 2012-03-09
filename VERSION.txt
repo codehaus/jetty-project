@@ -1,6 +1,4 @@
-jetty@codehaus-7.6.3-SNAPSHOT
-
-jetty@codehaus-7.6.2.v20120302 - 02 March 2012
+jetty@codehaus-7.6.2-SNAPSHOT - 08 March 2012
  + JETTY-1486 jsf jar files are not scanned for .tld files with
    jetty-maven-plugin
  + JETTY-1491 jetty-maven-plugin ignores <useTestClasspath>
