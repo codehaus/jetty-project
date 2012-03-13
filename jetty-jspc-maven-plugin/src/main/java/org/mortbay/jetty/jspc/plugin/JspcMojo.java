@@ -306,8 +306,8 @@ public class JspcMojo extends AbstractMojo
         for (int i = 0; i < webAppUrls.size(); i++)
         {
             if (getLog().isDebugEnabled())
-                getLog().debug("webappclassloader contains: " + webAppUrls.get(i));
-            webAppClassPath.append(((URL) webAppUrls.get(i)).getFile());
+                getLog().debug("webappclassloader contains: " + webAppUrls.get(i));                
+            webAppClassPath.append(new File(webAppUrls.get(i).toURI()).getCanonicalPath());
             if (getLog().isDebugEnabled())
                 getLog().debug("added to classpath: " + ((URL) webAppUrls.get(i)).getFile());
             if (i+1<webAppUrls.size())
