@@ -23,7 +23,7 @@ public class MavenAnnotationConfiguration extends AnnotationConfiguration
     public void parseWebInfClasses(final WebAppContext context, final AnnotationParser parser) throws Exception
     {
         JettyWebAppContext jwac = (JettyWebAppContext)context;
-        if (jwac.getClassPathFiles() == null)
+       if (jwac.getClassPathFiles() == null || jwac.getClassPathFiles().size() == 0)
             super.parseWebInfClasses (context, parser);
         else
         {
@@ -58,7 +58,7 @@ public class MavenAnnotationConfiguration extends AnnotationConfiguration
                             return true;
                         }
                     });
-                }
+                }                
             }
             //gather together all annotations discovered
             List<DiscoveredAnnotation> annotations = new ArrayList<DiscoveredAnnotation>();
