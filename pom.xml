@@ -207,16 +207,6 @@
             </modules>
         </profile>
         <profile>
-            <!-- Modules that are only for JDK7+ builds -->
-            <id>JDK7-plus-modules</id>
-            <activation>
-                <jdk>[1.7,)</jdk>
-            </activation>
-            <modules>
-                <module>jetty-npn</module>
-            </modules>
-        </profile>
-        <profile>
             <id>update-version</id>
             <build>
                 <plugins>
