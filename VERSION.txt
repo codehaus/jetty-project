@@ -1,4 +1,9 @@
-jetty@codehaus-8.1.3-SNAPSHOT
+jetty@codehaus-8.1.3.v20120412 - 12 April 2012
+ + JETTY-1497 jetty-jspc-maven-plugin has problems with spaces in classpath
+   filenames
+ + JETTY-1498 Add ability to put <scope>provided</scope> artifacts on system
+   classpath for jetty-jspc-maven-plugin
+ + JETTY-1499 WEB-INF/classes not scanned with mvn jetty:run-war
 
 jetty@codehaus-8.1.2.v20120308 - 08 March 2012
  + JETTY-1486 jsf jar files are not scanned for .tld files with
