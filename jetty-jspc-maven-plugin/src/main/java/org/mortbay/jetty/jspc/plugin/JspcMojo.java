@@ -28,6 +28,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.jasper.JspC;
@@ -77,6 +78,25 @@ public class JspcMojo extends AbstractMojo
     public static final String END_OF_WEBAPP = "</web-app>";
 
 
+    /**
+     * Whether or not to include dependencies on the plugin's classpath with &lt;scope&gt;provided&lt;/scope&gt;
+     * Use WITH CAUTION as you may wind up with duplicate jars/classes.
+     * 
+     * @since jetty-7.6.3
+     * @parameter  default-value="false"
+     */
+    private boolean useProvidedScope;
+    
+    /**
+     * The artifacts for the project.
+     * 
+     * @since jetty-7.6.3
+     * @parameter expression="${project.artifacts}"
+     * @readonly
+     */
+    private Set projectArtifacts;
+    
+    
     /**
      * The maven project.
      * 
@@ -306,8 +326,8 @@ public class JspcMojo extends AbstractMojo
         for (int i = 0; i < webAppUrls.size(); i++)
         {
             if (getLog().isDebugEnabled())
-                getLog().debug("webappclassloader contains: " + webAppUrls.get(i));
-            webAppClassPath.append(((URL) webAppUrls.get(i)).getFile());
+                getLog().debug("webappclassloader contains: " + webAppUrls.get(i));                
+            webAppClassPath.append(new File(webAppUrls.get(i).toURI()).getCanonicalPath());
             if (getLog().isDebugEnabled())
                 getLog().debug("added to classpath: " + ((URL) webAppUrls.get(i)).getFile());
             if (i+1<webAppUrls.size())
@@ -547,6 +567,7 @@ public class JspcMojo extends AbstractMojo
     {
         StringBuffer buff = new StringBuffer();
         
+        //Put each of the plugin's artifacts onto the system classpath for jspc
         for (Iterator<Artifact> iter = pluginArtifacts.iterator(); iter.hasNext(); )
         {
             Artifact pluginArtifact = iter.next();
@@ -559,6 +580,31 @@ public class JspcMojo extends AbstractMojo
             }
         }
         
+        
+        if (useProvidedScope)
+        {
+            for ( Iterator<Artifact> iter = projectArtifacts.iterator(); iter.hasNext(); )
+            {                   
+                Artifact artifact = iter.next();
+                if (Artifact.SCOPE_PROVIDED.equals(artifact.getScope()))
+                {
+                    //test to see if the provided artifact was amongst the plugin artifacts
+                    String path = artifact.getFile().getAbsolutePath();
+                    if (! buff.toString().contains(path))
+                    {
+                        if (buff.length() != 0)
+                            buff.append(File.pathSeparator);
+                        buff.append(path);
+                        if (getLog().isDebugEnabled()) { getLog().debug("Adding provided artifact: "+artifact);}
+                    }  
+                    else
+                    {
+                        if (getLog().isDebugEnabled()) { getLog().debug("Skipping provided artifact: "+artifact);}
+                    }
+                }
+            }
+        }
+
         return buff.toString();
     }
 

@@ -30,7 +30,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <jetty-version>7.6.3-SNAPSHOT</jetty-version>
+        <jetty-version>7.6.3.v20120412</jetty-version>
         <felix.bundle.version>2.0.0</felix.bundle.version>
         <jna-version>3.2.2</jna-version>
         <jsp-2-1-version>2.1.v20100127</jsp-2-1-version>
@@ -204,16 +204,6 @@
             </activation>
             <modules>
                 <module>jetty-jmx-ws</module>
-            </modules>
-        </profile>
-        <profile>
-            <!-- Modules that are only for JDK7+ builds -->
-            <id>JDK7-plus-modules</id>
-            <activation>
-                <jdk>[1.7,)</jdk>
-            </activation>
-            <modules>
-                <module>jetty-npn</module>
             </modules>
         </profile>
         <profile>
