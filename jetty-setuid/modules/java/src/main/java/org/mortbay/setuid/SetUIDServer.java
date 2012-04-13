@@ -43,7 +43,7 @@ public class SetUIDServer extends Server
 
     private int _uid=0;
     private int _gid=0;
-    private int _umask=0;
+    private int _umask=-1;
     private boolean _startServerAsPrivileged;
     private RLimit _rlimitNoFiles = null;
     
@@ -122,9 +122,10 @@ public class SetUIDServer extends Server
         return _rlimitNoFiles;
     }
     
+    @Override
     protected void doStart() throws Exception
     {
-        if (_umask!=0)
+        if (_umask>-1)
         {
             LOG.info("Setting umask=0"+Integer.toString(_umask,8));
             SetUID.setumask(_umask);
