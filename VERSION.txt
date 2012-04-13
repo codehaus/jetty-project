@@ -1,6 +1,4 @@
 jetty@codehaus-7.6.4-SNAPSHOT
-
-jetty@codehaus-7.6.3.v20120412 - 12 April 2012
  + JETTY-1487 umask setting for SetUID can't be set to 0
  + JETTY-1497 jetty-jspc-maven-plugin has problems with spaces in classpath
    filenames
