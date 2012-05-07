@@ -10,9 +10,6 @@
   <artifactId>jetty-archetype-fileserver</artifactId>
   <packaging>maven-archetype</packaging>
   <name>Jetty :: Archetype :: File Server</name>
-	<properties>
-	<jetty-version>8.1.0-SNAPSHOT</jetty-version>
-	</properties>
 
   <build>
     <extensions>

@@ -11,10 +11,6 @@
   <packaging>maven-archetype</packaging>
   <name>Jetty :: Archetype :: App Assembler</name>
 
-	<properties>
-	<jetty-version>8.1.0-SNAPSHOT</jetty-version>
-	</properties>
-
   <build>
     <extensions>
       <extension>
