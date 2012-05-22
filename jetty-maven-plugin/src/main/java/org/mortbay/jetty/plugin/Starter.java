@@ -16,6 +16,7 @@ import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.xml.XmlConfiguration;
 
@@ -114,9 +115,14 @@ public class Starter
         // - the base directory
         str = (String)props.getProperty("base.dir");
         if (str != null && !"".equals(str.trim()))
-        {
-            webApp.setBaseResource(Resource.newResource(str));
             webApp.setWar(str);
+
+        // - the multiple comma separated resource dirs
+        str = (String)props.getProperty("res.dirs");
+        if (str != null && !"".equals(str.trim()))
+        {
+            ResourceCollection resources = new ResourceCollection(str);
+            webApp.setBaseResource(resources);
         }
         
         // - overlays
