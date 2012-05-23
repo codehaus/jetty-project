@@ -171,7 +171,7 @@ public class JettyRunForkedMojo extends AbstractMojo
      * 
      * @parameter
      */
-    private File[] resourceDirs;
+    private File[] resourceBases;
     
     
     /**
@@ -358,17 +358,17 @@ public class JettyRunForkedMojo extends AbstractMojo
             if (baseAppFirst)
             {
                add((webAppSourceDirectory==null?null:webAppSourceDirectory.getAbsolutePath()), builder);
-               if (resourceDirs != null)
+               if (resourceBases != null)
                {
-                   for (File resDir:resourceDirs)
+                   for (File resDir:resourceBases)
                        add(resDir.getAbsolutePath(), builder);
                }
             }
             else
             { 
-                if (resourceDirs != null)
+                if (resourceBases != null)
                 {
-                    for (File resDir:resourceDirs)
+                    for (File resDir:resourceBases)
                         add(resDir.getAbsolutePath(), builder);
                 }
                 add((webAppSourceDirectory==null?null:webAppSourceDirectory.getAbsolutePath()), builder);
