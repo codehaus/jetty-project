@@ -1,4 +1,7 @@
-jetty@codehaus-7.6.4-SNAPSHOT
+jetty@codehaus-7.6.5-SNAPSHOT
+
+jetty@codehaus-7.6.4.v20120522 - 22 May 2012
+ + JETTY-1512 Add jetty-websocket dependency to jetty-maven-plugin
 
 jetty@codehaus-7.6.3.v20120416 - 16 April 2012
  + JETTY-1487 umask setting for SetUID can't be set to 0
