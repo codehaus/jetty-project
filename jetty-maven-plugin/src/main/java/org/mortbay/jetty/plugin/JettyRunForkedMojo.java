@@ -253,6 +253,12 @@ public class JettyRunForkedMojo extends AbstractMojo
      */
     private PluginDescriptor plugin;
     
+    
+    
+    /**
+     * @parameter expression="true" default-value="true"
+     */
+    private boolean waitForChild;
 
     
     private Process forkedProcess;
@@ -267,7 +273,7 @@ public class JettyRunForkedMojo extends AbstractMojo
         
         public void run ()
         {
-            if (forkedProcess != null)
+            if (forkedProcess != null && waitForChild)
             {
                 forkedProcess.destroy();
             }
@@ -596,24 +602,26 @@ public class JettyRunForkedMojo extends AbstractMojo
                 PluginLog.getLog().debug(Arrays.toString(cmd.toArray()));
             
             forkedProcess = builder.start();
+            PluginLog.getLog().info("Forked process started");
 
-            startPump("STDOUT",forkedProcess.getInputStream());
-            startPump("STDERR",forkedProcess.getErrorStream());
-            
-            int exitcode = forkedProcess.waitFor();
-            
-            PluginLog.getLog().info("Forked execution exit: "+exitcode);
+            if (waitForChild)
+            {
+                startPump("STDOUT",forkedProcess.getInputStream());
+                startPump("STDERR",forkedProcess.getErrorStream());
+                int exitcode = forkedProcess.waitFor();            
+                PluginLog.getLog().info("Forked execution exit: "+exitcode);
+            }   
         }
         catch (InterruptedException ex)
         {
-            if (forkedProcess != null)
+            if (forkedProcess != null && waitForChild)
                 forkedProcess.destroy();
             
             throw new MojoExecutionException("Failed to start Jetty within time limit");
         }
         catch (Exception ex)
         {
-            if (forkedProcess != null)
+            if (forkedProcess != null && waitForChild)
                 forkedProcess.destroy();
             
             throw new MojoExecutionException("Failed to create Jetty process", ex);
@@ -719,6 +727,7 @@ public class JettyRunForkedMojo extends AbstractMojo
     {
         ConsoleStreamer pump = new ConsoleStreamer(mode,inputStream);
         Thread thread = new Thread(pump,"ConsoleStreamer/" + mode);
+        thread.setDaemon(true);
         thread.start();
     }
 
