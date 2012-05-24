@@ -164,6 +164,25 @@ public class JettyRunForkedMojo extends AbstractMojo
      */
     private File webAppSourceDirectory;
     
+    
+    /**
+     * Directories that contain static resources
+     * for the webapp. Optional.
+     * 
+     * @parameter
+     */
+    private File[] resourceBases;
+    
+    
+    /**
+     * If true, the webAppSourceDirectory will be first on the list of 
+     * resources that form the resource base for the webapp. If false, 
+     * it will be last.
+     * 
+     * @parameter  default-value="true"
+     */
+    private boolean baseAppFirst;
+    
 
     /**
      * Location of jetty xml configuration files whose contents 
@@ -330,9 +349,32 @@ public class JettyRunForkedMojo extends AbstractMojo
                 props.put("tmp.dir", tmpDirectory.getAbsolutePath());
             }
 
-            //sort out the base directory of the webapp
+            //sort out base dir of webapp
             if (webAppSourceDirectory != null)
                 props.put("base.dir", webAppSourceDirectory.getAbsolutePath());
+            
+            //sort out the resource base directories of the webapp
+            StringBuilder builder = new StringBuilder();            
+            if (baseAppFirst)
+            {
+               add((webAppSourceDirectory==null?null:webAppSourceDirectory.getAbsolutePath()), builder);
+               if (resourceBases != null)
+               {
+                   for (File resDir:resourceBases)
+                       add(resDir.getAbsolutePath(), builder);
+               }
+            }
+            else
+            { 
+                if (resourceBases != null)
+                {
+                    for (File resDir:resourceBases)
+                        add(resDir.getAbsolutePath(), builder);
+                }
+                add((webAppSourceDirectory==null?null:webAppSourceDirectory.getAbsolutePath()), builder);
+            }
+            props.put("res.dirs", builder.toString());
+                   
 
             //web-inf classes
             List<File> classDirs = getClassesDirs();
@@ -386,6 +428,15 @@ public class JettyRunForkedMojo extends AbstractMojo
         {
             throw new MojoExecutionException("Prepare webapp configuration", e);
         }
+    }
+    
+    private void add (String string, StringBuilder builder)
+    {
+        if (string == null)
+            return;
+        if (builder.length() > 0)
+            builder.append(",");
+        builder.append(string);
     }
 
     private List<File> getClassesDirs ()
