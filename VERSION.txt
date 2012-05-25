@@ -1,3 +1,5 @@
+jetty@codehaus-8.1.5-SNAPSHOT
+
 jetty@codehaus-8.1.4.v20120524 - 24 May 2012
  + JETTY-1512 Add jetty-websocket dependency to jetty-maven-plugin
  + JETTY-1516 allow multiple resource dirs for jetty:run-forked - use
