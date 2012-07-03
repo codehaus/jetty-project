@@ -90,5 +90,11 @@ public class SystemProperty
             isSet=true;
         }
     }
+    
+    void setAnyway()
+    {
+        System.setProperty(getName(), (getValue()==null?"":getValue()));
+        isSet=true;
+    }
 
 }
