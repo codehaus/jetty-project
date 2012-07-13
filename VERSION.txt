@@ -1,5 +1,10 @@
-jetty@codehaus-8.1.5-SNAPSHOT
-
+jetty@codehaus-8.1.5.v20120713 - 13 July 2012
+ + 384280 Implement preliminary ServletRegistrations
+ + JETTY-991 added <waitForChild> to control behaviour of jetty:run-forked
+ + JETTY-1507 Allow SystemProperties to override commandline
+ + JETTY-1522 jetty:run-war <webApp> definition conflicts with <war>
+ + JETTY-1526 SetUID leaves user.name and user.home set to root and /root
+   (respectively)
 
 jetty@codehaus-8.1.4.v20120524 - 24 May 2012
  + JETTY-1512 Add jetty-websocket dependency to jetty-maven-plugin
