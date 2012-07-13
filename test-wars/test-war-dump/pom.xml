@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-integration-project</artifactId>
-    <version>8.1.5-SNAPSHOT</version>
+    <version>8.1.5.v20120713</version>
     <relativePath>../..</relativePath>
   </parent>
   <groupId>org.mortbay.jetty.testwars</groupId>
