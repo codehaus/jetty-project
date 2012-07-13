@@ -32,16 +32,31 @@ import java.util.Map;
 public class SystemProperties
 {
     Map properties;
+    boolean force;
     
     public SystemProperties()
     {
         properties = new HashMap();
     }
     
+    public void setForce (boolean force)
+    {
+        this.force = force;
+    }
+    
+    public boolean getForce ()
+    {
+        return this.force;
+    }
+    
+    
     public void setSystemProperty (SystemProperty prop)
     {
         properties.put(prop.getName(), prop);
-        prop.setIfNotSetAlready();
+        if (!force)
+            prop.setIfNotSetAlready();
+        else
+            prop.setAnyway();
     }
     
     public SystemProperty getSystemProperty(String name)

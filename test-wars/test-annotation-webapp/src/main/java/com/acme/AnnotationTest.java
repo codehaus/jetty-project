@@ -51,7 +51,7 @@ import javax.annotation.security.DeclareRoles;
  */
 
 @RunAs("special")
-@WebServlet(urlPatterns = { "/test/*"}, name="AnnotationTest", initParams={@WebInitParam(name="fromAnnotation", value="xyz")})
+@WebServlet(urlPatterns = {"/","/test/*"}, name="AnnotationTest", initParams={@WebInitParam(name="fromAnnotation", value="xyz")})
 @DeclareRoles({"user","client"})
 public class AnnotationTest extends HttpServlet 
 {
@@ -259,6 +259,9 @@ public class AnnotationTest extends HttpServlet
                  out.print("<br/>FAIL (No such attribute com.acme.Foo)");
              out.println("</b>");
 
+            out.println("<h2>Complete Servlet Registration</h2>");
+            Boolean complete = (Boolean)config.getServletContext().getAttribute("com.acme.AnnotationTest.complete");
+            out.println("<br/><b>Result: "+(complete.booleanValue()?"PASS":"FAIL")+"</b>");
             
             out.println("<h2>@PostConstruct Callback</h2>");
             out.println("<pre>");

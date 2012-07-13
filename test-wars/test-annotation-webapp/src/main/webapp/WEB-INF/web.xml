@@ -15,7 +15,6 @@
 
   <servlet>
     <servlet-name>AnnotationTest</servlet-name>
-    <servlet-class>com.acme.AnnotationTest</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
