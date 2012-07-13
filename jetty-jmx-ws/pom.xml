@@ -4,10 +4,10 @@
   <parent>
     <artifactId>jetty-integration-project</artifactId>
     <groupId>org.mortbay.jetty</groupId>
-    <version>8.1.5.v20120713</version>
+    <version>8.1.6-SNAPSHOT</version>
   </parent>
   <artifactId>jetty-jmx-ws</artifactId>
-  <version>8.1.5.v20120713</version>
+  <version>8.1.6-SNAPSHOT</version>
   <name>Jetty :: JMX Rest Interface</name>
   <packaging>war</packaging>
   <url>http://maven.apache.org</url>
