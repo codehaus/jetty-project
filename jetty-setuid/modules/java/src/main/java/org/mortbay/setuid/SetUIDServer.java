@@ -151,7 +151,10 @@ public class SetUIDServer extends Server
             if (_uid!=0)
             {
                 LOG.info("Setting UID="+_uid);
-                SetUID.setuid(_uid);
+                SetUID.setuid(_uid);                
+                Passwd pw = SetUID.getpwuid(_uid);
+                System.setProperty("user.name", pw.getPwName());
+                System.setProperty("user.home", pw.getPwDir());
             }
         }
         else
@@ -168,6 +171,9 @@ public class SetUIDServer extends Server
             {
                 LOG.info("Setting UID="+_uid);
                 SetUID.setuid(_uid);
+                Passwd pw = SetUID.getpwuid(_uid);
+                System.setProperty("user.name", pw.getPwName());
+                System.setProperty("user.home", pw.getPwDir());
             }
             super.doStart();
         }

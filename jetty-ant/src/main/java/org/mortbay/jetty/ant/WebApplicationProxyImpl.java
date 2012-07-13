@@ -17,15 +17,26 @@ package org.mortbay.jetty.ant;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.Servlet;
 
+
+import org.apache.tools.ant.AntClassLoader;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.plus.webapp.PlusConfiguration;
+import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.server.HandlerContainer;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.ErrorHandler;
+import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.FragmentConfiguration;
@@ -90,8 +101,148 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
         baseTempDirectory = tempDirectory;
     }
 
+    
+    public static class AntServletHolder extends ServletHolder
+    {
+
+        public AntServletHolder()
+        {
+            super();
+        }
+
+
+        public AntServletHolder(Class<? extends Servlet> servlet)
+        {
+            super(servlet);
+        }
+
+
+        public AntServletHolder(Servlet servlet)
+        {
+            super(servlet);
+        }
+
+
+        public AntServletHolder(String name, Class<? extends Servlet> servlet)
+        {
+            super(name, servlet);
+        }
+
+
+        public AntServletHolder(String name, Servlet servlet)
+        {
+            super(name, servlet);
+        }
+
+
+        @Override
+        protected void initJspServlet() throws Exception
+        {
+            //super.initJspServlet();
+            
+            ContextHandler ch = ((ContextHandler.Context)getServletHandler().getServletContext()).getContextHandler();
+            
+            /* Set the webapp's classpath for Jasper */
+            ch.setAttribute("org.apache.catalina.jsp_classpath", ch.getClassPath());
+
+            /* Set the system classpath for Jasper */
+            String sysClassPath = getSystemClassPath(ch.getClassLoader().getParent());
+            setInitParameter("com.sun.appserv.jsp.classpath", sysClassPath); 
+            
+            /* Set up other classpath attribute */
+            if ("?".equals(getInitParameter("classpath")))
+            {
+                String classpath = ch.getClassPath();
+                if (classpath != null) 
+                    setInitParameter("classpath", classpath);
+            }
+        }
+        
+        
+        protected String getSystemClassPath (ClassLoader loader) throws Exception
+        {
+            StringBuilder classpath=new StringBuilder();            
+            while (loader != null)
+            {
+                if (loader instanceof URLClassLoader)
+                {
+                    URL[] urls = ((URLClassLoader)loader).getURLs();
+                    if (urls != null)
+                    {     
+                        for (int i=0;i<urls.length;i++)
+                        {
+                            Resource resource = Resource.newResource(urls[i]);
+                            File file=resource.getFile();
+                            if (file!=null && file.exists())
+                            {
+                                if (classpath.length()>0)
+                                    classpath.append(File.pathSeparatorChar);
+                                classpath.append(file.getAbsolutePath());
+                            }
+                        }
+                    }
+                }
+                else if (loader instanceof AntClassLoader)
+                {
+                    classpath.append(((AntClassLoader)loader).getClasspath());
+                }
+                
+                loader = loader.getParent();
+            }
+            
+            return classpath.toString();
+        }
+        
+    }
+    public static class AntServletHandler extends ServletHandler
+    {
+
+        @Override
+        public ServletHolder newServletHolder()
+        {
+            return new AntServletHolder();
+        }
+
+        @Override
+        public ServletHolder newServletHolder(Class<? extends Servlet> servlet)
+        {
+            return new AntServletHolder(servlet);
+        }
+        
+    }
+    
+    public static class AntWebAppContext extends WebAppContext
+    {
+        public AntWebAppContext()
+        {
+            super();
+        }
+
+        public AntWebAppContext(HandlerContainer parent, String webApp, String contextPath)
+        {
+            super(parent, webApp, contextPath);
+        }
+
+        public AntWebAppContext(SessionHandler sessionHandler, SecurityHandler securityHandler, ServletHandler servletHandler, ErrorHandler errorHandler)
+        {
+            super(sessionHandler, securityHandler, servletHandler, errorHandler);
+        }
+
+        public AntWebAppContext(String webApp, String contextPath)
+        {
+            super(webApp, contextPath);
+        }
+
+        @Override
+        protected ServletHandler newServletHandler()
+        {
+            return new AntServletHandler();
+        }  
+    }
+    
+    
     /**
-     * Default constructor. Takes application name as an argument.
+     * Default constructor. Takes application name as an argument
      *
      * @param name web application name.
      */
@@ -278,7 +429,7 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
      */
     public void createApplicationContext(ContextHandlerCollection contexts)
     {
-        webAppContext = new WebAppContext(contexts, warFile.getAbsolutePath(), contextPath);
+        webAppContext = new AntWebAppContext(contexts, warFile.getAbsolutePath(), contextPath);
         webAppContext.setDisplayName(name);
 
         configurePaths();
