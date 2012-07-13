@@ -1,3 +1,5 @@
+jetty@codehaus-8.1.6-SNAPSHOT
+
 jetty@codehaus-8.1.5.v20120713 - 13 July 2012
  + 384280 Implement preliminary ServletRegistrations
  + JETTY-991 added <waitForChild> to control behaviour of jetty:run-forked
