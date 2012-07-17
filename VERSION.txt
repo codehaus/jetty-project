@@ -1,3 +1,5 @@
+jetty@codehaus-7.6.6-SNAPSHOT
+
 jetty@codehaus-7.6.5.v20120716 - 16 July 2012
  + JETTY-991 added <waitForChild> to control behaviour of jetty:run-forked
  + JETTY-1507 Allow SystemProperties to override commandline
