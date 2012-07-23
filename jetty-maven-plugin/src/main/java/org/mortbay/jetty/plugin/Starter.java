@@ -35,6 +35,7 @@ public class Starter
     private int stopPort=0;
     private String stopKey=null;
     private Properties props;
+    private String token;
 
     
     
@@ -200,22 +201,42 @@ public class Starter
                 props = new Properties();
                 props.load(new FileInputStream(f));
             }
+            
+            //--token
+            if ("--token".equals(args[i]))
+            {
+                token = args[++i].trim();
+            }
         }
     }
-    
-    
+
+
     public void run() throws Exception
     {
         if (monitor != null)
             monitor.start();
-        
+
         LOG.info("Started Jetty Server");
-        server.start();
+        server.start();  
+    }
+
+    
+    public void join () throws Exception
+    {
         server.join();
     }
     
     
-    
+    public void communicateStartupResult (Exception e)
+    {
+        if (token != null)
+        {
+            if (e==null)
+                System.out.println(token);
+            else
+                System.out.println(token+"\t"+e.getMessage());
+        }
+    }
     
     
     public void applyJettyXml() throws Exception
@@ -252,15 +273,19 @@ public class Starter
        if (args == null)
            System.exit(1);
 
+       Starter starter = null;
        try
        {
-           Starter starter = new Starter();
+           starter = new Starter();
            starter.getConfiguration(args);
            starter.configureJetty();
            starter.run();
+           starter.communicateStartupResult(null);
+           starter.join();
        }
        catch (Exception e)
        {
+           starter.communicateStartupResult(e);
            e.printStackTrace();
            System.exit(1);
        }
