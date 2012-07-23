@@ -13,6 +13,7 @@
 
 package org.mortbay.jetty.plugin;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,6 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -263,6 +266,9 @@ public class JettyRunForkedMojo extends AbstractMojo
     
     private Process forkedProcess;
     
+    private Random random;
+    
+    
     
     public class ShutdownThread extends Thread
     {
@@ -293,6 +299,7 @@ public class JettyRunForkedMojo extends AbstractMojo
         }
         PluginLog.setLog(getLog());
         Runtime.getRuntime().addShutdownHook(new ShutdownThread());
+        random = new Random();
         startJettyRunner();
     }
     
@@ -595,6 +602,10 @@ public class JettyRunForkedMojo extends AbstractMojo
             cmd.add("--props");
             cmd.add(props.getAbsolutePath());
             
+            String token = createToken();
+            cmd.add("--token");
+            cmd.add(token);
+            
             ProcessBuilder builder = new ProcessBuilder(cmd);
             builder.directory(project.getBasedir());
             
@@ -602,7 +613,7 @@ public class JettyRunForkedMojo extends AbstractMojo
                 PluginLog.getLog().debug(Arrays.toString(cmd.toArray()));
             
             forkedProcess = builder.start();
-            PluginLog.getLog().info("Forked process started");
+            PluginLog.getLog().info("Forked process starting");
 
             if (waitForChild)
             {
@@ -610,7 +621,39 @@ public class JettyRunForkedMojo extends AbstractMojo
                 startPump("STDERR",forkedProcess.getErrorStream());
                 int exitcode = forkedProcess.waitFor();            
                 PluginLog.getLog().info("Forked execution exit: "+exitcode);
-            }   
+            }
+            else
+            {
+                //wait for the child to be ready before terminating.
+                //child indicates it has finished starting by printing on stdout the token passed to it
+                try
+                {
+                    LineNumberReader reader = new LineNumberReader(new InputStreamReader(forkedProcess.getInputStream()));
+                    String line = null;
+                    int attempts = 10; //max lines we'll read trying to get token
+                    do
+                    {
+                        --attempts;
+                        line = reader.readLine();
+                        if (line != null && line.startsWith(token))
+                            break;
+                    }
+                    while (line != null && attempts>0);
+                    reader.close();
+
+                    if (line != null && line.trim().equals(token))
+                        PluginLog.getLog().info("Forked process started.");
+                    else
+                    {
+                        String err = (line==null?"":line.substring(token.length()));
+                        PluginLog.getLog().info("Forked process startup errors "+(!"".equals(err)?":"+err:""));
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new MojoExecutionException ("Problem determining if forked process is ready: "+e.getMessage());
+                }
+            }
         }
         catch (InterruptedException ex)
         {
@@ -723,6 +766,13 @@ public class JettyRunForkedMojo extends AbstractMojo
         return ret.toString();
     }
 
+    
+    private String createToken ()
+    {
+        return Long.toString(random.nextLong()^System.currentTimeMillis(), 36).toUpperCase();
+    }
+    
+    
     private void startPump(String mode, InputStream inputStream)
     {
         ConsoleStreamer pump = new ConsoleStreamer(mode,inputStream);
