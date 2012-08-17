@@ -53,6 +53,7 @@ public class JettyWebAppContext extends WebAppContext
 {
     private static final Logger LOG = Log.getLogger(JettyWebAppContext.class);
 
+    private static final String DEFAULT_CONTAINER_INCLUDE_JAR_PATTERN = ".*/javax.servlet-[^/]*\\.jar$|.*/servlet-api-[^/]*\\.jar$";
     private static final String WEB_INF_CLASSES_PREFIX = "/WEB-INF/classes";
     private static final String WEB_INF_LIB_PREFIX = "/WEB-INF/lib";
 
@@ -70,7 +71,18 @@ public class JettyWebAppContext extends WebAppContext
      * @deprecated The value of this parameter will be ignored by the plugin. Overlays will always be unpacked.
      */
     private boolean unpackOverlays;
-    private String containerIncludeJarPattern = ".*/servlet-api-[^/]*\\.jar$";
+    
+    /**
+     * Set the "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern" with a pattern for matching jars on
+     * container classpath to scan. This is analogous to the WebAppContext.setAttribute() call.
+     */
+    private String containerIncludeJarPattern = null;
+    
+    /**
+     * Set the "org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern" with a pattern for matching jars on
+     * webapp's classpath to scan. This is analogous to the WebAppContext.setAttribute() call.
+     */
+    private String webInfIncludeJarPattern = null;
     
 
     /**
@@ -104,8 +116,20 @@ public class JettyWebAppContext extends WebAppContext
     
     public String getContainerIncludeJarPattern()
     {
-    	return containerIncludeJarPattern;
+        return containerIncludeJarPattern;
     }
+    
+    
+    public String getWebInfIncludeJarPattern()
+    {
+    	return webInfIncludeJarPattern;
+    }
+    public void setWebInfIncludeJarPattern(String pattern)
+    {
+        webInfIncludeJarPattern = pattern;
+    }
+   
+    
     
     public boolean getUnpackOverlays()
     {
@@ -225,8 +249,21 @@ public class JettyWebAppContext extends WebAppContext
     {
         //Set up the pattern that tells us where the jars are that need scanning for
         //stuff like taglibs so we can tell jasper about it (see TagLibConfiguration)
-        setAttribute(WebInfConfiguration.CONTAINER_JAR_PATTERN, containerIncludeJarPattern);
+
+        //Allow user to set up pattern for names of jars from the container classpath
+        //that will be scanned - note that by default NO jars are scanned
+        String tmp = containerIncludeJarPattern;
+        if (tmp==null || "".equals(tmp))
+            tmp = (String)getAttribute(WebInfConfiguration.CONTAINER_JAR_PATTERN);           
         
+        tmp = addPattern(tmp, DEFAULT_CONTAINER_INCLUDE_JAR_PATTERN);
+        setAttribute(WebInfConfiguration.CONTAINER_JAR_PATTERN, tmp);
+        
+        //Allow user to set up pattern of jar names from WEB-INF that will be scanned.
+        //Note that by default ALL jars considered to be in WEB-INF will be scanned - setting
+        //a pattern restricts scanning
+        if (webInfIncludeJarPattern != null)
+            setAttribute(WebInfConfiguration.WEBINF_JAR_PATTERN, webInfIncludeJarPattern);
    
         //Set up the classes dirs that comprises the equivalent of WEB-INF/classes
         if (testClasses != null)
