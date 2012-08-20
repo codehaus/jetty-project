@@ -69,17 +69,23 @@ public class Starter
         //check if contexts already configured, create if not
         this.server.configureHandlers();
 
-        //set up the webapp from the context xml file provided
         webApp = new JettyWebAppContext();
+        
+        //configure webapp from properties file describing unassembled webapp
+        configureWebApp();
+        
+        //set up the webapp from the context xml file provided
+        //NOTE: just like jetty:run mojo this means that the context file can
+        //potentially override settings made in the pom. Ideally, we'd like
+        //the pom to override the context xml file, but as the other mojos all
+        //configure a WebAppContext in the pom (the <webApp> element), it is 
+        //already configured by the time the context xml file is applied.
         if (contextXml != null)
         {
             XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(contextXml));
             xmlConfiguration.getIdMap().put("Server",server);
             xmlConfiguration.configure(webApp);
         }
-
-        //configure webapp from properties file describing unassembled webapp
-        configureWebApp();
 
         this.server.addWebApplication(webApp);
 
