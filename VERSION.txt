@@ -1,3 +1,5 @@
+jetty@codehaus-8.1.7-SNAPSHOT
+
 jetty@codehaus-8.1.6.v20120903 - 03 September 2012
  + 385651 Message 'Address already in use' not specific enough
  + 386531 setuid library name should not be hardcoded
