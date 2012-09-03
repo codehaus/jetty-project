@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-integration-project</artifactId>
-    <version>8.1.6.v20120903</version>
+    <version>8.1.7-SNAPSHOT</version>
   </parent>
   <artifactId>jetty-hightide</artifactId>
   <name>Jetty :: Hightide Distribution</name>
