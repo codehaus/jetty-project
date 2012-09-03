@@ -7,7 +7,6 @@
     <version>8.1.6-SNAPSHOT</version>
   </parent>
   <artifactId>jetty-jmx-ws</artifactId>
-  <version>8.1.6-SNAPSHOT</version>
   <name>Jetty :: JMX Rest Interface</name>
   <packaging>war</packaging>
   <url>http://maven.apache.org</url>
