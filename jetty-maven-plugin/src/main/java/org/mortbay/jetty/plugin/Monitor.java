@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -61,8 +62,18 @@ public class Monitor extends Thread
         _kill = kill;
         setDaemon(true);
         setName("StopJettyPluginMonitor");
-        _serverSocket=new ServerSocket(port,1,InetAddress.getByName("127.0.0.1")); 
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", port);       
+        _serverSocket=new ServerSocket();
         _serverSocket.setReuseAddress(true);
+        try
+        {
+            _serverSocket.bind(address,1);
+        }
+        catch (IOException x)
+        {
+            System.out.println("Error binding to stop port 127.0.0.1:"+port);
+            throw x;
+        }
     }
     
     public void run()
