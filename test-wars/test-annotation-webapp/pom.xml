@@ -94,7 +94,6 @@
            <descriptor>src/main/webapp/WEB-INF/web.xml</descriptor>
            <contextPath>/test-annotations</contextPath>
             <containerIncludeJarPattern>.*/javax.servlet-[^/]*\.jar$</containerIncludeJarPattern>
-            <webInfIncludeJarPattern>.*/test-fragment-[^/]*\.jar$</webInfIncludeJarPattern>
             <configurationDiscovered>true</configurationDiscovered>
             <jettyEnvXml>${basedir}/src/main/webapp/WEB-INF/jetty-env.xml</jettyEnvXml>
          </webAppConfig>

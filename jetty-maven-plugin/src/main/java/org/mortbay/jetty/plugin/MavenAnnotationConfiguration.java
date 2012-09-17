@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jetty.annotations.AbstractDiscoverableAnnotationHandler;
 import org.eclipse.jetty.annotations.AnnotationParser;
+import org.eclipse.jetty.annotations.AnnotationParser.DiscoverableAnnotationHandler;
 import org.eclipse.jetty.annotations.ClassNameResolver;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.util.log.Log;
@@ -34,7 +36,16 @@ public class MavenAnnotationConfiguration extends AnnotationConfiguration
             if (metaData == null)
                throw new IllegalStateException ("No metadata");
 
-            clearAnnotationList(parser.getAnnotationHandlers());    
+            parser.clearHandlers();
+            for (DiscoverableAnnotationHandler h:_discoverableAnnotationHandlers)
+            {
+                if (h instanceof AbstractDiscoverableAnnotationHandler)
+                    ((AbstractDiscoverableAnnotationHandler)h).setResource(null); //
+            }
+            parser.registerHandlers(_discoverableAnnotationHandlers);
+            parser.registerHandler(_classInheritanceHandler);
+            parser.registerHandlers(_containerInitializerAnnotationHandlers);
+
 
             for (File f:jwac.getClassPathFiles())
             {
@@ -60,10 +71,6 @@ public class MavenAnnotationConfiguration extends AnnotationConfiguration
                     });
                 }                
             }
-            //gather together all annotations discovered
-            List<DiscoveredAnnotation> annotations = new ArrayList<DiscoveredAnnotation>();
-            gatherAnnotations(annotations, parser.getAnnotationHandlers());
-            metaData.addDiscoveredAnnotations (annotations);
         }
     }
 }
