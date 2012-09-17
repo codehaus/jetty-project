@@ -56,7 +56,7 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
                 LOG.debug("Classpath = "+LazyList.array2List(((URLClassLoader)context.getClassLoader()).getURLs()));
         }
         super.configure(context);
-
+        
         // knock out environmental maven and plexus classes from webAppContext
         String[] existingServerClasses = context.getServerClasses();
         String[] newServerClasses = new String[2+(existingServerClasses==null?0:existingServerClasses.length)];
@@ -77,61 +77,6 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
     {
         super.preConfigure(context);
 
-        _originalResourceBase = context.getBaseResource();
-        JettyWebAppContext jwac = (JettyWebAppContext)context;
-
-        //Add in any overlaid wars as base resources
-        if (jwac.getOverlays() != null && !jwac.getOverlays().isEmpty())
-        {
-            Resource[] origResources = null;
-            int origSize = 0;
-
-            if (jwac.getBaseResource() != null)
-            {
-                if (jwac.getBaseResource() instanceof ResourceCollection)
-                {
-                    origResources = ((ResourceCollection)jwac.getBaseResource()).getResources();
-                    origSize = origResources.length;
-                }
-                else
-                {
-                    origResources = new Resource[1];
-                    origResources[0] = jwac.getBaseResource();
-                    origSize = 1;
-                }
-            }
-            
-            int overlaySize = jwac.getOverlays().size();
-            Resource[] newResources = new Resource[origSize + overlaySize];
-
-            int offset = 0;
-            if (origSize > 0)
-            {
-                if (jwac.getBaseAppFirst())
-                {
-                    System.arraycopy(origResources,0,newResources,0,origSize);
-
-                    offset = origSize;
-                }
-                else
-                {
-                    System.arraycopy(origResources,0,newResources,overlaySize,origSize);
-                }
-            }
-            
-            // Overlays are always unpacked
-            _unpackedOverlays = new Resource[overlaySize];
-            List<Resource> overlays = jwac.getOverlays();
-            for (int idx=0; idx<overlaySize; idx++)
-            {
-                _unpackedOverlays[idx] = unpackOverlay(context, overlays.get(idx));
-                 newResources[idx+offset] = _unpackedOverlays[idx];
-
-                LOG.info("Adding overlay: " + _unpackedOverlays[idx]);
-            }
-            
-            jwac.setBaseResource(new ResourceCollection(newResources));
-        }
     }
     
     public void postConfigure(WebAppContext context) throws Exception
@@ -165,7 +110,77 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
   
     }
 
+    
+    
   
+    /** 
+     * @see org.eclipse.jetty.webapp.WebInfConfiguration#unpack(org.eclipse.jetty.webapp.WebAppContext)
+     */
+    @Override
+    public void unpack(WebAppContext context) throws IOException
+    {
+        //Unpack and find base resource as normal
+        super.unpack(context);
+        
+        
+        //Add in any overlays as a resource collection for the base
+        _originalResourceBase = context.getBaseResource();
+        JettyWebAppContext jwac = (JettyWebAppContext)context;
+
+        //Add in any overlaid wars as base resources
+        if (jwac.getOverlays() != null && !jwac.getOverlays().isEmpty())
+        {
+            Resource[] origResources = null;
+            int origSize = 0;
+
+            if (jwac.getBaseResource() != null)
+            {
+                if (jwac.getBaseResource() instanceof ResourceCollection)
+                {
+                    origResources = ((ResourceCollection)jwac.getBaseResource()).getResources();
+                    origSize = origResources.length;
+                }
+                else
+                {
+                    origResources = new Resource[1];
+                    origResources[0] = jwac.getBaseResource();
+                    origSize = 1;
+                }
+            }
+            
+            int overlaySize = jwac.getOverlays().size();
+            Resource[] newResources = new Resource[origSize + overlaySize];
+
+            int offset = 0;
+            if (origSize > 0)
+            {
+                if (jwac.getBaseAppFirst())
+                {
+                    System.arraycopy(origResources,0,newResources,0,origSize);
+                    offset = origSize;
+                }
+                else
+                {
+                    System.arraycopy(origResources,0,newResources,overlaySize,origSize);
+                }
+            }
+            
+            // Overlays are always unpacked
+            _unpackedOverlays = new Resource[overlaySize];
+            List<Resource> overlays = jwac.getOverlays();
+            for (int idx=0; idx<overlaySize; idx++)
+            {
+                _unpackedOverlays[idx] = unpackOverlay(context, overlays.get(idx));
+                 newResources[idx+offset] = _unpackedOverlays[idx];
+
+                LOG.info("Adding overlay: " + _unpackedOverlays[idx]);
+            }
+            
+            jwac.setBaseResource(new ResourceCollection(newResources));
+        }
+    }
+
+
     /**
      * Get the jars to examine from the files from which we have
      * synthesized the classpath. Note that the classpath is not
@@ -173,6 +188,7 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
      * @param context
      * @return the list of jars found
      */
+    @Override
     protected List<Resource> findJars (WebAppContext context)
     throws Exception
     {
@@ -195,12 +211,14 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
                 }
             }
         }
-        
+
         List<Resource> superList = super.findJars(context);
         if (superList != null)
             list.addAll(superList);
         return list;
     }
+    
+    
 
     protected  Resource unpackOverlay (WebAppContext context, Resource overlay)
     throws IOException
@@ -223,6 +241,4 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
         Resource unpackedOverlay = Resource.newResource(dir.getCanonicalPath());
         return  unpackedOverlay;
     }
-
-
 }
