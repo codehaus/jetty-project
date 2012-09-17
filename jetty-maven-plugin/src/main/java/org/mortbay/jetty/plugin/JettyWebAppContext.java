@@ -258,6 +258,21 @@ public class JettyWebAppContext extends WebAppContext
      
     public void doStop () throws Exception
     { 
+        if (classpathFiles != null)
+            classpathFiles.clear();
+        classpathFiles = null;
+        
+        classes = null;
+        testClasses = null;
+        
+        if (webInfJarMap != null)
+            webInfJarMap.clear();
+       
+        webInfClasses.clear();
+        webInfJars.clear();
+        
+        
+        
         setShutdown(true);
         //just wait a little while to ensure no requests are still being processed
         Thread.currentThread().sleep(500L);
