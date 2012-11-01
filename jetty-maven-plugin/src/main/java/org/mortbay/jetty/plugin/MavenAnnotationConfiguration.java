@@ -52,13 +52,16 @@ public class MavenAnnotationConfiguration extends AnnotationConfiguration
                     doParse(context, parser, Resource.newResource(f.toURL()));
                 }
             }
-            
+
             //if an actual WEB-INF/classes directory also exists (eg because of overlayed wars) then scan that
             //too
-            Resource classesDir = context.getWebInf().addPath("classes/");
-            if (classesDir.exists())
+            if (context.getWebInf() != null && context.getWebInf().exists())
             {
+                Resource classesDir = context.getWebInf().addPath("classes/");
+                if (classesDir.exists())
+                {
                     doParse(context, parser, classesDir);
+                }
             }
         }
     }

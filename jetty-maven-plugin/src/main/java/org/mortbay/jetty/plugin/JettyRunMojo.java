@@ -443,6 +443,7 @@ public class JettyRunMojo extends AbstractJettyMojo
         for ( Iterator<Artifact> iter = projectArtifacts.iterator(); iter.hasNext(); )
         {
             Artifact artifact = (Artifact) iter.next();
+            
             // Include runtime and compile time libraries, and possibly test libs too
             if(artifact.getType().equals("war"))
             {
@@ -450,6 +451,7 @@ public class JettyRunMojo extends AbstractJettyMojo
                 {
                     Resource r=Resource.newResource("jar:"+Resource.toURL(artifact.getFile()).toString()+"!/");
                     overlays.add(r);
+                    getLog().info("Adding overlay for war project artifact "+artifact.getId());
                     getExtraScanTargets().add(artifact.getFile());
                 }
                 catch(Exception e)

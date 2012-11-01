@@ -169,7 +169,8 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
             _unpackedOverlays = new Resource[overlaySize];
             List<Resource> overlays = jwac.getOverlays();
             for (int idx=0; idx<overlaySize; idx++)
-            {
+            { 
+                LOG.info("Unpacking overlay: " + overlays.get(idx));
                 _unpackedOverlays[idx] = unpackOverlay(context, overlays.get(idx));
                  newResources[idx+offset] = _unpackedOverlays[idx];
 
