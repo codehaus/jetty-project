@@ -1,4 +1,7 @@
-jesse@codehaus-7.6.8-SNAPSHOT
+jetty@codehaus-7.6.8.v20121105 - 05 November 2012
+ + 389670 ensure jars from overlayed wars are scanned
+ + 393291 Confusing log entry about (non) existing webAppSourceDirectory
+ + JETTY-1550 virtual WEB-INF not created if project has overlays
 
 jetty@codehaus-7.6.7.v20120910 - 10 September 2012
 
