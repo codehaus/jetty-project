@@ -1,5 +1,15 @@
 jetty@codehaus-8.1.8-SNAPSHOT
 
+jetty@codehaus-7.6.7.v20120910 - 10 September 2012
+
+jetty@codehaus-7.6.6.v20120903 - 03 September 2012
+ + 385651 Message 'Address already in use' not specific enough
+ + 386531 setuid library name should not be hardcoded
+ + JETTY-991 Delay exit of parent until forked jetty started
+ + JETTY-1482 undoing previous incorrect fix: server id is Server
+ + JETTY-1516 allow context xml to override pom config for jetty:run-forked,
+   same as other jetty mojos
+
 jetty@codehaus-8.1.7.v20120910 - 10 September 2012
 
 jetty@codehaus-8.1.6.v20120903 - 03 September 2012
