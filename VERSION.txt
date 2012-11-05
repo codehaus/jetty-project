@@ -1,4 +1,17 @@
-jetty@codehaus-8.1.8-SNAPSHOT
+jetty@codehaus-8.1.8-SNAPSHOT - 05 November 2012
+ + 353285 ServletSecurity annotation ignored
+ + 357209 JSP tag listeners not called
+ + 384280 Implement preliminary ServletRegistrations
+ + 387254 jetty-maven-plugin set 'WebInfIncludeJarPattern' option
+ + 389670 ensure classes from overlayed wars are scanned
+ + 393291 Confusing log entry about (non) existing webAppSourceDirectory
+ + JETTY-1440 jstl-1.2-rev-1 contains duplicate servlet 2.5 api classes
+ + JETTY-1470 update version of jsp for jetty-jspc-maven-plugin Merge
+   remote-tracking branch 'origin/master' into jetty-8
+ + JETTY-1499 WEB-INF/classes not scanned with mvn jetty:run-war
+ + JETTY-1550 virtual WEB-INF not created if project has overlays
+ + JETTY-1551 Null protection in jetty-maven-plugin annotation parsing when no
+   WEB-INF
 
 jetty@codehaus-7.6.7.v20120910 - 10 September 2012
 
