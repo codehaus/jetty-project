@@ -1,3 +1,5 @@
+jetty@codehaus-7.6.9-SNAPSHOT
+
 jetty@codehaus-7.6.8.v20121106 - 06 November 2012
  + 389670 ensure jars from overlayed wars are scanned
  + 393291 Confusing log entry about (non) existing webAppSourceDirectory
