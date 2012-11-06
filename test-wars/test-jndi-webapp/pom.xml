@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.mortbay.jetty</groupId>
     <artifactId>jetty-integration-project</artifactId>
-    <version>7.6.9-SNAPSHOT</version>
+    <version>7.6.8.v20121106</version>
     <relativePath>../..</relativePath>
   </parent>
   <artifactId>test-jndi-webapp</artifactId>
