@@ -35,6 +35,7 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.servlet.Holder;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
@@ -198,17 +199,10 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
     {
 
         @Override
-        public ServletHolder newServletHolder()
+        public ServletHolder newServletHolder(Holder.Source source)
         {
             return new AntServletHolder();
-        }
-
-        @Override
-        public ServletHolder newServletHolder(Class<? extends Servlet> servlet)
-        {
-            return new AntServletHolder(servlet);
-        }
-        
+        }      
     }
     
     public static class AntWebAppContext extends WebAppContext
