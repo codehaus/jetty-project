@@ -39,8 +39,9 @@ import org.eclipse.jetty.server.Server;
  * by stopping the Server instances. The choice of
  * behaviour is controlled by either passing true
  * (exit jvm) or false (stop Servers) in the constructor.
- * 
+ * @deprecated use org.eclipse.jetty.server.ShutdownMonitor instead 
  */
+@Deprecated
 public class Monitor extends Thread
 {
     private String _key;

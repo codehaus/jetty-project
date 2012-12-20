@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ShutdownMonitor;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -30,7 +31,6 @@ public class Starter
 
     private JettyServer server;
     private JettyWebAppContext webApp;
-    private Monitor monitor;
     
     private int stopPort=0;
     private String stopKey=null;
@@ -92,7 +92,10 @@ public class Starter
         System.err.println("STOP PORT="+stopPort+", STOP KEY="+stopKey);
         if(stopPort>0 && stopKey!=null)
         {
-            monitor = new Monitor(stopPort, stopKey, new Server[]{server}, true);
+            ShutdownMonitor monitor = ShutdownMonitor.getInstance();
+            monitor.setPort(stopPort);
+            monitor.setKey(stopKey);
+            monitor.setExitVm(false);
         }
     }
     
@@ -219,9 +222,6 @@ public class Starter
 
     public void run() throws Exception
     {
-        if (monitor != null)
-            monitor.start();
-
         LOG.info("Started Jetty Server");
         server.start();  
     }
