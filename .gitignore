@@ -32,3 +32,6 @@ target/
 
 # vim
 .*.sw[a-p]
+
+# module specific
+jetty-integration-tests/tmp
