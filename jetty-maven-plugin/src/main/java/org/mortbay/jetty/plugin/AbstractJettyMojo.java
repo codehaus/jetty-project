@@ -513,7 +513,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
                 ShutdownMonitor monitor = ShutdownMonitor.getInstance();
                 monitor.setPort(stopPort);
                 monitor.setKey(stopKey);
-                monitor.setExitVm(false);
+                monitor.setExitVm(!daemon);
             }
             
             // start Jetty

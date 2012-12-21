@@ -95,7 +95,7 @@ public class Starter
             ShutdownMonitor monitor = ShutdownMonitor.getInstance();
             monitor.setPort(stopPort);
             monitor.setKey(stopKey);
-            monitor.setExitVm(false);
+            monitor.setExitVm(true);
         }
     }
     

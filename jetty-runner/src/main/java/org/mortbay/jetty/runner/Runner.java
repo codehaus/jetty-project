@@ -36,6 +36,7 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ShutdownMonitor;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.DefaultHandler;
@@ -405,7 +406,10 @@ public class Runner
                 break;
                 
             case 3:
-                _monitor = new Monitor(stopPort, stopKey);
+                ShutdownMonitor monitor = ShutdownMonitor.getInstance();
+                monitor.setPort(stopPort);
+                monitor.setKey(stopKey);
+                monitor.setExitVm(true);
                 break;
         }
 
