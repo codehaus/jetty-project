@@ -40,6 +40,7 @@ import org.eclipse.jetty.security.LoginService;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ShutdownMonitor;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -507,16 +508,18 @@ public abstract class AbstractJettyMojo extends AbstractMojo
             //particular Jetty version
             finishConfigurationBeforeStart();
 
+            if(stopPort>0 && stopKey!=null)
+            {
+                ShutdownMonitor monitor = ShutdownMonitor.getInstance();
+                monitor.setPort(stopPort);
+                monitor.setKey(stopKey);
+                monitor.setExitVm(!daemon);
+            }
+            
             // start Jetty
             this.server.start();
 
             getLog().info("Started Jetty Server");
-            
-            if(stopPort>0 && stopKey!=null)
-            {
-                Monitor monitor = new Monitor(stopPort, stopKey, new Server[]{server}, !daemon);
-                monitor.start();
-            }
             
             // start the scanner thread (if necessary) on the main webapp
             configureScanner ();
