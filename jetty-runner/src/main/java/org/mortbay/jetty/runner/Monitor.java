@@ -27,7 +27,7 @@ import java.net.UnknownHostException;
  *
  * Listens for stop commands eg via mvn jetty:stop and
  * causes jetty to stop by exiting the virtual machine
- * 
+ * @deprecated
  */
 public class Monitor extends Thread
 {
