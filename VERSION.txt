@@ -1,4 +1,10 @@
-jetty@codehaus-7.6.9-SNAPSHOT
+jetty@codehaus-7.6.10-SNAPSHOT
+
+jetty@codehaus-7.6.9.v20130131 - 31 January 2013
+ + 391623 Add option to --stop to wait for target jetty to stop Integrating
+   with jetty-runner; ensure jetty-maven-plugin obeys daemon mode
+ + 395574 jstl jars not inside jetty-runner
+ + 397114 run-forked waitForChild=false can lock up
 
 jetty@codehaus-7.6.8.v20121106 - 06 November 2012
  + 389670 ensure jars from overlayed wars are scanned
