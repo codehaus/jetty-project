@@ -30,7 +30,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <jetty-version>8.1.9-SNAPSHOT</jetty-version>
+        <jetty-version>8.1.9.v20130131</jetty-version>
         <felix.bundle.version>2.0.0</felix.bundle.version>
         <jna-version>3.2.2</jna-version>
         <junit-version>3.8.2</junit-version>
