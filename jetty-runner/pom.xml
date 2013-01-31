@@ -99,13 +99,6 @@
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-jsp</artifactId>
         <version>${jetty-version}</version>
-        <exclusions>
-          <!-- tlds must be found in jar on path, not inside runner jar -->
-          <exclusion>
-             <groupId>org.eclipse.jetty.orbit</groupId>
-             <artifactId>org.apache.taglibs.standard.glassfish</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
   </dependencies>
   <profiles>

@@ -36,6 +36,7 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ShutdownMonitor;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.DefaultHandler;
@@ -75,6 +76,8 @@ public class Runner
             org.eclipse.jetty.webapp.JettyWebXmlConfiguration.class.getCanonicalName(),
             org.eclipse.jetty.webapp.TagLibConfiguration.class.getCanonicalName() 
             };
+
+    public static final String __containerIncludeJarPattern = ".*/.*jsp-api-[^/]*\\.jar$|.*/.*jsp-[^/]*\\.jar$|.*/.*taglibs[^/]*\\.jar$|.*/.*jstl[^/]*\\.jar$|.*/.*jsf-impl-[^/]*\\.jar$|.*/.*javax.faces-[^/]*\\.jar$|.*/.*myfaces-impl-[^/]*\\.jar$|.*/.*jetty-runner-[^/]*\\.jar$";
 
     protected Server _server;
     protected Monitor _monitor;
@@ -256,6 +259,9 @@ public class Runner
 
                     }
 
+                    //set up default configuration classes to apply to webapps
+                    _server.setAttribute("org.eclipse.jetty.webapp.configuration", __plusConfigurationClasses);
+
                     //apply a config file if there is one
                     if (_configFile != null)
                     {
@@ -367,7 +373,7 @@ public class Runner
                     if (contextPathSet)
                         handler.setContextPath(contextPath);
                     handler.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
-                                         ".*/.*jsp-api-[^/]*\\.jar$|.*/.*jsp-[^/]*\\.jar$|.*/.*taglibs[^/]*\\.jar$"); 
+                                         __containerIncludeJarPattern);
                 }
                 else
                 {
@@ -379,8 +385,7 @@ public class Runner
                     WebAppContext webapp = new WebAppContext(_contexts,ctx.toString(),contextPath);
                     webapp.setConfigurationClasses(__plusConfigurationClasses);
                     webapp.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
-                                        ".*/.*jsp-api-[^/]*\\.jar$|.*/.*jsp-[^/]*\\.jar$|.*/.*taglibs[^/]*\\.jar$"); 
-                    System.err.println(Arrays.asList(_contexts.getHandlers()));
+                                        __containerIncludeJarPattern);
                 }
             }
         }
@@ -401,7 +406,10 @@ public class Runner
                 break;
                 
             case 3:
-                _monitor = new Monitor(stopPort, stopKey);
+                ShutdownMonitor monitor = ShutdownMonitor.getInstance();
+                monitor.setPort(stopPort);
+                monitor.setKey(stopKey);
+                monitor.setExitVm(true);
                 break;
         }
 
