@@ -1,4 +1,6 @@
-jetty@codehaus-8.1.10-SNAPSHOT
+jetty@codehaus-8.1.10.v20130312 - 12 March 2013
+ + 400312 ServletContextListener.contextInitialized() is not called when added
+   in ServletContainerInitializer.onStartup
 
 jetty@codehaus-8.1.9.v20130131 - 31 January 2013
  + 391623 Add option to --stop to wait for target jetty to stop Integrating
