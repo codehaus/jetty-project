@@ -1,3 +1,5 @@
+jetty@codehaus-8.1.11-SNAPSHOT
+
 jetty@codehaus-8.1.10.v20130312 - 12 March 2013
  + 400312 ServletContextListener.contextInitialized() is not called when added
    in ServletContainerInitializer.onStartup
