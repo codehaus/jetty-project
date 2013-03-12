@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.mortbay.jetty.dist</groupId>
     <artifactId>dist-parent</artifactId>
-    <version>8.1.10-SNAPSHOT</version>
+    <version>8.1.10.v20130312</version>
   </parent>
   <artifactId>jetty-rpm</artifactId>
   <name>Jetty :: Unix Distributions :: RPM</name>
