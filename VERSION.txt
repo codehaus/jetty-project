@@ -1,4 +1,4 @@
-jetty@codehaus-7.6.10-SNAPSHOT
+jetty@codehaus-7.6.10.v20130312 - 12 March 2013
 
 jetty@codehaus-7.6.9.v20130131 - 31 January 2013
  + 391623 Add option to --stop to wait for target jetty to stop Integrating
