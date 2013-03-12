@@ -262,6 +262,15 @@ public class AnnotationTest extends HttpServlet
             out.println("<h2>Complete Servlet Registration</h2>");
             Boolean complete = (Boolean)config.getServletContext().getAttribute("com.acme.AnnotationTest.complete");
             out.println("<br/><b>Result: "+(complete.booleanValue()?"PASS":"FAIL")+"</b>");
+
+   
+            out.println("<h2>ServletContextListener Programmatic Registration from ServletContainerInitializer</h2>");
+            Boolean programmaticListener = (Boolean)config.getServletContext().getAttribute("com.acme.AnnotationTest.listenerTest");
+            out.println("<br/><b>Result: "+(programmaticListener.booleanValue()?"PASS":"FAIL")+"</b>");
+            
+            out.println("<h2>ServletContextListener Programmatic Registration Prevented from ServletContextListener</h2>");
+            Boolean programmaticListenerPrevention = (Boolean)config.getServletContext().getAttribute("com.acme.AnnotationTest.listenerRegoTest");
+            out.println("<br/><b>Result: "+(programmaticListenerPrevention.booleanValue()?"PASS":"FAIL")+"</b>");
             
             out.println("<h2>@PostConstruct Callback</h2>");
             out.println("<pre>");
