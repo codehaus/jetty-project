@@ -26,7 +26,7 @@ public class MavenAnnotationConfiguration extends AnnotationConfiguration
             super.parseWebInfClasses (context, parser);
         else
         {
-            LOG.debug("Scanning classes ");
+            LOG.debug("Scanning web-inf/classes ");
             //Look for directories on the classpath and process each one of those
             
             MetaData metaData = context.getMetaData();
@@ -49,7 +49,7 @@ public class MavenAnnotationConfiguration extends AnnotationConfiguration
                 //scan the equivalent of the WEB-INF/classes directory that has been synthesised by the plugin
                 if (f.isDirectory() && f.exists())
                 {
-                    doParse(context, parser, Resource.newResource(f.toURL()));
+                    doParse(context, parser, Resource.newResource(f.toURI()));
                 }
             }
 
