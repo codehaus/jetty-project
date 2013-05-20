@@ -1,4 +1,4 @@
-jetty@codehaus-7.6.11-SNAPSHOT
+jetty@codehaus-7.6.11.v20130520 - 20 May 2013
 
 jetty@codehaus-7.6.10.v20130312 - 12 March 2013
 
