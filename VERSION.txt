@@ -1,4 +1,8 @@
-jetty@codehaus-8.1.11-SNAPSHOT
+jetty@codehaus-8.1.12-SNAPSHOT
+
+jetty@codehaus-8.1.11.v20130520 - 20 May 2013
+ + 407812 jetty-maven-plugin can not handle whitespaces in equivalent of
+   WEB-INF/classes paths
 
 jetty@codehaus-8.1.10.v20130312 - 12 March 2013
  + 400312 ServletContextListener.contextInitialized() is not called when added
