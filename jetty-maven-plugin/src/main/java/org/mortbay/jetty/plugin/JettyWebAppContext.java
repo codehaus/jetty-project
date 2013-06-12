@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,10 @@ import java.util.TreeSet;
 
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.FilterMapping;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlet.ServletMapping;
 import org.eclipse.jetty.util.URIUtil;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
@@ -309,11 +314,20 @@ public class JettyWebAppContext extends WebAppContext
         webInfJars.clear();
         
         
-        
         setShutdown(true);
         //just wait a little while to ensure no requests are still being processed
         Thread.currentThread().sleep(500L);
         super.doStop();
+        
+        //clear out all servlets, filters and listeners. This is because when running with the 
+        //maven plugin, we must keep the context and reapply any context xml to it. Thus any
+        //servlets, filters and listeners that were added in a context xml would be added again
+        //each time we did a stop/start cycle.
+        setEventListeners(new EventListener[0]);
+        getServletHandler().setFilters(new FilterHolder[0]);
+        getServletHandler().setFilterMappings(new FilterMapping[0]);
+        getServletHandler().setServlets(new ServletHolder[0]);
+        getServletHandler().setServletMappings(new ServletMapping[0]);
     }
 
     @Override
