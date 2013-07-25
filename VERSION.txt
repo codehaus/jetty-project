@@ -1,4 +1,5 @@
-jetty@codehaus-7.6.12-SNAPSHOT
+jetty@codehaus-7.6.12.v20130725 - 25 July 2013
+ + 411252 jetty-runner hardcode sendServerVersion to true
 
 jetty@codehaus-7.6.11.v20130520 - 20 May 2013
 
