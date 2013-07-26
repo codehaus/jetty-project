@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,9 +36,12 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.Holder;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlet.ServletMapping;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.FragmentConfiguration;
@@ -231,7 +235,24 @@ public class WebApplicationProxyImpl implements WebApplicationProxy
         protected ServletHandler newServletHandler()
         {
             return new AntServletHandler();
+        }
+
+        @Override
+        public void doStop() throws Exception
+        {
+            super.doStop();
+            //Ensure all listeners, filters and servlets that may have been added are totally
+            //cleaned out, as if this is a re-start we will re-apply any context xml file. That
+            //means that any listeners, servlets and filters that were added in the context xml
+            //file would be added again.
+            setEventListeners(new EventListener[0]);
+            getServletHandler().setFilters(new FilterHolder[0]);
+            getServletHandler().setFilterMappings(new FilterMapping[0]);
+            getServletHandler().setServlets(new AntServletHolder[0]);
+            getServletHandler().setServletMappings(new ServletMapping[0]);
+            
         }  
+        
     }
     
     
