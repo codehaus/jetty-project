@@ -1,4 +1,9 @@
-jetty@codehaus-8.1.12-SNAPSHOT
+jetty@codehaus-8.1.13-SNAPSHOT
+
+jetty@codehaus-8.1.12.v20130726 - 26 July 2013
+ + 409449 Ensure servlets, filters and listeners added via dynamic
+   registration, annotations or descriptors are cleaned on context restarts
+ + 411252 jetty-runner hardcode sendServerVersion to true
 
 jetty@codehaus-8.1.11.v20130520 - 20 May 2013
  + 407812 jetty-maven-plugin can not handle whitespaces in equivalent of
