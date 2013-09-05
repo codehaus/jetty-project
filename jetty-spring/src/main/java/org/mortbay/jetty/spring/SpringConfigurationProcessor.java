@@ -2,13 +2,16 @@ package org.mortbay.jetty.spring;
 
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.xml.ConfigurationProcessor;
 import org.eclipse.jetty.xml.ConfigurationProcessorFactory;
 import org.eclipse.jetty.xml.XmlConfiguration;
-import org.eclipse.jetty.xml.XmlParser;
+import org.eclipse.jetty.xml.XmlParser.Node;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyValues;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -37,25 +40,28 @@ import org.springframework.core.io.UrlResource;
 public class SpringConfigurationProcessor implements ConfigurationProcessor
 {
     static final Logger __log = org.eclipse.jetty.util.log.Log.getLogger(SpringConfigurationProcessor.class.getName());
-    
-    Map<String, Object> _idMap;
-    Map<String, String> _propertyMap;
+    XmlConfiguration _configuration;
     XmlBeanFactory _beanFactory;
     String _main;
 
-    public void init(URL url, XmlParser.Node config, Map<String, Object> idMap, Map<String, String> properties)
+    public void init(URL url, Node root, XmlConfiguration configuration)
     {
         try
         {
-            _idMap=idMap;
-            _propertyMap=properties;
+            _configuration=configuration;
 
             Resource resource = (url!=null)
             ?new UrlResource(url)
-            :new ByteArrayResource(("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE beans PUBLIC \"-//SPRING//DTD BEAN//EN\" \"http://www.springframework.org/dtd/spring-beans.dtd\">"+config).getBytes("UTF-8"));
+            :new ByteArrayResource(("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE beans PUBLIC \"-//SPRING//DTD BEAN//EN\" \"http://www.springframework.org/dtd/spring-beans.dtd\">"+root).getBytes("UTF-8"));
             
-            _beanFactory=new XmlBeanFactory(resource);
-            
+            _beanFactory=new XmlBeanFactory(resource){
+                @Override
+                protected void applyPropertyValues(String beanName, BeanDefinition mbd, BeanWrapper bw, PropertyValues pvs)
+                {
+                    _configuration.initializeDefaults(bw.getWrappedInstance());
+                    super.applyPropertyValues(beanName, mbd, bw, pvs);
+                }
+            };
         }
         catch(Exception e)
         {
@@ -81,7 +87,7 @@ public class SpringConfigurationProcessor implements ConfigurationProcessor
 
     private void doConfigure()
     {
-        _beanFactory.registerSingleton("properties",_propertyMap);
+        _beanFactory.registerSingleton("properties", _configuration.getProperties());
         
         // Look for the main bean;
         for (String bean : _beanFactory.getBeanDefinitionNames())
@@ -98,25 +104,26 @@ public class SpringConfigurationProcessor implements ConfigurationProcessor
             _main=_beanFactory.getBeanDefinitionNames()[0];
         
         // Register id beans as singletons
-        __log.debug("idMap {}",_idMap);
-        for (String id : _idMap.keySet())
+        __log.debug("idMap {}",_configuration.getIdMap());
+        for (String id : _configuration.getIdMap().keySet())
         {
             __log.debug("register {}",id);
-            _beanFactory.registerSingleton(id,_idMap.get(id));
+            _beanFactory.registerSingleton(id,_configuration.getIdMap().get(id));
         }
 
         // Apply configuration to existing singletons
-        for (String id : _idMap.keySet())
+        for (String id : _configuration.getIdMap().keySet())
         {
             if (_beanFactory.containsBeanDefinition(id))
             {
                 __log.debug("reconfigure {}",id);
-                _beanFactory.configureBean(_idMap.get(id),id);
+                _beanFactory.configureBean(_configuration.getIdMap().get(id),id);
             }
         }
         
         // Extract id's for next time.
         for (String id : _beanFactory.getSingletonNames())
-            _idMap.put(id,_beanFactory.getBean(id));
+            _configuration.getIdMap().put(id,_beanFactory.getBean(id));
     }
+
 }
