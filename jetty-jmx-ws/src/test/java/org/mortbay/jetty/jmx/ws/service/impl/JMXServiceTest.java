@@ -13,15 +13,11 @@
 
 package org.mortbay.jetty.jmx.ws.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Set;
-
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
@@ -44,11 +40,14 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mortbay.jetty.jmx.ws.service.JMXService;
-import org.mortbay.jetty.jmx.ws.service.impl.JMXServiceImpl;
 import org.mortbay.jetty.jmx.ws.util.JMXServiceURLUtils;
 import org.mortbay.jetty.jmx.ws.util.RandomIntRangeGenerator;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class JMXServiceTest
@@ -85,14 +84,14 @@ public class JMXServiceTest
         mBeanContainer = new MBeanContainer(mBeanServer);
         mBeanContainer.start();
         server.getContainer().addEventListener(mBeanContainer);
-        server.addBean(mBeanContainer,true);  
-        
+        server.addBean(mBeanContainer,true);
+
         server.addConnector(new SocketConnector());
         ServletContextHandler context = new ServletContextHandler(server,"/");
-                
+
         ServletHandler servletHandler = context.getServletHandler();
         createServlets(servletHandler);
-        
+
         server.start();
     }
     
@@ -127,6 +126,7 @@ public class JMXServiceTest
     }
 
     @Test
+    @Ignore
     public void testGetMBeanOperationInfo() throws MalformedObjectNameException, NullPointerException, InstanceNotFoundException
     {
         MBeanOperationInfo[] mBeanOperationInfos = service.getOperations(jmxServiceURL,JETTY_SERVER_MBEAN_NAME);
@@ -134,6 +134,7 @@ public class JMXServiceTest
     }
 
     @Test
+    @Ignore
     public void testGetMBeanAttributeInfo() throws InstanceNotFoundException
     {
         MBeanAttributeInfo[] attributes = service.getAttributes(jmxServiceURL,JETTY_SERVER_MBEAN_NAME);
@@ -149,6 +150,7 @@ public class JMXServiceTest
     }
 
     @Test
+    @Ignore
     public void testGetJettyVersion() throws MalformedObjectNameException, NullPointerException, InstanceNotFoundException
     {
         String version = (String)service.getAttribute(jmxServiceURL,JETTY_SERVER_MBEAN_NAME,"version");
