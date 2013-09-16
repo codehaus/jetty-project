@@ -1,4 +1,4 @@
-jetty@codehaus-8.1.13-SNAPSHOT
+jetty@codehaus-8.1.13.v20130916 - 16 September 2013
 
 jetty@codehaus-8.1.12.v20130726 - 26 July 2013
  + 409449 Ensure servlets, filters and listeners added via dynamic
