@@ -126,7 +126,6 @@ public class JMXServiceTest
     }
 
     @Test
-    @Ignore
     public void testGetMBeanOperationInfo() throws MalformedObjectNameException, NullPointerException, InstanceNotFoundException
     {
         MBeanOperationInfo[] mBeanOperationInfos = service.getOperations(jmxServiceURL,JETTY_SERVER_MBEAN_NAME);
@@ -134,7 +133,6 @@ public class JMXServiceTest
     }
 
     @Test
-    @Ignore
     public void testGetMBeanAttributeInfo() throws InstanceNotFoundException
     {
         MBeanAttributeInfo[] attributes = service.getAttributes(jmxServiceURL,JETTY_SERVER_MBEAN_NAME);
@@ -150,7 +148,6 @@ public class JMXServiceTest
     }
 
     @Test
-    @Ignore
     public void testGetJettyVersion() throws MalformedObjectNameException, NullPointerException, InstanceNotFoundException
     {
         String version = (String)service.getAttribute(jmxServiceURL,JETTY_SERVER_MBEAN_NAME,"version");
