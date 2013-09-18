@@ -40,7 +40,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mortbay.jetty.jmx.ws.service.JMXService;
 import org.mortbay.jetty.jmx.ws.util.JMXServiceURLUtils;
@@ -69,7 +68,6 @@ public class JMXServiceTest
     @BeforeClass
     public static void setUpRegistry() throws MalformedURLException, Exception
     {
-
         registry = LocateRegistry.createRegistry(port);
         connectorServer = new ConnectorServer(new JMXServiceURL("rmi",null,port,"/jndi/rmi://localhost:" + port + "/jettyjmx"),
                 "org.eclipse.jetty:name=rmiconnectorserver");
@@ -82,6 +80,7 @@ public class JMXServiceTest
         server = new Server();
         mBeanServer = ManagementFactory.getPlatformMBeanServer();
         mBeanContainer = new MBeanContainer(mBeanServer);
+        MBeanContainer.resetUnique();
         mBeanContainer.start();
         server.getContainer().addEventListener(mBeanContainer);
         server.addBean(mBeanContainer,true);
