@@ -1,4 +1,6 @@
-jetty@codehaus-8.1.14-SNAPSHOT
+jetty@codehaus-8.1.14.v20131031 - 31 October 2013
+ + 417250 Fix JMXServiceTest's incompatibility with MBeanContainer unique name
+   changes
 
 jetty@codehaus-8.1.13.v20130916 - 16 September 2013
 
