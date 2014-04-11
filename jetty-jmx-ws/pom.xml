@@ -4,7 +4,7 @@
   <parent>
     <artifactId>jetty-integration-project</artifactId>
     <groupId>org.mortbay.jetty</groupId>
-    <version>8.1.15.v20140411</version>
+    <version>8.1.16-SNAPSHOT</version>
   </parent>
   <artifactId>jetty-jmx-ws</artifactId>
   <name>Jetty :: JMX Rest Interface</name>
