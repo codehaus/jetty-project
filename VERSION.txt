@@ -1,4 +1,4 @@
-jetty@codehaus-7.6.16.v20140902 - 02 September 2014
+jetty@codehaus-7.6.16.v20140903 - 03 September 2014
 
 jetty@codehaus-7.6.15.v20140411 - 11 April 2014
 
